@@ -1,6 +1,8 @@
 # WaoStats
 A desktop application to analyse and archive your Wahoo bike computer tracks.
 
+<img width="1000" alt="waostats" src="https://user-images.githubusercontent.com/30245296/195997239-19587c70-079c-4a51-8231-fe0a10e137cb.png">
+
 ## Main features are:
 - load all your Wahoo FIT files into the application
 - view the statistics from your FIT files
@@ -9,8 +11,6 @@ A desktop application to analyse and archive your Wahoo bike computer tracks.
 - link your tracks to your used devices (bikes) and see total kilometers per device
 - dropbox sync your FIT files
 - display your track on 11 different maps (google, openstreetmap, bing and more)
-
-
 
 ## Used Libraries
 - dropboxQt, under [MIT](https://github.com/masc4ii/WaoStats/blob/main/dropboxQt/LICENSE)

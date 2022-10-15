@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/Icons">
+        <file>Icons/crossed_circle.svg</file>
+        <file>Icons/Dropbox_Icon.svg.png</file>
+        <file>Icons/Actions-view-refresh-icon.png</file>
+        <file>Icons/Folder-Documents-icon.png</file>
+        <file>Icons/Window-Add-icon.png</file>
+    </qresource>
+</RCC>

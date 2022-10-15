@@ -12,6 +12,7 @@
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QSettings>
+#include <QByteArray>
 #include "qwt.h"
 
 #include <qwt_legend.h>
@@ -46,6 +47,7 @@
 #include "dropbox/endpoint/DropboxAuthInfo.h"
 
 #define APPNAME "WaoStats"
+#define VERSION "0.1 pre-alpha"
 
 using namespace dropboxQt;
 
@@ -811,7 +813,29 @@ void MainWindow::onBikeItemEditingFinished(QTreeWidgetItem *item)
 
 void MainWindow::on_actionAbout_triggered()
 {
-    QMessageBox::about( this, APPNAME, QString( "WaoStats\nv0.1 pre-alpha\nby masc4ii" ) );
+    QByteArray byteArray;
+    QString pic = QString("<img width='128' height='112' align='right' src=\"data:image/png;base64,") + byteArray.toBase64() + "\"/>";
+
+    QMessageBox::about( this, APPNAME, QString(
+                                         "<html>%1"
+                                         "<body><h3>%2</h3>"
+                                         " <p>%2 v%3</p>"
+                                         " <p>%4</p>"
+                                         " <p>See <a href='%5'>this site</a> for more information.</p>"
+                                         " <p>dropboxQt Copyright (c) 2018 , <a href='%6'>prokarpaty.net</a> under MIT.</p>"
+                                         " <p>Qwt under <a href='%7'>Qwt License</a>.</p>"
+                                         " <p>QMapControl under <a href='%8'>LGPL 3.0</a>.</p>"
+                                         " <p>FitSDKRelease by <a href='%9'>Garmin</a>.</p>"
+                                         " </body></html>" )
+                                        .arg( pic ) //1
+                                        .arg( APPNAME ) //2
+                                        .arg( VERSION ) //3
+                                        .arg( "by masc." ) //4
+                                        .arg( "https://github.com/masc4ii/WaoStats" ) //5
+                                        .arg( "https://github.com/masc4ii/WaoStats/blob/main/dropboxQt/LICENSE" ) //6
+                                        .arg( "https://qwt.sourceforge.io/qwtlicense.html" ) //7
+                                        .arg( "https://github.com/masc4ii/WaoStats/blob/main/QMapControl/COPYING.LESSER" ) //8
+                                        .arg( "https://developer.garmin.com/fit/download/" ) ); //9
 }
 
 void MainWindow::on_actionAboutQt_triggered()

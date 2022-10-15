@@ -1,5 +1,5 @@
 # WaoStats
-A desktop application to analyse and archive your Wahoo bike computer tracks.
+A desktop application to analyse and archive your Wahoo ELEMNT bike computer tracks.
 
 <img width="1000" alt="waostats" src="https://user-images.githubusercontent.com/30245296/195997239-19587c70-079c-4a51-8231-fe0a10e137cb.png">
 

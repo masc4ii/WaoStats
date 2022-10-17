@@ -11,14 +11,16 @@ include(QMapControl.pri)
 #    TARGET = qmapcontrol
 #}
 
-QMAKE_CC = /opt/homebrew/opt/llvm@11/bin/clang
-QMAKE_CXX = /opt/homebrew/opt/llvm@11/bin/clang++
-QMAKE_LINK = /opt/homebrew/opt/llvm@11/bin/clang++
-QMAKE_CFLAGS += -fopenmp -ftree-vectorize
-QMAKE_CXXFLAGS += -fopenmp -std=c++11 -ftree-vectorize
-INCLUDEPATH += -I/opt/homebrew/opt/llvm@11/include
-LIBS += -L/opt/homebrew/opt/llvm@11/lib -lomp
-QMAKE_APPLE_DEVICE_ARCHS = arm64
+macx{arm64{
+    QMAKE_CC = /opt/homebrew/opt/llvm@11/bin/clang
+    QMAKE_CXX = /opt/homebrew/opt/llvm@11/bin/clang++
+    QMAKE_LINK = /opt/homebrew/opt/llvm@11/bin/clang++
+    QMAKE_CFLAGS += -fopenmp -ftree-vectorize
+    QMAKE_CXXFLAGS += -fopenmp -std=c++11 -ftree-vectorize
+    INCLUDEPATH += -I/opt/homebrew/opt/llvm@11/include
+    LIBS += -L/opt/homebrew/opt/llvm@11/lib -lomp
+    QMAKE_APPLE_DEVICE_ARCHS = arm64
+}}
 
 # Target version.
 VERSION = 1.0.0

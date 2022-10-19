@@ -37,6 +37,7 @@ public:
 
 private slots:
     void adjustMap( void );
+    void statistics( void );
     void pointInfo( QPoint point );
     void pointInfoHide( bool on );
     void mapProviderSelected( QAction* action );
@@ -62,7 +63,7 @@ private:
     Ui::MainWindow *ui;
     void scanTours( void );
     void scanFit( QString fileName );
-    void statistics( Listener listener );
+    void adjustGui();
     void configureMap( void );
     void unconfigurePlots( void );
     void configurePlots( void );

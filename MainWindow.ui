@@ -373,6 +373,9 @@
       </widget>
      </item>
      <item>
+      <widget class="QComboBox" name="comboBoxSection"/>
+     </item>
+     <item>
       <widget class="QGroupBox" name="groupBox_2">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">

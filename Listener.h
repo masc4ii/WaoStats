@@ -33,23 +33,27 @@ public:
     bool deviceIdIsIncluded( deviceInfo_t a );
     int deviceIdInVectorAt( deviceInfo_t a );
 
-    double m_sessionTotalElapsedTime;
-    double m_sessionTotalTimerTime;
-    double m_sessionAvgSpeed;
-    double m_sessionMaxSpeed;
-    double m_sessionTotalDistance;
-    double m_sessionAvgCadence;
-    double m_sessionMaxCadence;
-    double m_sessionAscent;
-    double m_sessionDescent;
-    double m_sessionAltitudeMax;
-    double m_sessionAltitudeMin;
-    double m_sessionAvgTemperature;
-    double m_sessionMaxTemperature;
-    double m_sessionMinTemperature;
-    double m_sessionMaxGrade;
-    double m_sessionMinGrade;
-    quint32 m_sessionStartTime;
+    typedef struct{
+        double totalElapsedTime;
+        double totalTimerTime;
+        double avgSpeed;
+        double maxSpeed;
+        double totalDistance;
+        double avgCadence;
+        double maxCadence;
+        double ascent;
+        double descent;
+        double altitudeMax;
+        double altitudeMin;
+        double avgTemperature;
+        double maxTemperature;
+        double minTemperature;
+        double maxGrade;
+        double minGrade;
+        quint32 startTime;
+    } fitSection_t;
+    fitSection_t m_session;
+    QVector<fitSection_t> m_sections;
     bool m_altCorrectionDone;
     bool m_tempCorrectionDone;
 

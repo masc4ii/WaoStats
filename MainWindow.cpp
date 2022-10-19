@@ -133,6 +133,7 @@ MainWindow::MainWindow(QWidget *parent)
     configurePlots();
     configureMap();
     scanTours();
+    connect( ui->comboBoxSection, SIGNAL(currentIndexChanged(int)), this, SLOT(statistics()) );
 
     QTimer::singleShot( 1, this, SLOT( adjustMap() ) );
 }
@@ -180,12 +181,12 @@ void MainWindow::scanTours()
 
             scanFit( subdir+"/"+fitFile );
             QDateTime startQTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
-            startQTime = startQTime.addSecs( m_listener.m_sessionStartTime );
+            startQTime = startQTime.addSecs( m_listener.m_session.startTime );
 
             fitItem->setText( 0, startQTime.toString( "yyyy-MM-dd - hh:mm:ss" ) );
             fitItem->setText( 1, subdir+"/"+fitFile );
-            fitItem->setText( 2, QString( "%1 km" ).arg( (int)( m_listener.m_sessionTotalDistance / 1000.0 + 0.5 ) ) );
-            fitItem->setText( 3, QString( "%1" ).arg( m_listener.m_sessionTotalDistance / 1000.0, 0, 'f', 10 ) );
+            fitItem->setText( 2, QString( "%1 km" ).arg( (int)( m_listener.m_session.totalDistance / 1000.0 + 0.5 ) ) );
+            fitItem->setText( 3, QString( "%1" ).arg( m_listener.m_session.totalDistance / 1000.0, 0, 'f', 10 ) );
         }
     }
     ui->treeWidgetTours->expandAll();
@@ -217,10 +218,20 @@ void MainWindow::scanFit(QString fileName)
     file.close();
 }
 
-void MainWindow::statistics( Listener listener )
+void MainWindow::adjustGui()
+{
+    ui->comboBoxSection->clear();
+    ui->comboBoxSection->addItem( tr( "Track / Session" ) );
+    for( int i = 0; i < m_listener.m_sections.count(); i++ )
+    {
+        ui->comboBoxSection->addItem( tr( "Lap / Section " ) + QString::number( i + 1 ) );
+    }
+}
+
+void MainWindow::statistics( void )
 {
     QString info;
-    foreach( Listener::deviceInfo_t deviceInfo, listener.m_deviceInfo )
+    foreach( Listener::deviceInfo_t deviceInfo, m_listener.m_deviceInfo )
     {
         if( info.size() ) info += "\n";
         info += deviceInfo.name;
@@ -230,32 +241,68 @@ void MainWindow::statistics( Listener listener )
     }
     ui->labelDeviceInfo->setText( info );
 
-    QDateTime startQTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
-    startQTime = startQTime.addSecs( listener.m_sessionStartTime );
-    ui->labelDate->setText( startQTime.toString( "yyyy-MM-dd" ) );
-    ui->labelStartTime->setText( startQTime.toString( "hh:mm:ss" ) );
+    int ind = ui->comboBoxSection->currentIndex();
 
-    ui->labelDistance->setText( QString( "%1 km" ).arg( listener.m_sessionTotalDistance / 1000.0, 0, 'f', 3 ) );
+    if( !ind )
+    {
+        QDateTime startQTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
+        startQTime = startQTime.addSecs( m_listener.m_session.startTime );
+        ui->labelDate->setText( startQTime.toString( "yyyy-MM-dd" ) );
+        ui->labelStartTime->setText( startQTime.toString( "hh:mm:ss" ) );
 
-    ui->labelTimeTotal->setText( QTime(0,0).addSecs( listener.m_sessionTotalElapsedTime ).toString( "hh:mm:ss" ) );
-    ui->labelTimeMotion->setText( QTime(0,0).addSecs( listener.m_sessionTotalTimerTime ).toString( "hh:mm:ss" ) );
+        ui->labelDistance->setText( QString( "%1 km" ).arg( m_listener.m_session.totalDistance / 1000.0, 0, 'f', 3 ) );
 
-    ui->labelAscent->setText( QString( "%1 m" ).arg( (int)listener.m_sessionAscent ) );
-    ui->labelDescent->setText( QString( "%1 m" ).arg( (int)listener.m_sessionDescent ) );
-    ui->labelMaximum->setText( QString( "%1 m" ).arg( (int)listener.m_sessionAltitudeMax ) );
-    ui->labelMinimum->setText( QString( "%1 m" ).arg( (int)listener.m_sessionAltitudeMin ) );
-    ui->labelNegGrade->setText( QString( "%1 \%" ).arg( listener.m_sessionMinGrade, 0, 'f', 1 ) );
-    ui->labelPosGrade->setText( QString( "%1 \%" ).arg( listener.m_sessionMaxGrade, 0, 'f', 1 ) );
+        ui->labelTimeTotal->setText( QTime(0,0).addSecs( m_listener.m_session.totalElapsedTime ).toString( "hh:mm:ss" ) );
+        ui->labelTimeMotion->setText( QTime(0,0).addSecs( m_listener.m_session.totalTimerTime ).toString( "hh:mm:ss" ) );
 
-    ui->labelSpeedAverage->setText( QString( "%1 km/h" ).arg( listener.m_sessionAvgSpeed * 3.6, 0, 'f', 2 ) );
-    ui->labelSpeedMax->setText( QString( "%1 km/h" ).arg( listener.m_sessionMaxSpeed * 3.6, 0, 'f', 2 ) );
+        ui->labelAscent->setText( QString( "%1 m" ).arg( (int)m_listener.m_session.ascent ) );
+        ui->labelDescent->setText( QString( "%1 m" ).arg( (int)m_listener.m_session.descent ) );
+        ui->labelMaximum->setText( QString( "%1 m" ).arg( (int)m_listener.m_session.altitudeMax ) );
+        ui->labelMinimum->setText( QString( "%1 m" ).arg( (int)m_listener.m_session.altitudeMin ) );
+        ui->labelNegGrade->setText( QString( "%1 \%" ).arg( m_listener.m_session.minGrade, 0, 'f', 1 ) );
+        ui->labelPosGrade->setText( QString( "%1 \%" ).arg( m_listener.m_session.maxGrade, 0, 'f', 1 ) );
 
-    ui->labelCadenceAverage->setText( QString( "%1 rpm" ).arg( (int)listener.m_sessionAvgCadence ) );
-    ui->labelCadenceMax->setText( QString( "%1 rpm" ).arg( (int)listener.m_sessionMaxCadence ) );
+        ui->labelSpeedAverage->setText( QString( "%1 km/h" ).arg( m_listener.m_session.avgSpeed * 3.6, 0, 'f', 2 ) );
+        ui->labelSpeedMax->setText( QString( "%1 km/h" ).arg( m_listener.m_session.maxSpeed * 3.6, 0, 'f', 2 ) );
 
-    ui->labelTempAverage->setText( QString( "%1 °C" ).arg( listener.m_sessionAvgTemperature ) );
-    ui->labelTempMax->setText( QString( "%1 °C" ).arg( listener.m_sessionMaxTemperature ) );
-    ui->labelTempMin->setText( QString( "%1 °C" ).arg( listener.m_sessionMinTemperature ) );
+        ui->labelCadenceAverage->setText( QString( "%1 rpm" ).arg( (int)m_listener.m_session.avgCadence ) );
+        ui->labelCadenceMax->setText( QString( "%1 rpm" ).arg( (int)m_listener.m_session.maxCadence ) );
+
+        ui->labelTempAverage->setText( QString( "%1 °C" ).arg( m_listener.m_session.avgTemperature ) );
+        ui->labelTempMax->setText( QString( "%1 °C" ).arg( m_listener.m_session.maxTemperature ) );
+        ui->labelTempMin->setText( QString( "%1 °C" ).arg( m_listener.m_session.minTemperature ) );
+    }
+    else
+    {
+        ind--;
+
+        QDateTime startQTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
+        startQTime = startQTime.addSecs( m_listener.m_sections.at(ind).startTime );
+        ui->labelDate->setText( startQTime.toString( "yyyy-MM-dd" ) );
+        ui->labelStartTime->setText( startQTime.toString( "hh:mm:ss" ) );
+
+        ui->labelDistance->setText( QString( "%1 km" ).arg( m_listener.m_sections.at(ind).totalDistance / 1000.0, 0, 'f', 3 ) );
+
+        ui->labelTimeTotal->setText( QTime(0,0).addSecs( m_listener.m_sections.at(ind).totalElapsedTime ).toString( "hh:mm:ss" ) );
+        ui->labelTimeMotion->setText( QTime(0,0).addSecs( m_listener.m_sections.at(ind).totalTimerTime ).toString( "hh:mm:ss" ) );
+
+        ui->labelAscent->setText( QString( "%1 m" ).arg( (int)m_listener.m_sections.at(ind).ascent ) );
+        ui->labelDescent->setText( QString( "%1 m" ).arg( (int)m_listener.m_sections.at(ind).descent ) );
+        ui->labelMaximum->setText( QString( "%1 m" ).arg( (int)m_listener.m_sections.at(ind).altitudeMax ) );
+        ui->labelMinimum->setText( QString( "%1 m" ).arg( (int)m_listener.m_sections.at(ind).altitudeMin ) );
+        ui->labelNegGrade->setText( QString( "%1 \%" ).arg( m_listener.m_sections.at(ind).minGrade, 0, 'f', 1 ) );
+        ui->labelPosGrade->setText( QString( "%1 \%" ).arg( m_listener.m_sections.at(ind).maxGrade, 0, 'f', 1 ) );
+
+        ui->labelSpeedAverage->setText( QString( "%1 km/h" ).arg( m_listener.m_sections.at(ind).avgSpeed * 3.6, 0, 'f', 2 ) );
+        ui->labelSpeedMax->setText( QString( "%1 km/h" ).arg( m_listener.m_sections.at(ind).maxSpeed * 3.6, 0, 'f', 2 ) );
+
+        ui->labelCadenceAverage->setText( QString( "%1 rpm" ).arg( (int)m_listener.m_sections.at(ind).avgCadence ) );
+        ui->labelCadenceMax->setText( QString( "%1 rpm" ).arg( (int)m_listener.m_sections.at(ind).maxCadence ) );
+
+        ui->labelTempAverage->setText( QString( "%1 °C" ).arg( m_listener.m_sections.at(ind).avgTemperature ) );
+        ui->labelTempMax->setText( QString( "%1 °C" ).arg( m_listener.m_sections.at(ind).maxTemperature ) );
+        ui->labelTempMin->setText( QString( "%1 °C" ).arg( m_listener.m_sections.at(ind).minTemperature ) );
+    }
 }
 
 void MainWindow::configureMap()
@@ -534,7 +581,8 @@ void MainWindow::on_treeWidgetTours_itemActivated(QTreeWidgetItem *item, int col
     {
         //qDebug() << fileName;
         scanFit( fileName );
-        statistics( m_listener );
+        adjustGui();
+        statistics();
         drawPlots();
         drawTourToMap( m_listener );
     }

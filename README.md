@@ -5,7 +5,7 @@ A desktop application to analyse and archive your Wahoo ELEMNT bike computer tra
 
 ## Main features are:
 - load all your Wahoo FIT files into the application
-- view the statistics from your FIT files
+- view the statistics (entire track and lap/section) from your FIT files
 - view your Wahoo computer firmware versions, used sensors and their battery status (when track ended)
 - plot the recorded values (altitude, speed, cadence, temperature, grade) from your FIT files
 - link your tracks to your used devices (bikes) and see total kilometers per device

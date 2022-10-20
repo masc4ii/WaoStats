@@ -17,6 +17,7 @@
 #include <qwt_plot_zoomer.h>
 #include <qwt_plot_panner.h>
 #include <qwt_plot_picker.h>
+#include <qwt_plot_marker.h>
 
 //fit listener
 #include "Listener.h"
@@ -89,6 +90,7 @@ private:
     QwtPlotZoomer *m_pZoomer[2];
     QwtPlotPanner *m_pPanner;
     QwtPlotPicker* m_picker;
+    QVector<QwtPlotMarker*> m_lapMarker;
 
     QPixmap m_iconCrossHairs;
     QString m_workingPath;

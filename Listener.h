@@ -51,6 +51,7 @@ public:
         double maxGrade;
         double minGrade;
         quint32 startTime;
+        double startDistance;
     } fitSection_t;
     fitSection_t m_session;
     QVector<fitSection_t> m_sections;

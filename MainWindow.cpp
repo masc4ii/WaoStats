@@ -538,6 +538,20 @@ void MainWindow::drawPlots( void )
     ui->qwtPlot->setAxisAutoScale( QwtPlot::yRight );
     //m_pZoomer[0]->setZoomBase( true );
 
+    foreach(QwtPlotMarker *marker, m_lapMarker) delete marker;
+    m_lapMarker.clear();
+    for( int i = 0; i < listener.m_sections.count() - 1; i++ )
+    {
+        QwtPlotMarker *marker = new QwtPlotMarker();
+        if( !m_timePlot ) marker->setValue( listener.m_sections.at( i + 1 ).startDistance, 0.0 );
+        else              marker->setValue( listener.m_sections.at( i + 1 ).startTime, 0.0 );
+        marker->setLineStyle( QwtPlotMarker::VLine );
+        marker->setLabelAlignment( Qt::AlignRight | Qt::AlignBottom );
+        marker->setLinePen( Qt::darkMagenta, 1, Qt::DashDotLine );
+        marker->attach( ui->qwtPlot );
+        m_lapMarker.append( marker );
+    }
+
     ui->qwtPlot->replot();
 }
 

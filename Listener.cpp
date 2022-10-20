@@ -37,6 +37,7 @@ void Listener::reset()
     m_session.maxTemperature = 0;
     m_session.minTemperature = 9999;
     m_session.startTime = 0;
+    m_session.startDistance = 0;
     m_session.maxGrade = 0;
     m_session.minGrade = 0;
     m_altCorrectionDone = false;
@@ -115,6 +116,8 @@ void Listener::OnMesg(fit::Mesg& mesg)
     static double lapPosGrade = 0;
     static double lapNegGrade = 0;
     static double lapMinTemp = 9999;
+    static double lastDistance = 0;
+    static double lastLapStartDistance = 0;
 
     for (FIT_UINT16 i = 0; i < (FIT_UINT16)mesg.GetNumFields(); i++)
     {
@@ -166,7 +169,11 @@ void Listener::OnMesg(fit::Mesg& mesg)
         {
             if(      QString( field->GetName().c_str() ) == QString( "timestamp" ) ) tourTimeStamp = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "altitude" ) ) tourAltitude = field->GetFLOAT64Value(0);
-            else if( QString( field->GetName().c_str() ) == QString( "distance" ) ) tourDistance = field->GetFLOAT64Value(0) / 1000.0;
+            else if( QString( field->GetName().c_str() ) == QString( "distance" ) )
+            {
+                tourDistance = field->GetFLOAT64Value(0) / 1000.0;
+                lastDistance = tourDistance;
+            }
             else if( QString( field->GetName().c_str() ) == QString( "cadence" ) ) tourCadence = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "speed" ) ) tourSpeed = field->GetFLOAT64Value(0) * 3.6;
             else if( QString( field->GetName().c_str() ) == QString( "position_lat" ) ) tourPosLat = field->GetFLOAT64Value(0);
@@ -256,7 +263,9 @@ void Listener::OnMesg(fit::Mesg& mesg)
         lap.maxGrade = lapPosGrade;
         lap.minGrade = lapNegGrade;
         lap.minTemperature = lapMinTemp;
+        lap.startDistance = lastLapStartDistance;
         m_sections.append( lap );
+        lastLapStartDistance = lastDistance;
         lapPosGrade = 0;
         lapNegGrade = 0;
         lapMinTemp = 9999;

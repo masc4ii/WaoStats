@@ -13,6 +13,7 @@
 #include <QFileDialog>
 #include <QSettings>
 #include <QByteArray>
+#include <QFont>
 #include "qwt.h"
 
 #include <qwt_legend.h>
@@ -540,16 +541,26 @@ void MainWindow::drawPlots( void )
 
     foreach(QwtPlotMarker *marker, m_lapMarker) delete marker;
     m_lapMarker.clear();
-    for( int i = 0; i < listener.m_sections.count() - 1; i++ )
+    if( listener.m_sections.count() > 1 )
     {
-        QwtPlotMarker *marker = new QwtPlotMarker();
-        if( !m_timePlot ) marker->setValue( listener.m_sections.at( i + 1 ).startDistance, 0.0 );
-        else              marker->setValue( listener.m_sections.at( i + 1 ).startTime, 0.0 );
-        marker->setLineStyle( QwtPlotMarker::VLine );
-        marker->setLabelAlignment( Qt::AlignRight | Qt::AlignBottom );
-        marker->setLinePen( Qt::darkMagenta, 1, Qt::DashDotLine );
-        marker->attach( ui->qwtPlot );
-        m_lapMarker.append( marker );
+        for( int i = 0; i < listener.m_sections.count(); i++ )
+        {
+            QwtPlotMarker *marker = new QwtPlotMarker();
+            if(      !m_timePlot && i == 0 ) marker->setValue( 0.0, 0.0 );
+            else if( !m_timePlot && i != 0 ) marker->setValue( listener.m_sections.at( i ).startDistance, 0.0 );
+            else                             marker->setValue( listener.m_sections.at( i ).startTime, 0.0 );
+            marker->setLineStyle( QwtPlotMarker::VLine );
+            marker->setLabelAlignment( Qt::AlignRight | Qt::AlignBottom );
+            marker->setLinePen( Qt::darkMagenta, 1, Qt::DashDotLine );
+            QFont font;
+            font.setPointSize( 10 );
+            QwtText text = QwtText( QString::number( i + 1 ) );
+            text.setFont( font );
+            marker->setLabel( text );
+            marker->setLabelAlignment( Qt::AlignTop | Qt::AlignRight );
+            marker->attach( ui->qwtPlot );
+            m_lapMarker.append( marker );
+        }
     }
 
     ui->qwtPlot->replot();

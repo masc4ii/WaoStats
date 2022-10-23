@@ -244,6 +244,9 @@ void MainWindow::statistics( void )
 
     int ind = ui->comboBoxSection->currentIndex();
 
+    ui->groupBoxCadence->setVisible( (int)m_listener.m_session.maxCadence != 0 );
+    ui->actionCadence->setEnabled( (int)m_listener.m_session.maxCadence != 0 );
+
     if( !ind )
     {
         QDateTime startQTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );

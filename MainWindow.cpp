@@ -498,6 +498,13 @@ void MainWindow::drawPlots( void )
              << listener.m_tourAltitude.size()
              << listener.m_tourCadence.size();*/
 
+    if( ui->actionCadence->isChecked() && (int)m_listener.m_session.maxCadence == 0 )
+    {
+        unconfigurePlots();
+        configurePlots();
+        ui->actionSpeed->setChecked( true );
+    }
+
     if( !m_timePlot ) m_curve[0]->setSamples( listener.m_tourDistance.data(), listener.m_tourAltitude.data(), listener.m_tourDistance.count() );
     else              m_curve[0]->setSamples( listener.m_tourTimeStamp.data(), listener.m_tourAltitude.data(), listener.m_tourDistance.count() );
     m_curve[0]->attach( ui->qwtPlot );

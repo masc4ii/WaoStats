@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QResizeEvent>
 #include <QTreeWidgetItem>
 
 // QMapControl includes.
@@ -70,7 +69,6 @@ private:
     void configurePlots( void );
     void drawPlots( void );
     void drawTourToMap( Listener listener );
-    void resizeEvent( QResizeEvent * resize_event );
     void writeSettings();
     void readSettings();
     QString workingPath( void );

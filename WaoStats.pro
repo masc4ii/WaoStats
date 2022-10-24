@@ -62,6 +62,7 @@ SOURCES += \
     FitSDKRelease_21.94.00/cpp/fit_protocol_validator.cpp \
     FitSDKRelease_21.94.00/cpp/fit_unicode.cpp \
     Listener.cpp \
+    OsmWidget.cpp \
     main.cpp \
     MainWindow.cpp
 
@@ -281,7 +282,8 @@ HEADERS += \
     FitSDKRelease_21.94.00/cpp/fit_zones_target_mesg.hpp \
     FitSDKRelease_21.94.00/cpp/fit_zones_target_mesg_listener.hpp \
     Listener.h \
-    MainWindow.h
+    MainWindow.h \
+    OsmWidget.h
 
 FORMS += \
     DropBoxAuthDialog.ui \

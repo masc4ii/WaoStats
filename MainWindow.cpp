@@ -15,6 +15,7 @@
 #include <QByteArray>
 #include <QFont>
 #include "qwt.h"
+#include "OsmWidget.h"
 
 #include <qwt_legend.h>
 #include <qwt_plot_layout.h>
@@ -314,6 +315,7 @@ void MainWindow::configureMap()
     // Create a new QMapControl.
     m_map_control = new QMapControl( ui->widgetOsm );
     QHBoxLayout* layout = new QHBoxLayout( ui->widgetOsm );
+    connect( ui->widgetOsm, SIGNAL(resized()), this, SLOT(adjustMap()) );
     layout->addWidget( m_map_control );
     layout->setMargin(0);
 
@@ -589,11 +591,6 @@ void MainWindow::drawTourToMap(Listener listener)
     m_tour_sights->setPen(pen);
     m_layer_tours->clearGeometries();
     m_layer_tours->addGeometry(m_tour_sights);
-}
-
-void MainWindow::resizeEvent(QResizeEvent * resize_event)
-{
-    adjustMap();
 }
 
 QString MainWindow::workingPath()

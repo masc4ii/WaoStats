@@ -22,7 +22,7 @@
      <number>10</number>
     </property>
     <item row="1" column="0" colspan="2">
-     <widget class="QWidget" name="widgetOsm" native="true">
+     <widget class="OsmWidget" name="widgetOsm" native="true">
       <property name="autoFillBackground">
        <bool>false</bool>
       </property>
@@ -921,6 +921,12 @@
    <class>BikeTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>BikeEditingDelegate.h</header>
+  </customwidget>
+  <customwidget>
+   <class>OsmWidget</class>
+   <extends>QWidget</extends>
+   <header>OsmWidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

@@ -842,6 +842,23 @@ namespace qmapcontrol
 
     void QMapControl::wheelEvent(QWheelEvent* wheel_event)
     {
+        //Zoom once per 300ms
+        static QTime lastCall;
+        if( lastCall.elapsed() == 0 ) // init
+        {
+            lastCall.start();
+            return;
+        }
+        if( lastCall.elapsed() < 300 ) // ignore actions if less than 300ms
+        {
+            wheel_event->ignore();
+            return;
+        }
+        else
+        {
+            lastCall.restart();
+        }
+
         // Is the vertical angle delta positive?
         if(wheel_event->angleDelta().y() > 0)
         {

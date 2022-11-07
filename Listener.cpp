@@ -1,4 +1,5 @@
 #include "Listener.h"
+#include "math.h"
 
 //#define LOGOUT
 
@@ -247,6 +248,7 @@ void Listener::OnMesg(fit::Mesg& mesg)
             for( int i = 0; i < m_tourAltitude.count(); i++ )
                 m_tourAltitude[i] = tourAltitude;
         }
+        if( tourPosLat == 0.0 || tourPosLong == 0.0 ) return;
 
         m_tourTimeStamp.append( tourTimeStamp );
         m_tourDistance.append( tourDistance );

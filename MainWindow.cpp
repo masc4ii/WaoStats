@@ -15,6 +15,7 @@
 #include <QByteArray>
 #include <QFont>
 #include "qwt.h"
+#include "math.h"
 #include "OsmWidget.h"
 
 #include <qwt_legend.h>

@@ -24,6 +24,10 @@ macx{
     INCLUDEPATH += /usr/local/qwt-6.2.0/lib/qwt.framework/Versions/6/Headers
     qwtAddLibrary(/usr/local/qwt-6.2.0/lib/, qwt)
 }
+win32{
+    LIBS += -L$${PWD}/qwt-6.2.0/lib/ -lqwt
+    INCLUDEPATH += $${PWD}/qwt-6.2.0/src
+}
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -33,7 +37,8 @@ include( QMapControl/QMapControl.pro )
 
 #dropbox (run qmake and make in dropboxQt/prj/ before!)
 INCLUDEPATH += dropboxQt/src
-LIBS += -L$${PWD}/dropboxQt/prj/ -ldropboxQt
+macx: LIBS += -L$${PWD}/dropboxQt/prj/ -ldropboxQt
+win32: LIBS += -L$${PWD}/dropboxQt/prj/release/ -ldropboxQt
 
 SOURCES += \
     DropBoxAuthDialog.cpp \

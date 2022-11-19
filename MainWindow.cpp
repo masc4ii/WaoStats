@@ -184,12 +184,12 @@ void MainWindow::scanTours()
 
             scanFit( subdir+"/"+fitFile );
             QDateTime startQTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
-            startQTime = startQTime.addSecs( m_listener.m_session.startTime );
+            startQTime = startQTime.addSecs( m_listener.getSession().startTime );
 
             fitItem->setText( 0, startQTime.toString( "yyyy-MM-dd - hh:mm:ss" ) );
             fitItem->setText( 1, subdir+"/"+fitFile );
-            fitItem->setText( 2, QString( "%1 km" ).arg( (int)( m_listener.m_session.totalDistance / 1000.0 + 0.5 ) ) );
-            fitItem->setText( 3, QString( "%1" ).arg( m_listener.m_session.totalDistance / 1000.0, 0, 'f', 10 ) );
+            fitItem->setText( 2, QString( "%1 km" ).arg( (int)( m_listener.getSession().totalDistance / 1000.0 + 0.5 ) ) );
+            fitItem->setText( 3, QString( "%1" ).arg( m_listener.getSession().totalDistance / 1000.0, 0, 'f', 10 ) );
         }
     }
     ui->treeWidgetTours->expandAll();
@@ -225,7 +225,7 @@ void MainWindow::adjustGui()
 {
     ui->comboBoxSection->clear();
     ui->comboBoxSection->addItem( tr( "Track / Session" ) );
-    for( int i = 0; i < m_listener.m_sections.count(); i++ )
+    for( int i = 0; i < m_listener.getSections().count(); i++ )
     {
         ui->comboBoxSection->addItem( tr( "Lap / Section " ) + QString::number( i + 1 ) );
     }
@@ -234,7 +234,7 @@ void MainWindow::adjustGui()
 void MainWindow::statistics( void )
 {
     QString info;
-    foreach( Listener::deviceInfo_t deviceInfo, m_listener.m_deviceInfo )
+    foreach( Listener::deviceInfo_t deviceInfo, m_listener.getDeviceInfo() )
     {
         if( info.size() ) info += "\n";
         info += deviceInfo.name;
@@ -246,68 +246,68 @@ void MainWindow::statistics( void )
 
     int ind = ui->comboBoxSection->currentIndex();
 
-    ui->groupBoxCadence->setVisible( (int)m_listener.m_session.maxCadence != 0 );
-    ui->actionCadence->setEnabled( (int)m_listener.m_session.maxCadence != 0 );
+    ui->groupBoxCadence->setVisible( (int)m_listener.getSession().maxCadence != 0 );
+    ui->actionCadence->setEnabled( (int)m_listener.getSession().maxCadence != 0 );
 
     if( !ind )
     {
         QDateTime startQTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
-        startQTime = startQTime.addSecs( m_listener.m_session.startTime );
+        startQTime = startQTime.addSecs( m_listener.getSession().startTime );
         ui->labelDate->setText( startQTime.toString( "yyyy-MM-dd" ) );
         ui->labelStartTime->setText( startQTime.toString( "hh:mm:ss" ) );
 
-        ui->labelDistance->setText( QString( "%1 km" ).arg( m_listener.m_session.totalDistance / 1000.0, 0, 'f', 3 ) );
+        ui->labelDistance->setText( QString( "%1 km" ).arg( m_listener.getSession().totalDistance / 1000.0, 0, 'f', 3 ) );
 
-        ui->labelTimeTotal->setText( QTime(0,0).addSecs( m_listener.m_session.totalElapsedTime ).toString( "hh:mm:ss" ) );
-        ui->labelTimeMotion->setText( QTime(0,0).addSecs( m_listener.m_session.totalTimerTime ).toString( "hh:mm:ss" ) );
+        ui->labelTimeTotal->setText( QTime(0,0).addSecs( m_listener.getSession().totalElapsedTime ).toString( "hh:mm:ss" ) );
+        ui->labelTimeMotion->setText( QTime(0,0).addSecs( m_listener.getSession().totalTimerTime ).toString( "hh:mm:ss" ) );
 
-        ui->labelAscent->setText( QString( "%1 m" ).arg( (int)m_listener.m_session.ascent ) );
-        ui->labelDescent->setText( QString( "%1 m" ).arg( (int)m_listener.m_session.descent ) );
-        ui->labelMaximum->setText( QString( "%1 m" ).arg( (int)m_listener.m_session.altitudeMax ) );
-        ui->labelMinimum->setText( QString( "%1 m" ).arg( (int)m_listener.m_session.altitudeMin ) );
-        ui->labelNegGrade->setText( QString( "%1 \%" ).arg( m_listener.m_session.minGrade, 0, 'f', 1 ) );
-        ui->labelPosGrade->setText( QString( "%1 \%" ).arg( m_listener.m_session.maxGrade, 0, 'f', 1 ) );
+        ui->labelAscent->setText( QString( "%1 m" ).arg( (int)m_listener.getSession().ascent ) );
+        ui->labelDescent->setText( QString( "%1 m" ).arg( (int)m_listener.getSession().descent ) );
+        ui->labelMaximum->setText( QString( "%1 m" ).arg( (int)m_listener.getSession().altitudeMax ) );
+        ui->labelMinimum->setText( QString( "%1 m" ).arg( (int)m_listener.getSession().altitudeMin ) );
+        ui->labelNegGrade->setText( QString( "%1 \%" ).arg( m_listener.getSession().minGrade, 0, 'f', 1 ) );
+        ui->labelPosGrade->setText( QString( "%1 \%" ).arg( m_listener.getSession().maxGrade, 0, 'f', 1 ) );
 
-        ui->labelSpeedAverage->setText( QString( "%1 km/h" ).arg( m_listener.m_session.avgSpeed * 3.6, 0, 'f', 2 ) );
-        ui->labelSpeedMax->setText( QString( "%1 km/h" ).arg( m_listener.m_session.maxSpeed * 3.6, 0, 'f', 2 ) );
+        ui->labelSpeedAverage->setText( QString( "%1 km/h" ).arg( m_listener.getSession().avgSpeed * 3.6, 0, 'f', 2 ) );
+        ui->labelSpeedMax->setText( QString( "%1 km/h" ).arg( m_listener.getSession().maxSpeed * 3.6, 0, 'f', 2 ) );
 
-        ui->labelCadenceAverage->setText( QString( "%1 rpm" ).arg( (int)m_listener.m_session.avgCadence ) );
-        ui->labelCadenceMax->setText( QString( "%1 rpm" ).arg( (int)m_listener.m_session.maxCadence ) );
+        ui->labelCadenceAverage->setText( QString( "%1 rpm" ).arg( (int)m_listener.getSession().avgCadence ) );
+        ui->labelCadenceMax->setText( QString( "%1 rpm" ).arg( (int)m_listener.getSession().maxCadence ) );
 
-        ui->labelTempAverage->setText( QString( "%1 °C" ).arg( m_listener.m_session.avgTemperature ) );
-        ui->labelTempMax->setText( QString( "%1 °C" ).arg( m_listener.m_session.maxTemperature ) );
-        ui->labelTempMin->setText( QString( "%1 °C" ).arg( m_listener.m_session.minTemperature ) );
+        ui->labelTempAverage->setText( QString( "%1 °C" ).arg( m_listener.getSession().avgTemperature ) );
+        ui->labelTempMax->setText( QString( "%1 °C" ).arg( m_listener.getSession().maxTemperature ) );
+        ui->labelTempMin->setText( QString( "%1 °C" ).arg( m_listener.getSession().minTemperature ) );
     }
     else
     {
         ind--;
 
         QDateTime startQTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
-        startQTime = startQTime.addSecs( m_listener.m_sections.at(ind).startTime );
+        startQTime = startQTime.addSecs( m_listener.getSections().at(ind).startTime );
         ui->labelDate->setText( startQTime.toString( "yyyy-MM-dd" ) );
         ui->labelStartTime->setText( startQTime.toString( "hh:mm:ss" ) );
 
-        ui->labelDistance->setText( QString( "%1 km" ).arg( m_listener.m_sections.at(ind).totalDistance / 1000.0, 0, 'f', 3 ) );
+        ui->labelDistance->setText( QString( "%1 km" ).arg( m_listener.getSections().at(ind).totalDistance / 1000.0, 0, 'f', 3 ) );
 
-        ui->labelTimeTotal->setText( QTime(0,0).addSecs( m_listener.m_sections.at(ind).totalElapsedTime ).toString( "hh:mm:ss" ) );
-        ui->labelTimeMotion->setText( QTime(0,0).addSecs( m_listener.m_sections.at(ind).totalTimerTime ).toString( "hh:mm:ss" ) );
+        ui->labelTimeTotal->setText( QTime(0,0).addSecs( m_listener.getSections().at(ind).totalElapsedTime ).toString( "hh:mm:ss" ) );
+        ui->labelTimeMotion->setText( QTime(0,0).addSecs( m_listener.getSections().at(ind).totalTimerTime ).toString( "hh:mm:ss" ) );
 
-        ui->labelAscent->setText( QString( "%1 m" ).arg( (int)m_listener.m_sections.at(ind).ascent ) );
-        ui->labelDescent->setText( QString( "%1 m" ).arg( (int)m_listener.m_sections.at(ind).descent ) );
-        ui->labelMaximum->setText( QString( "%1 m" ).arg( (int)m_listener.m_sections.at(ind).altitudeMax ) );
-        ui->labelMinimum->setText( QString( "%1 m" ).arg( (int)m_listener.m_sections.at(ind).altitudeMin ) );
-        ui->labelNegGrade->setText( QString( "%1 \%" ).arg( m_listener.m_sections.at(ind).minGrade, 0, 'f', 1 ) );
-        ui->labelPosGrade->setText( QString( "%1 \%" ).arg( m_listener.m_sections.at(ind).maxGrade, 0, 'f', 1 ) );
+        ui->labelAscent->setText( QString( "%1 m" ).arg( (int)m_listener.getSections().at(ind).ascent ) );
+        ui->labelDescent->setText( QString( "%1 m" ).arg( (int)m_listener.getSections().at(ind).descent ) );
+        ui->labelMaximum->setText( QString( "%1 m" ).arg( (int)m_listener.getSections().at(ind).altitudeMax ) );
+        ui->labelMinimum->setText( QString( "%1 m" ).arg( (int)m_listener.getSections().at(ind).altitudeMin ) );
+        ui->labelNegGrade->setText( QString( "%1 \%" ).arg( m_listener.getSections().at(ind).minGrade, 0, 'f', 1 ) );
+        ui->labelPosGrade->setText( QString( "%1 \%" ).arg( m_listener.getSections().at(ind).maxGrade, 0, 'f', 1 ) );
 
-        ui->labelSpeedAverage->setText( QString( "%1 km/h" ).arg( m_listener.m_sections.at(ind).avgSpeed * 3.6, 0, 'f', 2 ) );
-        ui->labelSpeedMax->setText( QString( "%1 km/h" ).arg( m_listener.m_sections.at(ind).maxSpeed * 3.6, 0, 'f', 2 ) );
+        ui->labelSpeedAverage->setText( QString( "%1 km/h" ).arg( m_listener.getSections().at(ind).avgSpeed * 3.6, 0, 'f', 2 ) );
+        ui->labelSpeedMax->setText( QString( "%1 km/h" ).arg( m_listener.getSections().at(ind).maxSpeed * 3.6, 0, 'f', 2 ) );
 
-        ui->labelCadenceAverage->setText( QString( "%1 rpm" ).arg( (int)m_listener.m_sections.at(ind).avgCadence ) );
-        ui->labelCadenceMax->setText( QString( "%1 rpm" ).arg( (int)m_listener.m_sections.at(ind).maxCadence ) );
+        ui->labelCadenceAverage->setText( QString( "%1 rpm" ).arg( (int)m_listener.getSections().at(ind).avgCadence ) );
+        ui->labelCadenceMax->setText( QString( "%1 rpm" ).arg( (int)m_listener.getSections().at(ind).maxCadence ) );
 
-        ui->labelTempAverage->setText( QString( "%1 °C" ).arg( m_listener.m_sections.at(ind).avgTemperature ) );
-        ui->labelTempMax->setText( QString( "%1 °C" ).arg( m_listener.m_sections.at(ind).maxTemperature ) );
-        ui->labelTempMin->setText( QString( "%1 °C" ).arg( m_listener.m_sections.at(ind).minTemperature ) );
+        ui->labelTempAverage->setText( QString( "%1 °C" ).arg( m_listener.getSections().at(ind).avgTemperature ) );
+        ui->labelTempMax->setText( QString( "%1 °C" ).arg( m_listener.getSections().at(ind).maxTemperature ) );
+        ui->labelTempMin->setText( QString( "%1 °C" ).arg( m_listener.getSections().at(ind).minTemperature ) );
     }
 }
 
@@ -493,34 +493,34 @@ void MainWindow::drawPlots( void )
 {
     Listener listener = m_listener;
     /*qDebug() << "DebugSizes"
-             << listener.m_tourTimeStamp.size()
-             << listener.m_tourDistance.size()
-             << listener.m_tourSpeed.size()
-             << listener.m_tourAltitude.size()
-             << listener.m_tourCadence.size();*/
+             << listener.getTourTimeStamp().size()
+             << listener.getTourDistance().size()
+             << listener.getTourSpeed().size()
+             << listener.getTourAltitude().size()
+             << listener.getTourCadence().size();*/
 
-    if( ui->actionCadence->isChecked() && (int)m_listener.m_session.maxCadence == 0 )
+    if( ui->actionCadence->isChecked() && (int)m_listener.getSession().maxCadence == 0 )
     {
         unconfigurePlots();
         configurePlots();
         ui->actionSpeed->setChecked( true );
     }
 
-    if( !m_timePlot ) m_curve[0]->setSamples( listener.m_tourDistance.data(), listener.m_tourAltitude.data(), listener.m_tourDistance.count() );
-    else              m_curve[0]->setSamples( listener.m_tourTimeStamp.data(), listener.m_tourAltitude.data(), listener.m_tourDistance.count() );
+    if( !m_timePlot ) m_curve[0]->setSamples( listener.getTourDistance().data(), listener.getTourAltitude().data(), listener.getTourDistance().count() );
+    else              m_curve[0]->setSamples( listener.getTourTimeStamp().data(), listener.getTourAltitude().data(), listener.getTourDistance().count() );
     m_curve[0]->attach( ui->qwtPlot );
     m_curve[0]->setTitle( QString( "Altitude" ) );
 
     if( ui->actionSpeed->isChecked() )
     {
-        if( !m_timePlot ) m_curve[1]->setSamples( listener.m_tourDistance.data(), listener.m_tourSpeed.data(), listener.m_tourDistance.count() );
-        else              m_curve[1]->setSamples( listener.m_tourTimeStamp.data(), listener.m_tourSpeed.data(), listener.m_tourDistance.count() );
+        if( !m_timePlot ) m_curve[1]->setSamples( listener.getTourDistance().data(), listener.getTourSpeed().data(), listener.getTourDistance().count() );
+        else              m_curve[1]->setSamples( listener.getTourTimeStamp().data(), listener.getTourSpeed().data(), listener.getTourDistance().count() );
         m_curve[1]->setTitle( QString( "Speed" ) );
     }
     else if( ui->actionCadence->isChecked() )
     {
-        if( !m_timePlot ) m_curve[1]->setSamples( listener.m_tourDistance.data(), listener.m_tourCadence.data(), listener.m_tourDistance.count() );
-        else              m_curve[1]->setSamples( listener.m_tourTimeStamp.data(), listener.m_tourCadence.data(), listener.m_tourDistance.count() );
+        if( !m_timePlot ) m_curve[1]->setSamples( listener.getTourDistance().data(), listener.getTourCadence().data(), listener.getTourDistance().count() );
+        else              m_curve[1]->setSamples( listener.getTourTimeStamp().data(), listener.getTourCadence().data(), listener.getTourDistance().count() );
         m_curve[1]->setTitle( QString( "Cadence" ) );
         m_curve[1]->setStyle( QwtPlotCurve::CurveStyle::NoCurve );
         m_curve[1]->setSymbol( new QwtSymbol( QwtSymbol::Ellipse, QBrush(), QPen( QColor( 0, 128, 255 ) ), QSize() ) );
@@ -528,40 +528,40 @@ void MainWindow::drawPlots( void )
     }
     else if( ui->actionTemperature->isChecked() )
     {
-        if( !m_timePlot ) m_curve[1]->setSamples( listener.m_tourDistance.data(), listener.m_tourTemperature.data(), listener.m_tourDistance.count() );
-        else              m_curve[1]->setSamples( listener.m_tourTimeStamp.data(), listener.m_tourTemperature.data(), listener.m_tourDistance.count() );
+        if( !m_timePlot ) m_curve[1]->setSamples( listener.getTourDistance().data(), listener.getTourTemperature().data(), listener.getTourDistance().count() );
+        else              m_curve[1]->setSamples( listener.getTourTimeStamp().data(), listener.getTourTemperature().data(), listener.getTourDistance().count() );
         m_curve[1]->setTitle( QString( "Temperature" ) );
     }
     else if( ui->actionGrade->isChecked() )
     {
-        if( !m_timePlot ) m_curve[1]->setSamples( listener.m_tourDistance.data(), listener.m_tourGrade.data(), listener.m_tourDistance.count() );
-        else              m_curve[1]->setSamples( listener.m_tourTimeStamp.data(), listener.m_tourGrade.data(), listener.m_tourDistance.count() );
+        if( !m_timePlot ) m_curve[1]->setSamples( listener.getTourDistance().data(), listener.getTourGrade().data(), listener.getTourDistance().count() );
+        else              m_curve[1]->setSamples( listener.getTourTimeStamp().data(), listener.getTourGrade().data(), listener.getTourDistance().count() );
         m_curve[1]->setTitle( QString( "Grade" ) );
         m_curve[1]->setBrush( QBrush( QColor( 0, 180, 0, 25 ) ) );
     }
     m_curve[1]->attach( ui->qwtPlot );
 
-    //if( !m_timePlot ) m_curve[2]->setSamples( listener.m_tourDistance.data(), listener.m_tourSpeedAvg.data(), listener.m_tourDistance.count() );
-    //else              m_curve[2]->setSamples( listener.m_tourTimeStamp.data(), listener.m_tourSpeedAvg.data(), listener.m_tourDistance.count() );
+    //if( !m_timePlot ) m_curve[2]->setSamples( listener.getTourDistance().data(), listener.m_tourSpeedAvg.data(), listener.getTourDistance().count() );
+    //else              m_curve[2]->setSamples( listener.getTourTimeStamp().data(), listener.m_tourSpeedAvg.data(), listener.getTourDistance().count() );
     //m_curve[2]->attach( ui->qwtPlot );
     m_curve[2]->setTitle( QString( "Cadence" ) );
 
-    if( !m_timePlot ) ui->qwtPlot->setAxisScale( QwtPlot::xBottom, 0, listener.m_tourDistance.last(), (int)(listener.m_tourDistance.last() / 5) );
-    else              ui->qwtPlot->setAxisScale( QwtPlot::xBottom, listener.m_tourTimeStamp.first(), listener.m_tourTimeStamp.last(), 60*15 );
+    if( !m_timePlot ) ui->qwtPlot->setAxisScale( QwtPlot::xBottom, 0, listener.getTourDistance().last(), (int)(listener.getTourDistance().last() / 5) );
+    else              ui->qwtPlot->setAxisScale( QwtPlot::xBottom, listener.getTourTimeStamp().first(), listener.getTourTimeStamp().last(), 60*15 );
     ui->qwtPlot->setAxisAutoScale( QwtPlot::yLeft );
     ui->qwtPlot->setAxisAutoScale( QwtPlot::yRight );
     //m_pZoomer[0]->setZoomBase( true );
 
     foreach(QwtPlotMarker *marker, m_lapMarker) delete marker;
     m_lapMarker.clear();
-    if( listener.m_sections.count() > 1 )
+    if( listener.getSections().count() > 1 )
     {
-        for( int i = 0; i < listener.m_sections.count(); i++ )
+        for( int i = 0; i < listener.getSections().count(); i++ )
         {
             QwtPlotMarker *marker = new QwtPlotMarker();
             if(      !m_timePlot && i == 0 ) marker->setValue( 0.0, 0.0 );
-            else if( !m_timePlot && i != 0 ) marker->setValue( listener.m_sections.at( i ).startDistance, 0.0 );
-            else                             marker->setValue( listener.m_sections.at( i ).startTime, 0.0 );
+            else if( !m_timePlot && i != 0 ) marker->setValue( listener.getSections().at( i ).startDistance, 0.0 );
+            else                             marker->setValue( listener.getSections().at( i ).startTime, 0.0 );
             marker->setLineStyle( QwtPlotMarker::VLine );
             marker->setLabelAlignment( Qt::AlignRight | Qt::AlignBottom );
             marker->setLinePen( Qt::darkMagenta, 1, Qt::DashDotLine );
@@ -586,10 +586,10 @@ void MainWindow::drawTourToMap(Listener listener)
     pen.setWidth(3);
     // Add the points of the sights tour.
     std::vector<PointWorldCoord> points;
-    for( int i = 0; i < listener.m_tourPosLat.size(); i+=5 )
+    for( int i = 0; i < listener.getTourPosLat().size(); i+=5 )
     {
-        points.emplace_back( listener.m_tourPosLong.at(i) * ( 180 / pow(2,31) ),
-                             listener.m_tourPosLat.at(i) * ( 180 / pow(2,31) ) );
+        points.emplace_back( listener.getTourPosLong().at(i) * ( 180 / pow(2,31) ),
+                             listener.getTourPosLat().at(i) * ( 180 / pow(2,31) ) );
     }
     // Autozoom to track
     m_map_control->setMapFocusPoint( points, true );
@@ -713,19 +713,19 @@ void MainWindow::pointInfo( QPoint point )
     {
         double distance = ui->qwtPlot->invTransform( QwtPlot::xBottom, point.x() );
 
-        for( int i = 0; i < m_listener.m_tourDistance.size(); i++ )
+        for( int i = 0; i < m_listener.getTourDistance().size(); i++ )
         {
-            if( m_listener.m_tourDistance.at(i) >= distance )
+            if( m_listener.getTourDistance().at(i) >= distance )
             {
-                ui->labelPickerAltitude->setText( QString( "%1 m" ).arg( (int)m_listener.m_tourAltitude.at( i ) ) );
-                ui->labelPickerSpeed->setText( QString( "%1 km/h" ).arg( m_listener.m_tourSpeed.at( i ), 0, 'f', 1 ) );
-                ui->labelPickerCadence->setText( QString( "%1 rpm" ).arg( (int)m_listener.m_tourCadence.at( i ) ) );
-                ui->labelPickerTemperature->setText( QString( "%1 °C" ).arg( (int)m_listener.m_tourTemperature.at( i ) ) );
-                ui->labelPickerGrade->setText( QString( "%1 %" ).arg( m_listener.m_tourGrade.at( i ), 0, 'f', 1 ) );
+                ui->labelPickerAltitude->setText( QString( "%1 m" ).arg( (int)m_listener.getTourAltitude().at( i ) ) );
+                ui->labelPickerSpeed->setText( QString( "%1 km/h" ).arg( m_listener.getTourSpeed().at( i ), 0, 'f', 1 ) );
+                ui->labelPickerCadence->setText( QString( "%1 rpm" ).arg( (int)m_listener.getTourCadence().at( i ) ) );
+                ui->labelPickerTemperature->setText( QString( "%1 °C" ).arg( (int)m_listener.getTourTemperature().at( i ) ) );
+                ui->labelPickerGrade->setText( QString( "%1 %" ).arg( m_listener.getTourGrade().at( i ), 0, 'f', 1 ) );
 
                 // Create the "cross" and add it to the layer.
-                std::shared_ptr<GeometryPoint> cross(std::make_shared<GeometryPointImage>( PointWorldCoord( m_listener.m_tourPosLong.at(i) * ( 180 / pow(2,31) ),
-                                                                                                            m_listener.m_tourPosLat.at(i)  * ( 180 / pow(2,31) ) ),
+                std::shared_ptr<GeometryPoint> cross(std::make_shared<GeometryPointImage>( PointWorldCoord( m_listener.getTourPosLong().at(i) * ( 180 / pow(2,31) ),
+                                                                                                            m_listener.getTourPosLat().at(i)  * ( 180 / pow(2,31) ) ),
                                                                                                             m_iconCrossHairs ) );
                 m_layer_symb->clearGeometries();
                 m_layer_symb->addGeometry(cross);
@@ -738,19 +738,19 @@ void MainWindow::pointInfo( QPoint point )
     {
         double time = ui->qwtPlot->invTransform( QwtPlot::xBottom, point.x() );
 
-        for( int i = 0; i < m_listener.m_tourTimeStamp.size(); i++ )
+        for( int i = 0; i < m_listener.getTourTimeStamp().size(); i++ )
         {
-            if( m_listener.m_tourTimeStamp.at(i) >= time )
+            if( m_listener.getTourTimeStamp().at(i) >= time )
             {
-                ui->labelPickerAltitude->setText( QString( "%1 m" ).arg( (int)m_listener.m_tourAltitude.at( i ) ) );
-                ui->labelPickerSpeed->setText( QString( "%1 km/h" ).arg( m_listener.m_tourSpeed.at( i ), 0, 'f', 1 ) );
-                ui->labelPickerCadence->setText( QString( "%1 rpm" ).arg( (int)m_listener.m_tourCadence.at( i ) ) );
-                ui->labelPickerTemperature->setText( QString( "%1 °C" ).arg( (int)m_listener.m_tourTemperature.at( i ) ) );
-                ui->labelPickerGrade->setText( QString( "%1 %" ).arg( m_listener.m_tourGrade.at( i ), 0, 'f', 1 ) );
+                ui->labelPickerAltitude->setText( QString( "%1 m" ).arg( (int)m_listener.getTourAltitude().at( i ) ) );
+                ui->labelPickerSpeed->setText( QString( "%1 km/h" ).arg( m_listener.getTourSpeed().at( i ), 0, 'f', 1 ) );
+                ui->labelPickerCadence->setText( QString( "%1 rpm" ).arg( (int)m_listener.getTourCadence().at( i ) ) );
+                ui->labelPickerTemperature->setText( QString( "%1 °C" ).arg( (int)m_listener.getTourTemperature().at( i ) ) );
+                ui->labelPickerGrade->setText( QString( "%1 %" ).arg( m_listener.getTourGrade().at( i ), 0, 'f', 1 ) );
 
                 // Create the "cross" and add it to the layer.
-                std::shared_ptr<GeometryPoint> cross(std::make_shared<GeometryPointImage>( PointWorldCoord( m_listener.m_tourPosLong.at(i) * ( 180 / pow(2,31) ),
-                                                                                                            m_listener.m_tourPosLat.at(i)  * ( 180 / pow(2,31) ) ),
+                std::shared_ptr<GeometryPoint> cross(std::make_shared<GeometryPointImage>( PointWorldCoord( m_listener.getTourPosLong().at(i) * ( 180 / pow(2,31) ),
+                                                                                                            m_listener.getTourPosLat().at(i)  * ( 180 / pow(2,31) ) ),
                                                                                                             m_iconCrossHairs ) );
                 m_layer_symb->clearGeometries();
                 m_layer_symb->addGeometry(cross);

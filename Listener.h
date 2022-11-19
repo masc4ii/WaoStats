@@ -53,6 +53,21 @@ public:
         quint32 startTime;
         double startDistance;
     } fitSection_t;
+
+    fitSection_t getSession(){return m_session;}
+    QVector<fitSection_t> getSections(){return m_sections;}
+    QVector<double>getTourTimeStamp(){return m_tourTimeStamp;}
+    QVector<double>getTourDistance(){return m_tourDistance;}
+    QVector<double>getTourSpeed(){return m_tourSpeed;}
+    QVector<double>getTourCadence(){return m_tourCadence;}
+    QVector<double>getTourAltitude(){return m_tourAltitude;}
+    QVector<double>getTourTemperature(){return m_tourTemperature;}
+    QVector<double>getTourGrade(){return m_tourGrade;}
+    QVector<double>getTourPosLat(){return m_tourPosLat;}
+    QVector<double>getTourPosLong(){return m_tourPosLong;}
+    QVector<deviceInfo_t>getDeviceInfo(){return m_deviceInfo;}
+
+private:
     fitSection_t m_session;
     QVector<fitSection_t> m_sections;
     bool m_altCorrectionDone;

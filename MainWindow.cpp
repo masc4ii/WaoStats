@@ -60,19 +60,32 @@ using namespace dropboxQt;
 class Zoomer: public QwtPlotZoomer
 {
 public:
-    Zoomer( int xAxis, int yAxis, QWidget *canvas ):
-        QwtPlotZoomer( xAxis, yAxis, canvas )
+    Zoomer( int xAxis, int yAxis, QwtPlot *plot ):
+        QwtPlotZoomer( xAxis, yAxis, plot->canvas() )
     {
+        m_pPlot = plot;
         setTrackerMode( QwtPicker::AlwaysOff );
         setRubberBand( QwtPicker::NoRubberBand );
 
         // RightButton: zoom out by 1
         // Ctrl+RightButton: zoom out to full size
         setMousePattern( QwtEventPattern::MouseSelect2,
-            Qt::RightButton, Qt::ControlModifier );
+            Qt::NoButton, Qt::ControlModifier );
         setMousePattern( QwtEventPattern::MouseSelect3,
-            Qt::RightButton );
+            Qt::NoButton );
     }
+    virtual void widgetMouseDoubleClickEvent( QMouseEvent *me )
+    {
+        if ( me->button() == Qt::LeftButton )
+        {
+            zoom( 0 );
+            m_pPlot->setAxisAutoScale( QwtPlot::yLeft );
+            m_pPlot->setAxisAutoScale( QwtPlot::yRight );
+            m_pPlot->setAxisAutoScale( QwtPlot::xBottom );
+        }
+    }
+private:
+    QwtPlot *m_pPlot;
 };
 
 class TimeScaleDraw:public QwtScaleDraw
@@ -465,15 +478,13 @@ void MainWindow::configurePlots( void )
     p.setColor( QColor( 225, 180, 0 ) );
 
     //Zoomer init
-    //m_pZoomer[0] = new Zoomer( QwtPlot::xBottom, QwtPlot::yLeft, ui->qwtPlot->canvas() );
+    //m_pZoomer[0] = new Zoomer( QwtPlot::xBottom, QwtPlot::yLeft, ui->qwtPlot );
     //m_pZoomer[0]->setRubberBand( QwtPicker::RectRubberBand );
     //m_pZoomer[0]->setRubberBandPen( QColor( Qt::gray ) );
-    //m_pZoomer[0]->setTrackerMode( QwtPicker::AlwaysOn );
-    //m_pZoomer[0]->setTrackerPen( QColor( Qt::black ) );
-    //m_pZoomer[1] = new Zoomer( QwtPlot::xTop, QwtPlot::yRight, ui->qwtPlot->canvas() );
+    //m_pZoomer[1] = new Zoomer( QwtPlot::xTop, QwtPlot::yRight, ui->qwtPlot );
 
-    m_pPanner = new QwtPlotPanner( ui->qwtPlot->canvas() );
-    m_pPanner->setMouseButton( Qt::LeftButton, Qt::ControlModifier );
+    //m_pPanner = new QwtPlotPanner( ui->qwtPlot->canvas() );
+    //m_pPanner->setMouseButton( Qt::LeftButton, Qt::ControlModifier );
 
     m_picker = new QwtPlotPicker( QwtAxis::XBottom, QwtAxis::YLeft,
         QwtPlotPicker::VLineRubberBand, QwtPicker::AlwaysOff,
@@ -577,6 +588,17 @@ void MainWindow::drawPlots( void )
     }
 
     ui->qwtPlot->replot();
+
+    //delete m_pZoomer[1];
+    //delete m_pZoomer[0];
+
+    //m_pZoomer[0] = new Zoomer( QwtPlot::xBottom, QwtPlot::yLeft, ui->qwtPlot );
+    //m_pZoomer[0]->setRubberBand( QwtPicker::RectRubberBand );
+    //m_pZoomer[0]->setRubberBandPen( QColor( Qt::gray ) );
+    //m_pZoomer[1] = new Zoomer( QwtPlot::xTop, QwtPlot::yRight, ui->qwtPlot );
+
+    //m_pPanner = new QwtPlotPanner( ui->qwtPlot->canvas() );
+    //m_pPanner->setMouseButton( Qt::LeftButton, Qt::ControlModifier );
 }
 
 void MainWindow::drawTourToMap(Listener listener)

@@ -79,9 +79,6 @@ public:
         if ( me->button() == Qt::LeftButton )
         {
             zoom( 0 );
-            m_pPlot->setAxisAutoScale( QwtPlot::yLeft );
-            m_pPlot->setAxisAutoScale( QwtPlot::yRight );
-            m_pPlot->setAxisAutoScale( QwtPlot::xBottom );
         }
     }
 private:
@@ -393,6 +390,8 @@ void MainWindow::unconfigurePlots()
     delete m_curve[1];
     delete m_curve[2];
     delete m_pPanner;
+    delete m_pZoomer[0];
+    delete m_pZoomer[1];
     disconnect( m_picker, SIGNAL( appended(QPoint) ), this, SLOT( pointInfo(QPoint) ) );
     disconnect( m_picker, SIGNAL( moved(QPoint) ), this, SLOT( pointInfo(QPoint) ) );
     disconnect( m_picker, SIGNAL( activated(bool) ), this, SLOT( pointInfoHide(bool) ) );
@@ -478,26 +477,24 @@ void MainWindow::configurePlots( void )
     p.setColor( QColor( 225, 180, 0 ) );
 
     //Zoomer init
-    //m_pZoomer[0] = new Zoomer( QwtPlot::xBottom, QwtPlot::yLeft, ui->qwtPlot );
-    //m_pZoomer[0]->setRubberBand( QwtPicker::RectRubberBand );
-    //m_pZoomer[0]->setRubberBandPen( QColor( Qt::gray ) );
-    //m_pZoomer[1] = new Zoomer( QwtPlot::xTop, QwtPlot::yRight, ui->qwtPlot );
+    m_pZoomer[0] = new Zoomer( QwtPlot::xBottom, QwtPlot::yLeft, ui->qwtPlot );
+    m_pZoomer[0]->setRubberBand( QwtPicker::RectRubberBand );
+    m_pZoomer[0]->setRubberBandPen( QColor( Qt::gray ) );
+    m_pZoomer[1] = new Zoomer( QwtPlot::xTop, QwtPlot::yRight, ui->qwtPlot );
 
-    //m_pPanner = new QwtPlotPanner( ui->qwtPlot->canvas() );
-    //m_pPanner->setMouseButton( Qt::LeftButton, Qt::ControlModifier );
+    m_pPanner = new QwtPlotPanner( ui->qwtPlot->canvas() );
+    m_pPanner->setMouseButton( Qt::LeftButton, Qt::ControlModifier );
 
     m_picker = new QwtPlotPicker( QwtAxis::XBottom, QwtAxis::YLeft,
         QwtPlotPicker::VLineRubberBand, QwtPicker::AlwaysOff,
         ui->qwtPlot->canvas() );
-    m_picker->setStateMachine( new QwtPickerDragPointMachine() );
+    m_picker->setStateMachine( new QwtPickerTrackerMachine() );
     m_picker->setRubberBandPen( QColor( Qt::darkGray ) );
     m_picker->setRubberBand( QwtPicker::VLineRubberBand );
 
     connect( m_picker, SIGNAL( appended(QPoint) ), this, SLOT( pointInfo(QPoint) ) );
     connect( m_picker, SIGNAL( moved(QPoint) ), this, SLOT( pointInfo(QPoint) ) );
     connect( m_picker, SIGNAL( activated(bool) ), this, SLOT( pointInfoHide(bool) ) );
-
-    //m_picker->setTrackerPen( QColor( Qt::black ) );
 }
 
 void MainWindow::drawPlots( void )
@@ -552,16 +549,10 @@ void MainWindow::drawPlots( void )
     }
     m_curve[1]->attach( ui->qwtPlot );
 
-    //if( !m_timePlot ) m_curve[2]->setSamples( listener.getTourDistance().data(), listener.m_tourSpeedAvg.data(), listener.getTourDistance().count() );
-    //else              m_curve[2]->setSamples( listener.getTourTimeStamp().data(), listener.m_tourSpeedAvg.data(), listener.getTourDistance().count() );
-    //m_curve[2]->attach( ui->qwtPlot );
-    m_curve[2]->setTitle( QString( "Cadence" ) );
-
     if( !m_timePlot ) ui->qwtPlot->setAxisScale( QwtPlot::xBottom, 0, listener.getTourDistance().last(), (int)(listener.getTourDistance().last() / 5) );
     else              ui->qwtPlot->setAxisScale( QwtPlot::xBottom, listener.getTourTimeStamp().first(), listener.getTourTimeStamp().last(), 60*15 );
     ui->qwtPlot->setAxisAutoScale( QwtPlot::yLeft );
     ui->qwtPlot->setAxisAutoScale( QwtPlot::yRight );
-    //m_pZoomer[0]->setZoomBase( true );
 
     foreach(QwtPlotMarker *marker, m_lapMarker) delete marker;
     m_lapMarker.clear();
@@ -589,16 +580,8 @@ void MainWindow::drawPlots( void )
 
     ui->qwtPlot->replot();
 
-    //delete m_pZoomer[1];
-    //delete m_pZoomer[0];
-
-    //m_pZoomer[0] = new Zoomer( QwtPlot::xBottom, QwtPlot::yLeft, ui->qwtPlot );
-    //m_pZoomer[0]->setRubberBand( QwtPicker::RectRubberBand );
-    //m_pZoomer[0]->setRubberBandPen( QColor( Qt::gray ) );
-    //m_pZoomer[1] = new Zoomer( QwtPlot::xTop, QwtPlot::yRight, ui->qwtPlot );
-
-    //m_pPanner = new QwtPlotPanner( ui->qwtPlot->canvas() );
-    //m_pPanner->setMouseButton( Qt::LeftButton, Qt::ControlModifier );
+    m_pZoomer[0]->setZoomBase( true );
+    m_pZoomer[1]->setZoomBase( true );
 }
 
 void MainWindow::drawTourToMap(Listener listener)

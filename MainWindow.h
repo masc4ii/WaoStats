@@ -84,7 +84,7 @@ private:
     /// The layer to display/store symbols.
     std::shared_ptr<LayerGeometry> m_layer_symb;
 
-    QwtPlotCurve *m_curve[3];
+    QwtPlotCurve *m_curve[2];
     QwtPlotZoomer *m_pZoomer[2];
     QwtPlotPanner *m_pPanner;
     QwtPlotPicker* m_picker;

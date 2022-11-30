@@ -259,7 +259,7 @@ void MainWindow::statistics( void )
     ui->groupBoxCadence->setVisible( (int)m_listener.getSession().maxCadence != 0 );
     ui->actionCadence->setEnabled( (int)m_listener.getSession().maxCadence != 0 );
 
-    if( !ind )
+    if( ind < 1 )
     {
         QDateTime startQTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
         startQTime = startQTime.addSecs( m_listener.getSession().startTime );
@@ -386,16 +386,15 @@ void MainWindow::configureMap()
 
 void MainWindow::unconfigurePlots()
 {
-    delete m_curve[0];
-    delete m_curve[1];
-    delete m_curve[2];
-    delete m_pPanner;
-    delete m_pZoomer[0];
-    delete m_pZoomer[1];
     disconnect( m_picker, SIGNAL( appended(QPoint) ), this, SLOT( pointInfo(QPoint) ) );
     disconnect( m_picker, SIGNAL( moved(QPoint) ), this, SLOT( pointInfo(QPoint) ) );
     disconnect( m_picker, SIGNAL( activated(bool) ), this, SLOT( pointInfoHide(bool) ) );
     delete m_picker;
+    delete m_pZoomer[1];
+    delete m_pZoomer[0];
+    delete m_pPanner;
+    delete m_curve[0];
+    delete m_curve[1];
 }
 
 void MainWindow::configurePlots( void )

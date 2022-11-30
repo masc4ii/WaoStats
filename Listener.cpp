@@ -242,7 +242,7 @@ void Listener::OnMesg(fit::Mesg& mesg)
     }
     if( QString( mesg.GetName().c_str() ) == QString( "record" ) && mesg.GetNumFields() > 5 )
     {
-        if( fabs( m_tourAltitude.last() - tourAltitude ) > 50 && !m_altCorrectionDone )
+        if( !m_tourAltitude.empty() && fabs( m_tourAltitude.last() - tourAltitude ) > 50 && !m_altCorrectionDone )
         {
             m_altCorrectionDone = true;
             for( int i = 0; i < m_tourAltitude.count(); i++ )

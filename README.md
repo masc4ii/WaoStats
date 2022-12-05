@@ -1,4 +1,7 @@
 # WaoStats
+
+<img width="128" alt="icon" src="https://user-images.githubusercontent.com/30245296/205703174-b3d32a43-6e8e-415d-a7e5-00cdec2a0b6c.png">
+
 A desktop application to analyse and archive your Wahoo ELEMNT bike computer tracks.
 
 <img width="1000" alt="waostats" src="https://user-images.githubusercontent.com/30245296/195997239-19587c70-079c-4a51-8231-fe0a10e137cb.png">
@@ -17,9 +20,19 @@ A desktop application to analyse and archive your Wahoo ELEMNT bike computer tra
 - Qwt 6.2.0, under [Qwt License](https://qwt.sourceforge.io/qwtlicense.html), download code from official webpage
 - QMapControl, under [LGPL 3.0](https://github.com/masc4ii/WaoStats/blob/main/QMapControl/COPYING.LESSER)
 - FitSDKRelease_21.94.00, download code from Garmin official SDK webpage
+- App Icon by [71M](https://zez.am/71m)
 
 ## Compile
 - Download Qwt 6.2.0 and copy archive content into qwt-6.2.0 folder, compile and install as usual
 - Download FitSDKRelease_21.94.00 and copy archive content into FitSDKRelease_21.94.00 folder
 - Compile dropboxQt, as described in subfolder dropboxQt. You should get "WaoStats/dropboxQt/prj/libdropboxQt.a"
 - Open WaoStats.pro into QtCreator, compile with Qt5.15.3 and Clang(macOS) or minGW(Windows)
+- On Windows, install OpenSSL and copy library files to application folder
+
+## Dropbox Setup
+- Get an API app key by registering with Dropbox: https://dropbox.com/developers/apps
+- Click "Create app", give it reading permission to your "Apps/WahooFitness" folder
+- Enter app key and app secret to WaoStats dropbox menu
+- Click "Get Token", follow the dropbox pages
+- Copy the token from dropbox page into WaoStats menu.
+- WaoStats now is allow to read your fit files (once). Another reading process needs a new token with same keys.

@@ -296,6 +296,31 @@ FORMS += \
 
 INCLUDEPATH += -I FitSDKRelease_21.94.00/cpp/
 
+#Application version
+VERSION_MAJOR = 0
+VERSION_MINOR = 1
+VERSION_PATCH = 0
+VERSION_BUILD = 0
+
+#Target version
+DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
+           "VERSION_MINOR=$$VERSION_MINOR"\
+           "VERSION_PATCH=$$VERSION_PATCH"\
+           "VERSION_BUILD=$$VERSION_BUILD"
+VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_PATCH}.$${VERSION_BUILD}
+
+win32{
+    RC_ICONS = WaoStatsLogoMapSmall.ico
+    QMAKE_TARGET_COMPANY = masc
+    QMAKE_TARGET_DESCRIPTION = "Tool for Wahoo ELEMNT track statistics"
+    QMAKE_TARGET_PRODUCT = WaoStats
+    RC_CODEPAGE = 1252
+}
+macx{
+    ICON = WaoStatsLogoMapSmall.icns
+    QMAKE_INFO_PLIST = Info.plist
+}
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin

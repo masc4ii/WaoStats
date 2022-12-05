@@ -5,5 +5,6 @@
         <file>Icons/Actions-view-refresh-icon.png</file>
         <file>Icons/Folder-Documents-icon.png</file>
         <file>Icons/Window-Add-icon.png</file>
+        <file>WaoStatsLogoMap.png</file>
     </qresource>
 </RCC>

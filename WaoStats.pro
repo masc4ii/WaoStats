@@ -66,6 +66,7 @@ SOURCES += \
     FitSDKRelease_21.94.00/cpp/fit_profile.cpp \
     FitSDKRelease_21.94.00/cpp/fit_protocol_validator.cpp \
     FitSDKRelease_21.94.00/cpp/fit_unicode.cpp \
+    LineEditEscDelete.cpp \
     Listener.cpp \
     OsmWidget.cpp \
     main.cpp \
@@ -286,6 +287,7 @@ HEADERS += \
     FitSDKRelease_21.94.00/cpp/fit_workout_step_mesg_listener.hpp \
     FitSDKRelease_21.94.00/cpp/fit_zones_target_mesg.hpp \
     FitSDKRelease_21.94.00/cpp/fit_zones_target_mesg_listener.hpp \
+    LineEditEscDelete.h \
     Listener.h \
     MainWindow.h \
     OsmWidget.h

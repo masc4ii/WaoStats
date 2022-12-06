@@ -80,6 +80,76 @@ public:
         QTreeWidget::dropEvent(event);
     }
 
+    void setFilter( QString filter )
+    {
+        for( int i = 0; i < this->topLevelItemCount(); i++ )
+        {
+            //bool childFound = false;
+            for( int j = 0; j < this->topLevelItem(i)->childCount(); j++ )
+            {
+                if( filter == "" ) this->topLevelItem(i)->child(j)->setHidden( false );
+                else
+                {
+                    if( filter.startsWith( '<' ) )
+                    {
+                        QString filterEdit = filter;
+                        QString entry1 = this->topLevelItem(i)->child(j)->text( 2 );
+                        entry1.remove( " km" );
+                        filterEdit.remove( " " );
+                        filterEdit.remove( "km" );
+                        filterEdit.remove( "<" );
+                        int filterNum = filterEdit.toInt();
+                        int entryNum = entry1.toInt();
+                        this->topLevelItem(i)->child(j)->setHidden( filterNum <= entryNum );
+                    }
+                    else if( filter.startsWith( '>' ) )
+                    {
+                        QString filterEdit = filter;
+                        QString entry1 = this->topLevelItem(i)->child(j)->text( 2 );
+                        entry1.remove( " km" );
+                        filterEdit.remove( " " );
+                        filterEdit.remove( "km" );
+                        filterEdit.remove( ">" );
+                        int filterNum = filterEdit.toInt();
+                        int entryNum = entry1.toInt();
+                        this->topLevelItem(i)->child(j)->setHidden( filterNum >= entryNum );
+                    }
+                    else if( filter.startsWith( '<=' ) )
+                    {
+                        QString filterEdit = filter;
+                        QString entry1 = this->topLevelItem(i)->child(j)->text( 2 );
+                        entry1.remove( " km" );
+                        filterEdit.remove( " " );
+                        filterEdit.remove( "km" );
+                        filterEdit.remove( "<=" );
+                        int filterNum = filterEdit.toInt();
+                        int entryNum = entry1.toInt();
+                        this->topLevelItem(i)->child(j)->setHidden( filterNum < entryNum );
+                    }
+                    else if( filter.startsWith( '>=' ) )
+                    {
+                        QString filterEdit = filter;
+                        QString entry1 = this->topLevelItem(i)->child(j)->text( 2 );
+                        entry1.remove( " km" );
+                        filterEdit.remove( " " );
+                        filterEdit.remove( "km" );
+                        filterEdit.remove( ">=" );
+                        int filterNum = filterEdit.toInt();
+                        int entryNum = entry1.toInt();
+                        this->topLevelItem(i)->child(j)->setHidden( filterNum > entryNum );
+                    }
+                    else
+                    {
+                        QString entry0 = this->topLevelItem(i)->child(j)->text( 0 );
+                        QString entry1 = this->topLevelItem(i)->child(j)->text( 2 );
+                        this->topLevelItem(i)->child(j)->setHidden( !entry0.contains( filter, Qt::CaseInsensitive )
+                                                                 && !entry1.contains( filter, Qt::CaseInsensitive ) );
+                    }
+                }
+            }
+        }
+    }
+
 signals:
     void itemsDropped(QList<QTreeWidgetItem *> pSource, QTreeWidgetItem* pTarget);
 };

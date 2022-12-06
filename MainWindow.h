@@ -57,6 +57,7 @@ private slots:
     void on_treeWidgetTours_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void on_widgetOsm_customContextMenuRequested(const QPoint &pos);
     void on_qwtPlot_customContextMenuRequested(const QPoint &pos);
+    void on_lineEditFilter_textChanged(const QString &arg1);
     void calcBikeTotalDistances();
 
 private:

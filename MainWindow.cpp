@@ -107,9 +107,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    //m_workingPath = "/Users/masc/Documents/FahrradTracking";
-    readSettings();
-
     auto editDelegate = new BikeEditingDelegate(this);
     ui->treeWidgetTours->setItemDelegate(editDelegate);
     connect(editDelegate,
@@ -145,6 +142,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     configurePlots();
     configureMap();
+    readSettings();
     scanTours();
     connect( ui->comboBoxSection, SIGNAL(currentIndexChanged(int)), this, SLOT(statistics()) );
 
@@ -931,12 +929,15 @@ void MainWindow::on_actionAboutQt_triggered()
 
 void MainWindow::on_treeWidgetTours_itemsDropped(QList<QTreeWidgetItem *> pSource, QTreeWidgetItem *pTarget)
 {
-    QString source = pSource.first()->text( 1 );
-    QString target = workingPath() + pTarget->text( 0 ) + "/" + QFileInfo( pSource.first()->text( 1 ) ).fileName();
-    //qDebug() << "Dropped!" << source << "\n" << target;
-    QDir().rename( source, target );
+    for( int i = 0; i < pSource.count(); i++ )
+    {
+        QString source = pSource.at(i)->text( 1 );
+        QString target = workingPath() + pTarget->text( 0 ) + "/" + QFileInfo( pSource.at(i)->text( 1 ) ).fileName();
+        //qDebug() << "Dropped!" << source << "\n" << target;
+        QDir().rename( source, target );
 
-    pSource.first()->setText( 1, target );
+        pSource.at(i)->setText( 1, target );
+    }
     QTimer::singleShot( 1, this, SLOT( calcBikeTotalDistances() ) );
 }
 
@@ -1010,6 +1011,19 @@ void MainWindow::writeSettings()
     set.setValue( "mainWindowGeometry", saveGeometry() );
     //set.setValue( "mainWindowState", saveState() ); // docks, toolbars, etc...
     set.setValue( "mapCaching", ui->actionMapCaching->isChecked() );
+    int mapType = 0;
+    if( ui->action_google_map->isChecked() ) mapType = 0;
+    else if( ui->action_google_satelite->isChecked() ) mapType = 1;
+    else if( ui->action_google_hybrid->isChecked() ) mapType = 2;
+    else if( ui->action_google_terrain->isChecked() ) mapType = 3;
+    else if( ui->action_osm->isChecked() ) mapType = 4;
+    else if( ui->action_otm->isChecked() ) mapType = 5;
+    else if( ui->action_4um->isChecked() ) mapType = 6;
+    else if( ui->action_cycle_osm->isChecked() ) mapType = 7;
+    else if( ui->action_thunderforest_cycle->isChecked() ) mapType = 8;
+    else if( ui->action_thunderforest_landscape->isChecked() ) mapType = 9;
+    else if( ui->action_bing->isChecked() ) mapType = 10;
+    set.setValue( "maptype", mapType );
     set.setValue( "lastExportPath", m_workingPath );
 }
 
@@ -1020,6 +1034,45 @@ void MainWindow::readSettings()
     restoreGeometry( set.value( "mainWindowGeometry" ).toByteArray() );
     //restoreState( set.value( "mainWindowState" ).toByteArray() ); // create docks, toolbars, etc...
     if( set.value( "mapCaching", false ).toBool() ) ui->actionMapCaching->setChecked( true );
+    switch( set.value( "maptype", 0 ).toInt() )
+    {
+    case 1: ui->action_google_satelite->setChecked( true );
+            mapProviderSelected( ui->action_google_satelite );
+            break;
+    case 2: ui->action_google_hybrid->setChecked( true );
+            mapProviderSelected( ui->action_google_hybrid );
+            break;
+    case 3: ui->action_google_terrain->setChecked( true );
+            mapProviderSelected( ui->action_google_terrain );
+            break;
+    case 4: ui->action_osm->setChecked( true );
+            mapProviderSelected( ui->action_osm );
+            break;
+    case 5: ui->action_otm->setChecked( true );
+            mapProviderSelected( ui->action_otm );
+            break;
+    case 6: ui->action_4um->setChecked( true );
+            mapProviderSelected( ui->action_4um );
+            break;
+    case 7: ui->action_cycle_osm->setChecked( true );
+            mapProviderSelected( ui->action_cycle_osm );
+            break;
+    case 8: ui->action_thunderforest_cycle->setChecked( true );
+            mapProviderSelected( ui->action_thunderforest_cycle );
+            break;
+    case 9: ui->action_thunderforest_landscape->setChecked( true );
+            mapProviderSelected( ui->action_thunderforest_landscape );
+            break;
+    case 10: ui->action_bing->setChecked( true );
+            mapProviderSelected( ui->action_bing );
+            break;
+    case 0:
+    default:
+            ui->action_google_map->setChecked( true );
+            mapProviderSelected( ui->action_google_map );
+            break;
+    }
+
     m_workingPath = set.value( "lastExportPath", QDir::homePath() + "/Documents/FahrradTracking" ).toString();
 }
 
@@ -1047,3 +1100,9 @@ void MainWindow::calcBikeTotalDistances()
     for( int i = 0; i < ui->treeWidgetTours->topLevelItemCount(); i++ )
         ui->treeWidgetTours->topLevelItem( i )->sortChildren( 0, Qt::DescendingOrder );
 }
+
+void MainWindow::on_lineEditFilter_textChanged(const QString &arg1)
+{
+    ui->treeWidgetTours->setFilter( arg1 );
+}
+

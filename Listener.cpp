@@ -29,6 +29,7 @@ void Listener::reset()
     m_altCorrectionDone = false;
     m_posCorrectionDone = false;
     m_tempCorrectionDone = false;
+    m_battCorrectionDone = false;
     m_firstPosRead = false;
     m_posRead = false;
 
@@ -303,6 +304,13 @@ void Listener::OnMesg(fit::Mesg& mesg)
             m_altCorrectionDone = true;
             for( int i = 0; i < m_tourAltitude.count(); i++ )
                 m_tourAltitude[i] = tourAltitude;
+        }
+
+        if( !m_tourBatterySoc.empty() && fabs( m_tourBatterySoc.last() - tourBatterySoc ) > 3 && !m_battCorrectionDone )
+        {
+            m_battCorrectionDone = true;
+            for( int i = 0; i < m_tourBatterySoc.count(); i++ )
+                m_tourBatterySoc[i] = tourBatterySoc;
         }
 
         if( !m_tourPosLat.empty() && m_posRead && !m_firstPosRead ) //GPS not found yet

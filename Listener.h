@@ -94,6 +94,7 @@ private:
     bool m_firstPosRead;
     bool m_posRead;
     bool m_tempCorrectionDone;
+    bool m_battCorrectionDone;
 
     QVector<double>m_tourTimeStamp;
     QVector<double>m_tourDistance;

@@ -223,15 +223,15 @@
      <addaction name="actionPlotDistance"/>
      <addaction name="actionPlotTime"/>
      <addaction name="separator"/>
-     <addaction name="actionSpeed"/>
      <addaction name="actionDeviceBattery"/>
-     <addaction name="actionCadence"/>
-     <addaction name="actionTemperature"/>
      <addaction name="actionGrade"/>
+     <addaction name="actionSpeed"/>
+     <addaction name="actionCadence"/>
      <addaction name="actionHeartRate"/>
-     <addaction name="actionCalories"/>
      <addaction name="actionPower"/>
      <addaction name="actionLRBalance"/>
+     <addaction name="actionCalories"/>
+     <addaction name="actionTemperature"/>
     </widget>
     <addaction name="menu_map"/>
     <addaction name="menuPlot"/>

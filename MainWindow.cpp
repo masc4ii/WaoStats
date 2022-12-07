@@ -151,7 +151,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionLRBalance->setCheckable( true );
     ui->actionSpeed->setChecked( true );
     QObject::connect( plot_value_group, &QActionGroup::triggered, this, &MainWindow::plotSelected );
-    ui->actionDeviceBattery->setVisible( false );
 
     ui->qwtPlot->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->widgetOsm->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -283,6 +282,17 @@ void MainWindow::statistics( void )
     ui->actionCalories->setEnabled( (int)m_listener.getSession().totalCalories != 0 );
     ui->actionPower->setEnabled( (int)m_listener.getSession().maxPower != 0 );
     ui->actionLRBalance->setEnabled( (int)m_listener.getSession().maxPower != 0 );
+
+    if( ( ui->actionCadence->isChecked()   && !ui->actionCadence->isEnabled() )
+     || ( ui->actionGrade->isChecked()     && !ui->actionGrade->isEnabled() )
+     || ( ui->actionHeartRate->isChecked() && !ui->actionHeartRate->isEnabled() )
+     || ( ui->actionCalories->isChecked()  && !ui->actionCalories->isEnabled() )
+     || ( ui->actionPower->isChecked()     && !ui->actionPower->isEnabled() )
+     || ( ui->actionLRBalance->isChecked() && !ui->actionLRBalance->isEnabled() ) )
+    {
+        ui->actionSpeed->setChecked( true );
+        plotSelected();
+    }
 
     if( ind < 1 )
     {

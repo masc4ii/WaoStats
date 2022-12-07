@@ -304,7 +304,7 @@ void MainWindow::statistics( void )
     ui->labelPickerCadenceName->setEnabled( (int)m_listener.getSession().maxCadence != 0 );
     ui->labelPickerAltitude->setEnabled( (int)m_listener.getSession().altitudeMax != 0 && (int)m_listener.getSession().altitudeMin != 0 );
     ui->labelPickerAltitudeName->setEnabled( (int)m_listener.getSession().altitudeMax != 0 && (int)m_listener.getSession().altitudeMin != 0 );
-    ui->labelPickerGrade->setEnabled( (int)m_listener.getSession().altitudeMax != 0 && (int)m_listener.getSession().altitudeMin != 0 );
+    ui->labelPickerGrade->setEnabled( (int)m_listener.getSession().descent != 0 && (int)m_listener.getSession().ascent != 0 );
     ui->labelPickerGradeName->setEnabled( (int)m_listener.getSession().descent != 0 && (int)m_listener.getSession().ascent != 0 );
 
     if( ind < 1 )

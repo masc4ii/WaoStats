@@ -52,12 +52,25 @@ public:
         double minGrade;
         quint32 startTime;
         double startDistance;
+        double minHeartRate;
+        double avgHeartRate;
+        double maxHeartRate;
+        double avgPower;
+        double maxPower;
+        double leftRightBalance;
+        double totalWork;
+        double totalCalories;
+        double normalizedPower;
+        double thresholdPower;
+        double trainingStressScore;
+        double itensityFactor;
     } fitSection_t;
 
     fitSection_t getSession(){return m_session;}
     QVector<fitSection_t> getSections(){return m_sections;}
     QVector<double>getTourTimeStamp(){return m_tourTimeStamp;}
     QVector<double>getTourDistance(){return m_tourDistance;}
+    QVector<double>getTourBatterySoc(){return m_tourBatterySoc;}
     QVector<double>getTourSpeed(){return m_tourSpeed;}
     QVector<double>getTourCadence(){return m_tourCadence;}
     QVector<double>getTourAltitude(){return m_tourAltitude;}
@@ -65,16 +78,26 @@ public:
     QVector<double>getTourGrade(){return m_tourGrade;}
     QVector<double>getTourPosLat(){return m_tourPosLat;}
     QVector<double>getTourPosLong(){return m_tourPosLong;}
+    QVector<double>getTourHeartRate(){return m_tourHeartRate;}
+    QVector<double>getTourCalories(){return m_tourCalories;}
+    QVector<double>getTourPower(){return m_tourPower;}
+    QVector<double>getTourLRBalance(){return m_tourLRBalance;}
     QVector<deviceInfo_t>getDeviceInfo(){return m_deviceInfo;}
+
+    bool containsPositionInfo( void ){return m_posRead;}
 
 private:
     fitSection_t m_session;
     QVector<fitSection_t> m_sections;
     bool m_altCorrectionDone;
+    bool m_posCorrectionDone;
+    bool m_firstPosRead;
+    bool m_posRead;
     bool m_tempCorrectionDone;
 
     QVector<double>m_tourTimeStamp;
     QVector<double>m_tourDistance;
+    QVector<double>m_tourBatterySoc;
     QVector<double>m_tourSpeed;
     QVector<double>m_tourCadence;
     QVector<double>m_tourAltitude;
@@ -82,6 +105,10 @@ private:
     QVector<double>m_tourGrade;
     QVector<double>m_tourPosLat;
     QVector<double>m_tourPosLong;
+    QVector<double>m_tourHeartRate;
+    QVector<double>m_tourCalories;
+    QVector<double>m_tourPower;
+    QVector<double>m_tourLRBalance;
 
     QVector<deviceInfo_t>m_deviceInfo;
 };

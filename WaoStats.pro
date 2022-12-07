@@ -69,6 +69,8 @@ SOURCES += \
     LineEditEscDelete.cpp \
     Listener.cpp \
     OsmWidget.cpp \
+    Splash.cpp \
+    VScrollArea.cpp \
     main.cpp \
     MainWindow.cpp
 
@@ -287,10 +289,13 @@ HEADERS += \
     FitSDKRelease_21.94.00/cpp/fit_workout_step_mesg_listener.hpp \
     FitSDKRelease_21.94.00/cpp/fit_zones_target_mesg.hpp \
     FitSDKRelease_21.94.00/cpp/fit_zones_target_mesg_listener.hpp \
+    Globals.h \
     LineEditEscDelete.h \
     Listener.h \
     MainWindow.h \
-    OsmWidget.h
+    OsmWidget.h \
+    Splash.h \
+    VScrollArea.h
 
 FORMS += \
     DropBoxAuthDialog.ui \

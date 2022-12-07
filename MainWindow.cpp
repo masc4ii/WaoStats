@@ -2,6 +2,8 @@
 #include "ui_MainWindow.h"
 #include "DropBoxAuthDialog.h"
 #include "BikeEditingDelegate.h"
+#include "Splash.h"
+#include "Globals.h"
 
 #include <QDebug>
 #include <QWidget>
@@ -14,6 +16,9 @@
 #include <QSettings>
 #include <QByteArray>
 #include <QFont>
+#include <QSplashScreen>
+#include <QScrollArea>
+#include <QScrollBar>
 #include "qwt.h"
 #include "math.h"
 #include "OsmWidget.h"
@@ -48,9 +53,6 @@
 #include "dropbox/files/FilesRoutes.h"
 #include "dropbox/endpoint/DropboxAppInfo.h"
 #include "dropbox/endpoint/DropboxAuthInfo.h"
-
-#define APPNAME "WaoStats"
-#define VERSION QString("%1.%2").arg(VERSION_MAJOR).arg(VERSION_MINOR)
 
 using namespace dropboxQt;
 
@@ -107,6 +109,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    Splash splash( QPixmap( ":/Icons/Splash.png" ).scaled( 300, 300, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
+    splash.show();
+
     auto editDelegate = new BikeEditingDelegate(this);
     ui->treeWidgetTours->setItemDelegate(editDelegate);
     connect(editDelegate,
@@ -127,15 +132,26 @@ MainWindow::MainWindow(QWidget *parent)
 
     QActionGroup* plot_value_group = new QActionGroup(this);
     plot_value_group->addAction( ui->actionSpeed );
+    plot_value_group->addAction( ui->actionDeviceBattery );
     plot_value_group->addAction( ui->actionCadence );
     plot_value_group->addAction( ui->actionTemperature );
     plot_value_group->addAction( ui->actionGrade );
+    plot_value_group->addAction( ui->actionHeartRate );
+    plot_value_group->addAction( ui->actionCalories );
+    plot_value_group->addAction( ui->actionPower );
+    plot_value_group->addAction( ui->actionLRBalance );
     ui->actionSpeed->setCheckable( true );
+    ui->actionDeviceBattery->setCheckable( true );
     ui->actionCadence->setCheckable( true );
     ui->actionTemperature->setCheckable( true );
     ui->actionGrade->setCheckable( true );
+    ui->actionHeartRate->setCheckable( true );
+    ui->actionCalories->setCheckable( true );
+    ui->actionPower->setCheckable( true );
+    ui->actionLRBalance->setCheckable( true );
     ui->actionSpeed->setChecked( true );
     QObject::connect( plot_value_group, &QActionGroup::triggered, this, &MainWindow::plotSelected );
+    ui->actionDeviceBattery->setVisible( false );
 
     ui->qwtPlot->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->widgetOsm->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -147,6 +163,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect( ui->comboBoxSection, SIGNAL(currentIndexChanged(int)), this, SLOT(statistics()) );
 
     QTimer::singleShot( 1, this, SLOT( adjustMap() ) );
+
+    splash.finish( this );
 }
 
 MainWindow::~MainWindow()
@@ -255,7 +273,16 @@ void MainWindow::statistics( void )
     int ind = ui->comboBoxSection->currentIndex();
 
     ui->groupBoxCadence->setVisible( (int)m_listener.getSession().maxCadence != 0 );
+    ui->groupBoxHeartRate->setVisible( (int)m_listener.getSession().maxHeartRate != 0 );
+    ui->groupBoxPower->setVisible( (int)m_listener.getSession().maxPower != 0 );
+    ui->groupBoxProfile->setVisible( ( (int)m_listener.getSession().ascent != 0 ) && ( (int)m_listener.getSession().descent != 0 ) );
+
     ui->actionCadence->setEnabled( (int)m_listener.getSession().maxCadence != 0 );
+    ui->actionGrade->setEnabled( ( (int)m_listener.getSession().ascent != 0 ) && ( (int)m_listener.getSession().descent != 0 ) );
+    ui->actionHeartRate->setEnabled( (int)m_listener.getSession().maxHeartRate != 0 );
+    ui->actionCalories->setEnabled( (int)m_listener.getSession().totalCalories != 0 );
+    ui->actionPower->setEnabled( (int)m_listener.getSession().maxPower != 0 );
+    ui->actionLRBalance->setEnabled( (int)m_listener.getSession().maxPower != 0 );
 
     if( ind < 1 )
     {
@@ -281,6 +308,16 @@ void MainWindow::statistics( void )
 
         ui->labelCadenceAverage->setText( QString( "%1 rpm" ).arg( (int)m_listener.getSession().avgCadence ) );
         ui->labelCadenceMax->setText( QString( "%1 rpm" ).arg( (int)m_listener.getSession().maxCadence ) );
+
+        ui->labelHeartRateAverage->setText( QString( "%1 bpm" ).arg( (int)m_listener.getSession().avgHeartRate ) );
+        ui->labelHeartRateMax->setText( QString( "%1 bpm" ).arg( (int)m_listener.getSession().maxHeartRate ) );
+        ui->labelHeartRateMin->setText( QString( "%1 bpm" ).arg( (int)m_listener.getSession().minHeartRate ) );
+        ui->labelCalories->setText( QString( "%1 kcal" ).arg( (int)m_listener.getSession().totalCalories ) );
+
+        ui->labelPowerAverage->setText( QString( "%1 W" ).arg( (int)m_listener.getSession().avgPower ) );
+        ui->labelPowerMax->setText( QString( "%1 W" ).arg( (int)m_listener.getSession().maxPower ) );
+        ui->labelPowerNormalized->setText( QString( "%1 W" ).arg( (int)m_listener.getSession().normalizedPower ) );
+        ui->labelLRBalance->setText( QString( "%1" ).arg( (int)m_listener.getSession().leftRightBalance ) );
 
         ui->labelTempAverage->setText( QString( "%1 °C" ).arg( m_listener.getSession().avgTemperature ) );
         ui->labelTempMax->setText( QString( "%1 °C" ).arg( m_listener.getSession().maxTemperature ) );
@@ -313,6 +350,16 @@ void MainWindow::statistics( void )
         ui->labelCadenceAverage->setText( QString( "%1 rpm" ).arg( (int)m_listener.getSections().at(ind).avgCadence ) );
         ui->labelCadenceMax->setText( QString( "%1 rpm" ).arg( (int)m_listener.getSections().at(ind).maxCadence ) );
 
+        ui->labelHeartRateAverage->setText( QString( "%1 bpm" ).arg( (int)m_listener.getSections().at(ind).avgHeartRate ) );
+        ui->labelHeartRateMax->setText( QString( "%1 bpm" ).arg( (int)m_listener.getSections().at(ind).maxHeartRate ) );
+        ui->labelHeartRateMin->setText( QString( "%1 bpm" ).arg( (int)m_listener.getSections().at(ind).minHeartRate ) );
+        ui->labelCalories->setText( QString( "%1 kcal" ).arg( (int)m_listener.getSections().at(ind).totalCalories ) );
+
+        ui->labelPowerAverage->setText( QString( "%1 W" ).arg( (int)m_listener.getSections().at(ind).avgPower ) );
+        ui->labelPowerMax->setText( QString( "%1 W" ).arg( (int)m_listener.getSections().at(ind).maxPower ) );
+        ui->labelPowerNormalized->setText( QString( "%1 W" ).arg( (int)m_listener.getSections().at(ind).normalizedPower ) );
+        ui->labelLRBalance->setText( QString( "%1" ).arg( (int)m_listener.getSections().at(ind).leftRightBalance ) );
+
         ui->labelTempAverage->setText( QString( "%1 °C" ).arg( m_listener.getSections().at(ind).avgTemperature ) );
         ui->labelTempMax->setText( QString( "%1 °C" ).arg( m_listener.getSections().at(ind).maxTemperature ) );
         ui->labelTempMin->setText( QString( "%1 °C" ).arg( m_listener.getSections().at(ind).minTemperature ) );
@@ -330,8 +377,6 @@ void MainWindow::configureMap()
 
     // Create/add a layer with the default OSM map adapter.
     m_map_control->addLayer(std::make_shared<LayerMapAdapter>("Map", std::make_shared<MapAdapterOTM>()));
-
-    on_actionMapCaching_triggered( ui->actionMapCaching->isChecked() );
 
     // Create the tours layer.
     m_layer_tours = std::make_shared<LayerGeometry>("Tours");
@@ -441,6 +486,11 @@ void MainWindow::configurePlots( void )
         m_curve[1] = new QwtPlotCurve( QString( "Speed" ) );
         ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "Speed [km/h]" ) );
     }
+    else if( ui->actionDeviceBattery->isChecked() )
+    {
+        m_curve[1] = new QwtPlotCurve( QString( "Device Battery" ) );
+        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "Device Battery [%]" ) );
+    }
     else if( ui->actionCadence->isChecked() )
     {
         m_curve[1] = new QwtPlotCurve( QString( "Cadence" ) );
@@ -455,6 +505,26 @@ void MainWindow::configurePlots( void )
     {
         m_curve[1] = new QwtPlotCurve( QString( "Grade" ) );
         ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "Grade [%]" ) );
+    }
+    else if( ui->actionHeartRate->isChecked() )
+    {
+        m_curve[1] = new QwtPlotCurve( QString( "Heart Rate" ) );
+        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "Heart Rate [bpm]" ) );
+    }
+    else if( ui->actionCalories->isChecked() )
+    {
+        m_curve[1] = new QwtPlotCurve( QString( "Calories" ) );
+        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "Calories [kcal]" ) );
+    }
+    else if( ui->actionPower->isChecked() )
+    {
+        m_curve[1] = new QwtPlotCurve( QString( "Power" ) );
+        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "Power [W]" ) );
+    }
+    else if( ui->actionLRBalance->isChecked() )
+    {
+        m_curve[1] = new QwtPlotCurve( QString( "L/R Balance" ) );
+        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "L/R Balance" ) );
     }
     m_curve[1]->setYAxis( QwtPlot::yRight );
     m_curve[1]->setRenderHint( QwtPlotItem::RenderAntialiased );
@@ -522,6 +592,12 @@ void MainWindow::drawPlots( void )
         else              m_curve[1]->setSamples( listener.getTourTimeStamp().data(), listener.getTourSpeed().data(), listener.getTourDistance().count() );
         m_curve[1]->setTitle( QString( "Speed" ) );
     }
+    else if( ui->actionDeviceBattery->isChecked() )
+    {
+        if( !m_timePlot ) m_curve[1]->setSamples( listener.getTourDistance().data(), listener.getTourBatterySoc().data(), listener.getTourDistance().count() );
+        else              m_curve[1]->setSamples( listener.getTourTimeStamp().data(), listener.getTourBatterySoc().data(), listener.getTourDistance().count() );
+        m_curve[1]->setTitle( QString( "Device Battery" ) );
+    }
     else if( ui->actionCadence->isChecked() )
     {
         if( !m_timePlot ) m_curve[1]->setSamples( listener.getTourDistance().data(), listener.getTourCadence().data(), listener.getTourDistance().count() );
@@ -544,12 +620,38 @@ void MainWindow::drawPlots( void )
         m_curve[1]->setTitle( QString( "Grade" ) );
         m_curve[1]->setBrush( QBrush( QColor( 0, 180, 0, 25 ) ) );
     }
+    else if( ui->actionHeartRate->isChecked() )
+    {
+        if( !m_timePlot ) m_curve[1]->setSamples( listener.getTourDistance().data(), listener.getTourHeartRate().data(), listener.getTourDistance().count() );
+        else              m_curve[1]->setSamples( listener.getTourTimeStamp().data(), listener.getTourHeartRate().data(), listener.getTourDistance().count() );
+        m_curve[1]->setTitle( QString( "Heart Rate" ) );
+    }
+    else if( ui->actionCalories->isChecked() )
+    {
+        if( !m_timePlot ) m_curve[1]->setSamples( listener.getTourDistance().data(), listener.getTourCalories().data(), listener.getTourDistance().count() );
+        else              m_curve[1]->setSamples( listener.getTourTimeStamp().data(), listener.getTourCalories().data(), listener.getTourDistance().count() );
+        m_curve[1]->setTitle( QString( "Calories" ) );
+    }
+    else if( ui->actionPower->isChecked() )
+    {
+        if( !m_timePlot ) m_curve[1]->setSamples( listener.getTourDistance().data(), listener.getTourPower().data(), listener.getTourDistance().count() );
+        else              m_curve[1]->setSamples( listener.getTourTimeStamp().data(), listener.getTourPower().data(), listener.getTourDistance().count() );
+        m_curve[1]->setTitle( QString( "Power" ) );
+    }
+    else if( ui->actionLRBalance->isChecked() )
+    {
+        if( !m_timePlot ) m_curve[1]->setSamples( listener.getTourDistance().data(), listener.getTourLRBalance().data(), listener.getTourDistance().count() );
+        else              m_curve[1]->setSamples( listener.getTourTimeStamp().data(), listener.getTourLRBalance().data(), listener.getTourDistance().count() );
+        m_curve[1]->setTitle( QString( "L/R Balance" ) );
+    }
     m_curve[1]->attach( ui->qwtPlot );
 
     if( !m_timePlot ) ui->qwtPlot->setAxisScale( QwtPlot::xBottom, 0, listener.getTourDistance().last(), (int)(listener.getTourDistance().last() / 5) );
     else              ui->qwtPlot->setAxisScale( QwtPlot::xBottom, listener.getTourTimeStamp().first(), listener.getTourTimeStamp().last(), 60*15 );
+
     ui->qwtPlot->setAxisAutoScale( QwtPlot::yLeft );
-    ui->qwtPlot->setAxisAutoScale( QwtPlot::yRight );
+    if( ui->actionDeviceBattery->isChecked() ) ui->qwtPlot->setAxisScale( QwtPlot::yRight, 0, 100, 20 );
+    else ui->qwtPlot->setAxisAutoScale( QwtPlot::yRight );
 
     foreach(QwtPlotMarker *marker, m_lapMarker) delete marker;
     m_lapMarker.clear();
@@ -583,6 +685,15 @@ void MainWindow::drawPlots( void )
 
 void MainWindow::drawTourToMap(Listener listener)
 {
+    if( !listener.containsPositionInfo() )
+    {
+        //Default map picture
+        m_layer_tours->clearGeometries();
+        m_map_control->setMapFocusPoint( PointWorldCoord( 10.9281, 50.6861 ) );
+        m_map_control->setZoom( 5 );
+        return;
+    }
+
     // Create a pen to draw.
     QPen pen(QColor(0, 0, 255, 100));
     pen.setWidth(3);
@@ -1034,6 +1145,8 @@ void MainWindow::readSettings()
     restoreGeometry( set.value( "mainWindowGeometry" ).toByteArray() );
     //restoreState( set.value( "mainWindowState" ).toByteArray() ); // create docks, toolbars, etc...
     if( set.value( "mapCaching", false ).toBool() ) ui->actionMapCaching->setChecked( true );
+    on_actionMapCaching_triggered( ui->actionMapCaching->isChecked() );
+
     switch( set.value( "maptype", 0 ).toInt() )
     {
     case 1: ui->action_google_satelite->setChecked( true );

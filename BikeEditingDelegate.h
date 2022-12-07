@@ -90,7 +90,31 @@ public:
                 if( filter == "" ) this->topLevelItem(i)->child(j)->setHidden( false );
                 else
                 {
-                    if( filter.startsWith( '<' ) )
+                    if( filter.startsWith( "<=" ) )
+                    {
+                        QString filterEdit = filter;
+                        QString entry1 = this->topLevelItem(i)->child(j)->text( 2 );
+                        entry1.remove( " km" );
+                        filterEdit.remove( " " );
+                        filterEdit.remove( "km" );
+                        filterEdit.remove( "<=" );
+                        int filterNum = filterEdit.toInt();
+                        int entryNum = entry1.toInt();
+                        this->topLevelItem(i)->child(j)->setHidden( filterNum < entryNum );
+                    }
+                    else if( filter.startsWith( ">=" ) )
+                    {
+                        QString filterEdit = filter;
+                        QString entry1 = this->topLevelItem(i)->child(j)->text( 2 );
+                        entry1.remove( " km" );
+                        filterEdit.remove( " " );
+                        filterEdit.remove( "km" );
+                        filterEdit.remove( ">=" );
+                        int filterNum = filterEdit.toInt();
+                        int entryNum = entry1.toInt();
+                        this->topLevelItem(i)->child(j)->setHidden( filterNum > entryNum );
+                    }
+                    else if( filter.startsWith( '<' ) )
                     {
                         QString filterEdit = filter;
                         QString entry1 = this->topLevelItem(i)->child(j)->text( 2 );
@@ -113,30 +137,6 @@ public:
                         int filterNum = filterEdit.toInt();
                         int entryNum = entry1.toInt();
                         this->topLevelItem(i)->child(j)->setHidden( filterNum >= entryNum );
-                    }
-                    else if( filter.startsWith( '<=' ) )
-                    {
-                        QString filterEdit = filter;
-                        QString entry1 = this->topLevelItem(i)->child(j)->text( 2 );
-                        entry1.remove( " km" );
-                        filterEdit.remove( " " );
-                        filterEdit.remove( "km" );
-                        filterEdit.remove( "<=" );
-                        int filterNum = filterEdit.toInt();
-                        int entryNum = entry1.toInt();
-                        this->topLevelItem(i)->child(j)->setHidden( filterNum < entryNum );
-                    }
-                    else if( filter.startsWith( '>=' ) )
-                    {
-                        QString filterEdit = filter;
-                        QString entry1 = this->topLevelItem(i)->child(j)->text( 2 );
-                        entry1.remove( " km" );
-                        filterEdit.remove( " " );
-                        filterEdit.remove( "km" );
-                        filterEdit.remove( ">=" );
-                        int filterNum = filterEdit.toInt();
-                        int entryNum = entry1.toInt();
-                        this->topLevelItem(i)->child(j)->setHidden( filterNum > entryNum );
                     }
                     else
                     {

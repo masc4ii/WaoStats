@@ -1,5 +1,6 @@
 #include "Listener.h"
 #include "math.h"
+#include <QDebug>
 
 //#define LOGOUT
 
@@ -13,6 +14,7 @@ void Listener::reset()
     m_session.minTemperature = 9999;
     m_tourTimeStamp.clear();
     m_tourDistance.clear();
+    m_tourBatterySoc.clear();
     m_tourSpeed.clear();
     m_tourCadence.clear();
     m_tourAltitude.clear();
@@ -20,8 +22,15 @@ void Listener::reset()
     m_tourGrade.clear();
     m_tourPosLat.clear();
     m_tourPosLong.clear();
+    m_tourHeartRate.clear();
+    m_tourCalories.clear();
+    m_tourPower.clear();
+    m_tourLRBalance.clear();
     m_altCorrectionDone = false;
+    m_posCorrectionDone = false;
     m_tempCorrectionDone = false;
+    m_firstPosRead = false;
+    m_posRead = false;
 
     m_session.totalElapsedTime = 0;
     m_session.totalTimerTime = 0;
@@ -41,6 +50,18 @@ void Listener::reset()
     m_session.startDistance = 0;
     m_session.maxGrade = 0;
     m_session.minGrade = 0;
+    m_session.minHeartRate = 0;
+    m_session.avgHeartRate = 0;
+    m_session.maxHeartRate = 0;
+    m_session.avgPower = 0;
+    m_session.maxPower = 0;
+    m_session.leftRightBalance = 0;
+    m_session.totalWork = 0;
+    m_session.totalCalories = 0;
+    m_session.normalizedPower = 0;
+    m_session.thresholdPower = 0;
+    m_session.trainingStressScore = 0;
+    m_session.itensityFactor = 0;
     m_altCorrectionDone = false;
 
     m_deviceInfo.clear();
@@ -103,12 +124,17 @@ void Listener::OnMesg(fit::Mesg& mesg)
     double tourTimeStamp = 0;
     double tourAltitude = 0;
     double tourDistance = 0;
+    static double tourBatterySoc = 0;
     double tourCadence = 0;
     double tourSpeed = 0;
     double tourPosLat = 0;
     double tourPosLong = 0;
     static double tourTemperature = 0;
     double tourGrade = 0;
+    double tourHeartRate = 0;
+    double tourCalories = 0;
+    double tourPower = 0;
+    double tourLRBalance = 50;
     deviceInfo_t deviceInfo;
     deviceInfo.name = "";
     deviceInfo.battery = "";
@@ -144,6 +170,18 @@ void Listener::OnMesg(fit::Mesg& mesg)
             else if( QString( field->GetName().c_str() ) == QString( "avg_temperature" ) ) m_session.avgTemperature = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "max_temperature" ) ) m_session.maxTemperature = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "start_time" ) ) m_session.startTime = field->GetUINT32Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "min_heart_rate" ) ) m_session.minHeartRate = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "avg_heart_rate" ) ) m_session.avgHeartRate = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "max_heart_rate" ) ) m_session.maxHeartRate = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "avg_power" ) ) m_session.avgPower = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "max_power" ) ) m_session.maxPower = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "left_right_balance" ) ) m_session.leftRightBalance = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "total_work" ) ) m_session.totalWork = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "total_calories" ) ) m_session.totalCalories = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "normalized_power" ) ) m_session.normalizedPower = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "threshold_power" ) ) m_session.thresholdPower = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "training_stress_score" ) ) m_session.trainingStressScore = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "intensity_factor" ) ) m_session.itensityFactor = field->GetFLOAT64Value(0);
             //else if( QString( field->GetName().c_str() ) == QString( "max_neg_grade" ) ) m_session.minGrade = field->GetFLOAT64Value(0);
             //else if( QString( field->GetName().c_str() ) == QString( "max_pos_grade" ) ) m_session.maxGrade = field->GetFLOAT64Value(0);
         }
@@ -163,6 +201,15 @@ void Listener::OnMesg(fit::Mesg& mesg)
             else if( QString( field->GetName().c_str() ) == QString( "avg_temperature" ) ) lap.avgTemperature = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "max_temperature" ) ) lap.maxTemperature = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "start_time" ) ) lap.startTime = field->GetUINT32Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "min_heart_rate" ) ) lap.minHeartRate = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "avg_heart_rate" ) ) lap.avgHeartRate = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "max_heart_rate" ) ) lap.maxHeartRate = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "avg_power" ) ) lap.avgPower = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "max_power" ) ) lap.maxPower = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "left_right_balance" ) ) lap.leftRightBalance = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "total_work" ) ) lap.totalWork = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "total_calories" ) ) lap.totalCalories = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "normalized_power" ) ) lap.normalizedPower = field->GetFLOAT64Value(0);
             //else if( QString( field->GetName().c_str() ) == QString( "max_neg_grade" ) ) lap.minGrade = field->GetFLOAT64Value(0);
             //else if( QString( field->GetName().c_str() ) == QString( "max_pos_grade" ) ) lap.maxGrade = field->GetFLOAT64Value(0);
         }
@@ -175,9 +222,14 @@ void Listener::OnMesg(fit::Mesg& mesg)
                 tourDistance = field->GetFLOAT64Value(0) / 1000.0;
                 lastDistance = tourDistance;
             }
+            else if( QString( field->GetName().c_str() ) == QString( "battery_soc" ) ) tourBatterySoc = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "cadence" ) ) tourCadence = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "speed" ) ) tourSpeed = field->GetFLOAT64Value(0) * 3.6;
-            else if( QString( field->GetName().c_str() ) == QString( "position_lat" ) ) tourPosLat = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "position_lat" ) )
+            {
+                tourPosLat = field->GetFLOAT64Value(0);
+                m_posRead = true;
+            }
             else if( QString( field->GetName().c_str() ) == QString( "position_long" ) ) tourPosLong = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "grade" ) )
             {
@@ -199,6 +251,10 @@ void Listener::OnMesg(fit::Mesg& mesg)
                         m_tourTemperature[i] = tourTemperature;
                 }
             }
+            else if( QString( field->GetName().c_str() ) == QString( "heart_rate" ) ) tourHeartRate = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "calories" ) ) tourCalories = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "power" ) ) tourPower = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "left_right_balance" ) ) tourLRBalance = field->GetFLOAT64Value(0);
         }
         if( QString( mesg.GetName().c_str() ) == QString( "device_info" ) )
         {
@@ -248,17 +304,39 @@ void Listener::OnMesg(fit::Mesg& mesg)
             for( int i = 0; i < m_tourAltitude.count(); i++ )
                 m_tourAltitude[i] = tourAltitude;
         }
-        if( tourPosLat == 0.0 || tourPosLong == 0.0 ) return;
+
+        if( !m_tourPosLat.empty() && m_posRead && !m_firstPosRead ) //GPS not found yet
+        {
+            m_firstPosRead = true;
+            for( int i = 0; i < m_tourPosLat.count(); i++ )
+            {
+                m_tourPosLat[i] = tourPosLat;
+                m_tourPosLong[i] = tourPosLong;
+            }
+        }
+        else if( tourPosLat == 0.0 || tourPosLong == 0.0 ) //No GPS while on track
+        {
+            m_tourPosLat.append( m_tourPosLat.last() );
+            m_tourPosLong.append( m_tourPosLong.last() );
+        }
+        else //All fine
+        {
+            m_tourPosLat.append( tourPosLat );
+            m_tourPosLong.append( tourPosLong );
+        }
 
         m_tourTimeStamp.append( tourTimeStamp );
         m_tourDistance.append( tourDistance );
+        m_tourBatterySoc.append( tourBatterySoc );
         m_tourSpeed.append( tourSpeed );
         m_tourCadence.append( tourCadence );
         m_tourAltitude.append( tourAltitude );
         m_tourTemperature.append( tourTemperature );
         m_tourGrade.append( tourGrade );
-        m_tourPosLat.append( tourPosLat );
-        m_tourPosLong.append( tourPosLong );
+        m_tourHeartRate.append( tourHeartRate );
+        m_tourCalories.append( tourCalories );
+        m_tourPower.append( tourPower );
+        m_tourLRBalance.append( tourLRBalance );
     }
     if( QString( mesg.GetName().c_str() ) == QString( "lap" ) && mesg.GetNumFields() > 5 )
     {

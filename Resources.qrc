@@ -6,5 +6,6 @@
         <file>Icons/Folder-Documents-icon.png</file>
         <file>Icons/Window-Add-icon.png</file>
         <file>WaoStatsLogoMap.png</file>
+        <file>Splash.png</file>
     </qresource>
 </RCC>

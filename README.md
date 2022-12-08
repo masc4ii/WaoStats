@@ -36,7 +36,7 @@ A desktop application to analyse and archive your Wahoo ELEMNT bike computer tra
 - In this path, create subfolders for your bikes (or choose from WaoStats menu: Archive - Add New Bike).
 - Put your fit files into these subfolders.
 - Choose from WaoStats menu: Archive - Scan Tour Folder.
-<img width="450" alt="archive" src="https://user-images.githubusercontent.com/30245296/206464360-141df005-367b-4fe8-91bd-5e1b373c3ef5.png">
+<img width="450" alt="archive" src="https://user-images.githubusercontent.com/30245296/206466669-40a9026a-cb13-4f36-8610-01840d039c42.png">
 
 ## Dropbox Setup
 - Get an API app key by registering with Dropbox: https://dropbox.com/developers/apps

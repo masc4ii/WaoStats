@@ -29,10 +29,20 @@ A desktop application to analyse and archive your Wahoo ELEMNT bike computer tra
 - Open WaoStats.pro into QtCreator, compile with Qt5.15.3 and Clang(macOS) or minGW(Windows)
 - On Windows, install OpenSSL and copy library files to application folder
 
+## Application - First start
+- Open application.
+- Choose from WaoStats menu: Archive - Set Archive Path.
+- Create / select a path of your choice.
+- In this path, create subfolders for your bikes (or choose from WaoStats menu: Archive - Add New Bike).
+- Put your fit files into these subfolders.
+- Choose from WaoStats menu: Archive - Scan Tour Folder.
+<img width="450" alt="archive" src="https://user-images.githubusercontent.com/30245296/206464360-141df005-367b-4fe8-91bd-5e1b373c3ef5.png">
+
 ## Dropbox Setup
 - Get an API app key by registering with Dropbox: https://dropbox.com/developers/apps
-- Click "Create app", give it reading permission to your "Apps/WahooFitness" folder
-- Enter app key and app secret to WaoStats dropbox menu
-- Click "Get Token", follow the dropbox pages
+- Click "Create app", give it reading permission to your "Apps/WahooFitness" folder.
+- Enter app key and app secret to WaoStats dropbox menu.
+- Click "Get Token", follow the dropbox pages.
 - Copy the token from dropbox page into WaoStats menu.
-- WaoStats now is allow to read your fit files (once). Another reading process needs a new token with same keys.
+- WaoStats now is allowed to read your fit files (once). Another reading process needs a new token with same keys.
+- Find downloaded fit tracks in archive folder / WaoStats left list "New"

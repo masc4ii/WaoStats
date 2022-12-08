@@ -84,7 +84,19 @@ public:
     QVector<double>getTourLRBalance(){return m_tourLRBalance;}
     QVector<deviceInfo_t>getDeviceInfo(){return m_deviceInfo;}
 
+    QVector<double>getGearTimeStamp(){return m_gearTimeStamp;}
+    QVector<double>getGearDistance(){return m_gearDistance;}
+    QVector<double>getGearNumFront(){return m_gearNumFront;}
+    QVector<double>getGearToothFront(){return m_gearToothFront;}
+    QVector<double>getGearNumRear(){return m_gearNumRear;}
+    QVector<double>getGearToothRear(){return m_gearToothRear;}
+    QVector<double>getGearRatio(){return m_gearRatio;}
+
     bool containsPositionInfo( void ){return m_posRead;}
+    bool containsGearInfoRear( void ){return m_gearInfoRear;}
+    bool containsGearInfoFront( void ){return m_gearInfoFront;}
+    uint8_t gearCountFront( void ){return m_gearCountFront;}
+    uint8_t gearCountRear( void ){return m_gearCountRear;}
 
 private:
     fitSection_t m_session;
@@ -95,6 +107,18 @@ private:
     bool m_posRead;
     bool m_tempCorrectionDone;
     bool m_battCorrectionDone;
+    bool m_gearInfoRear;
+    bool m_gearInfoFront;
+    uint8_t m_gearCountFront;
+    uint8_t m_gearCountRear;
+
+    QVector<double>m_gearTimeStamp;
+    QVector<double>m_gearDistance;
+    QVector<double>m_gearNumFront;
+    QVector<double>m_gearToothFront;
+    QVector<double>m_gearNumRear;
+    QVector<double>m_gearToothRear;
+    QVector<double>m_gearRatio;
 
     QVector<double>m_tourTimeStamp;
     QVector<double>m_tourDistance;

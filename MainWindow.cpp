@@ -121,40 +121,11 @@ MainWindow::MainWindow(QWidget *parent)
         onBikeItemEditingFinished(item); // this is my handler
     });
 
+    //UI setup
     m_timePlot = false;
-    QActionGroup* plot_type_group = new QActionGroup(this);
-    plot_type_group->addAction( ui->actionPlotDistance );
-    plot_type_group->addAction( ui->actionPlotTime );
-    ui->actionPlotDistance->setCheckable( true );
-    ui->actionPlotTime->setCheckable( true );
-    ui->actionPlotDistance->setChecked( true );
-    QObject::connect( plot_type_group, &QActionGroup::triggered, this, &MainWindow::plotSelected );
-
-    QActionGroup* plot_value_group = new QActionGroup(this);
-    plot_value_group->addAction( ui->actionSpeed );
-    plot_value_group->addAction( ui->actionDeviceBattery );
-    plot_value_group->addAction( ui->actionCadence );
-    plot_value_group->addAction( ui->actionTemperature );
-    plot_value_group->addAction( ui->actionGrade );
-    plot_value_group->addAction( ui->actionHeartRate );
-    plot_value_group->addAction( ui->actionCalories );
-    plot_value_group->addAction( ui->actionPower );
-    plot_value_group->addAction( ui->actionLRBalance );
-    ui->actionSpeed->setCheckable( true );
-    ui->actionDeviceBattery->setCheckable( true );
-    ui->actionCadence->setCheckable( true );
-    ui->actionTemperature->setCheckable( true );
-    ui->actionGrade->setCheckable( true );
-    ui->actionHeartRate->setCheckable( true );
-    ui->actionCalories->setCheckable( true );
-    ui->actionPower->setCheckable( true );
-    ui->actionLRBalance->setCheckable( true );
-    ui->actionSpeed->setChecked( true );
-    QObject::connect( plot_value_group, &QActionGroup::triggered, this, &MainWindow::plotSelected );
-
+    configureActionGroups();
     ui->qwtPlot->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->widgetOsm->setContextMenuPolicy(Qt::CustomContextMenu);
-
     configurePlots();
     configureMap();
     readSettings();
@@ -282,30 +253,32 @@ void MainWindow::statistics( void )
     ui->actionCalories->setEnabled( (int)m_listener.getSession().totalCalories != 0 );
     ui->actionPower->setEnabled( (int)m_listener.getSession().maxPower != 0 );
     ui->actionLRBalance->setEnabled( (int)m_listener.getSession().maxPower != 0 );
+    ui->actionGearInfo->setEnabled( m_listener.containsGearInfoFront() || m_listener.containsGearInfoRear() );
 
     if( ( ui->actionCadence->isChecked()   && !ui->actionCadence->isEnabled() )
      || ( ui->actionGrade->isChecked()     && !ui->actionGrade->isEnabled() )
      || ( ui->actionHeartRate->isChecked() && !ui->actionHeartRate->isEnabled() )
      || ( ui->actionCalories->isChecked()  && !ui->actionCalories->isEnabled() )
      || ( ui->actionPower->isChecked()     && !ui->actionPower->isEnabled() )
-     || ( ui->actionLRBalance->isChecked() && !ui->actionLRBalance->isEnabled() ) )
+     || ( ui->actionLRBalance->isChecked() && !ui->actionLRBalance->isEnabled() )
+     || ( ui->actionGearInfo->isChecked()  && !ui->actionGearInfo->isEnabled() ) )
     {
         ui->actionSpeed->setChecked( true );
         plotSelected();
     }
 
-    ui->labelPickerCalories->setEnabled( (int)m_listener.getSession().totalCalories != 0 );
-    ui->labelPickerCaloriesName->setEnabled( (int)m_listener.getSession().totalCalories != 0 );
-    ui->labelPickerPower->setEnabled( (int)m_listener.getSession().maxPower != 0 );
-    ui->labelPickerPowerName->setEnabled( (int)m_listener.getSession().maxPower != 0 );
-    ui->labelPickerHeartRate->setEnabled( (int)m_listener.getSession().maxHeartRate != 0 );
-    ui->labelPickerHeartRateName->setEnabled( (int)m_listener.getSession().maxHeartRate != 0 );
-    ui->labelPickerCadence->setEnabled( (int)m_listener.getSession().maxCadence != 0 );
-    ui->labelPickerCadenceName->setEnabled( (int)m_listener.getSession().maxCadence != 0 );
-    ui->labelPickerAltitude->setEnabled( (int)m_listener.getSession().altitudeMax != 0 && (int)m_listener.getSession().altitudeMin != 0 );
-    ui->labelPickerAltitudeName->setEnabled( (int)m_listener.getSession().altitudeMax != 0 && (int)m_listener.getSession().altitudeMin != 0 );
-    ui->labelPickerGrade->setEnabled( (int)m_listener.getSession().descent != 0 && (int)m_listener.getSession().ascent != 0 );
-    ui->labelPickerGradeName->setEnabled( (int)m_listener.getSession().descent != 0 && (int)m_listener.getSession().ascent != 0 );
+    ui->labelPickerCalories->setVisible( (int)m_listener.getSession().totalCalories != 0 );
+    ui->labelPickerCaloriesName->setVisible( (int)m_listener.getSession().totalCalories != 0 );
+    ui->labelPickerPower->setVisible( (int)m_listener.getSession().maxPower != 0 );
+    ui->labelPickerPowerName->setVisible( (int)m_listener.getSession().maxPower != 0 );
+    ui->labelPickerHeartRate->setVisible( (int)m_listener.getSession().maxHeartRate != 0 );
+    ui->labelPickerHeartRateName->setVisible( (int)m_listener.getSession().maxHeartRate != 0 );
+    ui->labelPickerCadence->setVisible( (int)m_listener.getSession().maxCadence != 0 );
+    ui->labelPickerCadenceName->setVisible( (int)m_listener.getSession().maxCadence != 0 );
+    ui->labelPickerAltitude->setVisible( (int)m_listener.getSession().altitudeMax != 0 && (int)m_listener.getSession().altitudeMin != 0 );
+    ui->labelPickerAltitudeName->setVisible( (int)m_listener.getSession().altitudeMax != 0 && (int)m_listener.getSession().altitudeMin != 0 );
+    ui->labelPickerGrade->setVisible( (int)m_listener.getSession().descent != 0 && (int)m_listener.getSession().ascent != 0 );
+    ui->labelPickerGradeName->setVisible( (int)m_listener.getSession().descent != 0 && (int)m_listener.getSession().ascent != 0 );
 
     if( ind < 1 )
     {
@@ -461,6 +434,8 @@ void MainWindow::unconfigurePlots()
     delete m_pPanner;
     delete m_curve[0];
     delete m_curve[1];
+    if( m_curve[2] != Q_NULLPTR ) delete m_curve[2];
+    if( m_curve[3] != Q_NULLPTR ) delete m_curve[3];
 }
 
 void MainWindow::configurePlots( void )
@@ -503,6 +478,9 @@ void MainWindow::configurePlots( void )
     m_curve[0] = new QwtPlotCurve( QString( "Altitude" ) );
     m_curve[0]->setYAxis( QwtPlot::yLeft );
     m_curve[0]->setRenderHint( QwtPlotItem::RenderAntialiased );
+    m_curve[1] = Q_NULLPTR;
+    m_curve[2] = Q_NULLPTR;
+    m_curve[3] = Q_NULLPTR;
 
     if( ui->actionSpeed->isChecked() )
     {
@@ -549,22 +527,30 @@ void MainWindow::configurePlots( void )
         m_curve[1] = new QwtPlotCurve( QString( "L/R Balance" ) );
         ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "L/R Balance" ) );
     }
+    else if( ui->actionGearInfo->isChecked() )
+    {
+        m_curve[1] = new QwtPlotCurve( QString( "Gear Ratio" ) );
+        m_curve[2] = new QwtPlotCurve( QString( "Gear Front" ) );
+        m_curve[3] = new QwtPlotCurve( QString( "Gear Rear" ) );
+        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "Gear Ratio / Gear Number" ) );
+        m_curve[2]->setYAxis( QwtPlot::yRight );
+        m_curve[2]->setRenderHint( QwtPlotItem::RenderAntialiased );
+        m_curve[3]->setYAxis( QwtPlot::yRight );
+        m_curve[3]->setRenderHint( QwtPlotItem::RenderAntialiased );
+        QPen p( QColor( 100, 205, 255 ) );
+        m_curve[2]->setPen( p );
+        p.setColor( QColor( 255, 200, 0 ) );
+        m_curve[3]->setPen( p );
+    }
     m_curve[1]->setYAxis( QwtPlot::yRight );
     m_curve[1]->setRenderHint( QwtPlotItem::RenderAntialiased );
     ui->qwtPlot->setAxisVisible( QwtPlot::yRight );
-
-    m_curve[2] = new QwtPlotCurve( QString( "Cadence" ) );
-    m_curve[2]->setYAxis( QwtPlot::yRight );
-    m_curve[2]->setRenderHint( QwtPlotItem::RenderAntialiased );
 
     QPen p( Qt::red );
     m_curve[0]->setPen( p );
     m_curve[0]->setBrush( QBrush( QColor( 255, 0, 0, 25 ) ) );
     p.setColor( QColor( 0, 180, 0 ) );
     m_curve[1]->setPen( p );
-    p.setColor( QColor( 0, 100, 255 ) );
-    m_curve[2]->setPen( p );
-    p.setColor( QColor( 225, 180, 0 ) );
 
     //Zoomer init
     m_pZoomer[0] = new Zoomer( QwtPlot::xBottom, QwtPlot::yLeft, ui->qwtPlot );
@@ -667,6 +653,29 @@ void MainWindow::drawPlots( void )
         else              m_curve[1]->setSamples( listener.getTourTimeStamp().data(), listener.getTourLRBalance().data(), listener.getTourDistance().count() );
         m_curve[1]->setTitle( QString( "L/R Balance" ) );
     }
+    else if( ui->actionGearInfo->isChecked() )
+    {
+        if( !m_timePlot )
+        {
+            m_curve[1]->setSamples( listener.getGearDistance().data(), listener.getGearRatio().data(), listener.getGearDistance().count() );
+            m_curve[2]->setSamples( listener.getGearDistance().data(), listener.getGearNumFront().data(), listener.getGearDistance().count() );
+            m_curve[3]->setSamples( listener.getGearDistance().data(), listener.getGearNumRear().data(), listener.getGearDistance().count() );
+        }
+        else
+        {
+            m_curve[1]->setSamples( listener.getGearTimeStamp().data(), listener.getGearRatio().data(), listener.getGearDistance().count() );
+            m_curve[2]->setSamples( listener.getGearTimeStamp().data(), listener.getGearNumFront().data(), listener.getGearDistance().count() );
+            m_curve[3]->setSamples( listener.getGearTimeStamp().data(), listener.getGearNumRear().data(), listener.getGearDistance().count() );
+        }
+        m_curve[1]->setTitle( QString( "Gear Ratio" ) );
+        m_curve[1]->setStyle( QwtPlotCurve::Steps );
+        m_curve[2]->setTitle( QString( "Gear Front" ) );
+        m_curve[2]->setStyle( QwtPlotCurve::Steps );
+        m_curve[3]->setTitle( QString( "Gear Rear" ) );
+        m_curve[3]->setStyle( QwtPlotCurve::Steps );
+        m_curve[2]->attach( ui->qwtPlot );
+        m_curve[3]->attach( ui->qwtPlot );
+    }
     m_curve[1]->attach( ui->qwtPlot );
 
     if( !m_timePlot ) ui->qwtPlot->setAxisScale( QwtPlot::xBottom, 0, listener.getTourDistance().last(), (int)(listener.getTourDistance().last() / 5) );
@@ -674,6 +683,7 @@ void MainWindow::drawPlots( void )
 
     ui->qwtPlot->setAxisAutoScale( QwtPlot::yLeft );
     if( ui->actionDeviceBattery->isChecked() ) ui->qwtPlot->setAxisScale( QwtPlot::yRight, 0, 100, 20 );
+    else if( ui->actionGearInfo->isChecked() ) ui->qwtPlot->setAxisScale( QwtPlot::yRight, 0, m_listener.gearCountRear(), 2 );
     else ui->qwtPlot->setAxisAutoScale( QwtPlot::yRight );
 
     foreach(QwtPlotMarker *marker, m_lapMarker) delete marker;
@@ -1225,6 +1235,41 @@ void MainWindow::readSettings()
     }
 
     m_workingPath = set.value( "lastExportPath", QDir::homePath() + "/Documents/FahrradTracking" ).toString();
+}
+
+void MainWindow::configureActionGroups( void )
+{
+    QActionGroup* plot_type_group = new QActionGroup(this);
+    plot_type_group->addAction( ui->actionPlotDistance );
+    plot_type_group->addAction( ui->actionPlotTime );
+    ui->actionPlotDistance->setCheckable( true );
+    ui->actionPlotTime->setCheckable( true );
+    ui->actionPlotDistance->setChecked( true );
+    QObject::connect( plot_type_group, &QActionGroup::triggered, this, &MainWindow::plotSelected );
+
+    QActionGroup* plot_value_group = new QActionGroup(this);
+    plot_value_group->addAction( ui->actionSpeed );
+    plot_value_group->addAction( ui->actionDeviceBattery );
+    plot_value_group->addAction( ui->actionCadence );
+    plot_value_group->addAction( ui->actionTemperature );
+    plot_value_group->addAction( ui->actionGrade );
+    plot_value_group->addAction( ui->actionHeartRate );
+    plot_value_group->addAction( ui->actionCalories );
+    plot_value_group->addAction( ui->actionPower );
+    plot_value_group->addAction( ui->actionLRBalance );
+    plot_value_group->addAction( ui->actionGearInfo );
+    ui->actionSpeed->setCheckable( true );
+    ui->actionDeviceBattery->setCheckable( true );
+    ui->actionCadence->setCheckable( true );
+    ui->actionTemperature->setCheckable( true );
+    ui->actionGrade->setCheckable( true );
+    ui->actionHeartRate->setCheckable( true );
+    ui->actionCalories->setCheckable( true );
+    ui->actionPower->setCheckable( true );
+    ui->actionLRBalance->setCheckable( true );
+    ui->actionGearInfo->setCheckable( true );
+    ui->actionSpeed->setChecked( true );
+    QObject::connect( plot_value_group, &QActionGroup::triggered, this, &MainWindow::plotSelected );
 }
 
 void MainWindow::calcBikeTotalDistances()

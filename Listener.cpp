@@ -33,6 +33,18 @@ void Listener::reset()
     m_firstPosRead = false;
     m_posRead = false;
 
+    m_gearTimeStamp.clear();
+    m_gearDistance.clear();
+    m_gearNumFront.clear();
+    m_gearToothFront.clear();
+    m_gearNumRear.clear();
+    m_gearToothRear.clear();
+    m_gearRatio.clear();
+    m_gearInfoRear = false;
+    m_gearInfoFront = false;
+    m_gearCountFront = 0;
+    m_gearCountRear = 0;
+
     m_session.totalElapsedTime = 0;
     m_session.totalTimerTime = 0;
     m_session.avgSpeed = 0;
@@ -115,7 +127,8 @@ void Listener::OnMesg(fit::Mesg& mesg)
     if( QString( mesg.GetName().c_str() ) != QString( "device_info" )
      && QString( mesg.GetName().c_str() ) != QString( "record" )
      && QString( mesg.GetName().c_str() ) != QString( "session" )
-     && QString( mesg.GetName().c_str() ) != QString( "lap" ) ) return;
+     && QString( mesg.GetName().c_str() ) != QString( "lap" )
+     && QString( mesg.GetName().c_str() ) != QString( "event" ) ) return;
 
 #ifdef LOGOUT
     printf("On Mesg:\n");
@@ -146,6 +159,12 @@ void Listener::OnMesg(fit::Mesg& mesg)
     static double lapMinTemp = 9999;
     static double lastDistance = 0;
     static double lastLapStartDistance = 0;
+    double gearTimeStamp = 0;
+    double gearNumFront = 0;
+    double gearToothFront = 0;
+    double gearNumRear = 0;
+    double gearToothRear = 0;
+    bool gearRead = false;
 
     for (FIT_UINT16 i = 0; i < (FIT_UINT16)mesg.GetNumFields(); i++)
     {
@@ -186,7 +205,7 @@ void Listener::OnMesg(fit::Mesg& mesg)
             //else if( QString( field->GetName().c_str() ) == QString( "max_neg_grade" ) ) m_session.minGrade = field->GetFLOAT64Value(0);
             //else if( QString( field->GetName().c_str() ) == QString( "max_pos_grade" ) ) m_session.maxGrade = field->GetFLOAT64Value(0);
         }
-        if( QString( mesg.GetName().c_str() ) == QString( "lap" ) )
+        else if( QString( mesg.GetName().c_str() ) == QString( "lap" ) )
         {
             if(      QString( field->GetName().c_str() ) == QString( "total_elapsed_time" ) ) lap.totalElapsedTime = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "total_timer_time" ) ) lap.totalTimerTime = field->GetFLOAT64Value(0);
@@ -214,7 +233,7 @@ void Listener::OnMesg(fit::Mesg& mesg)
             //else if( QString( field->GetName().c_str() ) == QString( "max_neg_grade" ) ) lap.minGrade = field->GetFLOAT64Value(0);
             //else if( QString( field->GetName().c_str() ) == QString( "max_pos_grade" ) ) lap.maxGrade = field->GetFLOAT64Value(0);
         }
-        if( QString( mesg.GetName().c_str() ) == QString( "record" ) && mesg.GetNumFields() > 5 )
+        else if( QString( mesg.GetName().c_str() ) == QString( "record" ) && mesg.GetNumFields() > 5 )
         {
             if(      QString( field->GetName().c_str() ) == QString( "timestamp" ) ) tourTimeStamp = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "altitude" ) ) tourAltitude = field->GetFLOAT64Value(0);
@@ -257,7 +276,7 @@ void Listener::OnMesg(fit::Mesg& mesg)
             else if( QString( field->GetName().c_str() ) == QString( "power" ) ) tourPower = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "left_right_balance" ) ) tourLRBalance = field->GetFLOAT64Value(0);
         }
-        if( QString( mesg.GetName().c_str() ) == QString( "device_info" ) )
+        else if( QString( mesg.GetName().c_str() ) == QString( "device_info" ) )
         {
             if(      QString( field->GetName().c_str() ) == QString( "product_name" ) ) deviceInfo.name = QString::fromStdWString( field->GetSTRINGValue(0) );
             else if( QString( field->GetName().c_str() ) == QString( "device_index" ) ) deviceInfo.deviceId = (int)field->GetFLOAT64Value(0);
@@ -284,6 +303,25 @@ void Listener::OnMesg(fit::Mesg& mesg)
                 }
             }
         }
+        else if( QString( mesg.GetName().c_str() ) == QString( "event" ) )
+        {
+            if(      QString( field->GetName().c_str() ) == QString( "timestamp" ) ) gearTimeStamp = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "rear_gear_num" ) ) gearNumRear = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "rear_gear" ) ) gearToothRear = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "front_gear_num" ) ) gearNumFront = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "front_gear" ) ) gearToothFront = field->GetFLOAT64Value(0);
+
+            if( QString( field->GetName().c_str() ).startsWith( QString( "rear_gear" ) ) )
+            {
+                m_gearInfoRear = true;
+                gearRead = true;
+            }
+            else if( QString( field->GetName().c_str() ).startsWith( QString( "front_gear" ) ) )
+            {
+                m_gearInfoFront = true;
+                gearRead = true;
+            }
+        }
     }
 
     for (auto devField : mesg.GetDeveloperFields())
@@ -294,7 +332,8 @@ void Listener::OnMesg(fit::Mesg& mesg)
 #endif
         if( QString( mesg.GetName().c_str() ) == QString( "device_info" ) )
         {
-            if( QString( devField.GetName().c_str() ) == QString( "charge" ) ) deviceInfo.battery = "Battery " + QString::fromStdWString( devField.GetSTRINGValue(0) ) + "%";
+            if( QString( devField.GetName().c_str() ) == QString( "charge" )
+             && QString::fromStdWString( devField.GetSTRINGValue(0) ) != QString( "nan" ) ) deviceInfo.battery = "Battery " + QString::fromStdWString( devField.GetSTRINGValue(0) ) + "%";
         }
     }
     if( QString( mesg.GetName().c_str() ) == QString( "record" ) && mesg.GetNumFields() > 5 )
@@ -346,7 +385,7 @@ void Listener::OnMesg(fit::Mesg& mesg)
         m_tourPower.append( tourPower );
         m_tourLRBalance.append( tourLRBalance );
     }
-    if( QString( mesg.GetName().c_str() ) == QString( "lap" ) && mesg.GetNumFields() > 5 )
+    else if( QString( mesg.GetName().c_str() ) == QString( "lap" ) && mesg.GetNumFields() > 5 )
     {
         lap.maxGrade = lapPosGrade;
         lap.minGrade = lapNegGrade;
@@ -358,7 +397,7 @@ void Listener::OnMesg(fit::Mesg& mesg)
         lapNegGrade = 0;
         lapMinTemp = 9999;
     }
-    if( QString( mesg.GetName().c_str() ) == QString( "device_info" )
+    else if( QString( mesg.GetName().c_str() ) == QString( "device_info" )
      && deviceInfo.deviceId != -1 )
     {
         if( !deviceIdIsIncluded( deviceInfo ) )
@@ -369,6 +408,25 @@ void Listener::OnMesg(fit::Mesg& mesg)
         else
         {
             m_deviceInfo.replace( deviceIdInVectorAt( deviceInfo ), deviceInfo );
+        }
+    }
+    else if( QString( mesg.GetName().c_str() ) == QString( "event" ) && gearRead )
+    {
+        if( gearNumFront < 30 && gearNumRear < 30 )
+        {
+            m_gearTimeStamp.append( gearTimeStamp );
+            m_gearNumFront.append( gearNumFront );
+            m_gearToothFront.append( gearToothFront );
+            m_gearNumRear.append( gearNumRear );
+            m_gearToothRear.append( gearToothRear );
+            //Calc ratio only, if tooth info existing
+            if( (int)gearToothFront > 1 && (int)gearToothRear > 1 ) m_gearRatio.append( gearToothFront / gearToothRear );
+            else m_gearRatio.append( 0.0 );
+            //Steel the distance
+            if( m_tourDistance.count() > 0 ) m_gearDistance.append( m_tourDistance.last() );
+            else m_gearDistance.append( 0.0 );
+            if( gearNumFront > m_gearCountFront ) m_gearCountFront = gearNumFront;
+            if( gearNumRear > m_gearCountRear ) m_gearCountRear = gearNumRear;
         }
     }
 }

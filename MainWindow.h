@@ -72,6 +72,7 @@ private:
     void drawTourToMap( Listener listener );
     void writeSettings();
     void readSettings();
+    void configureActionGroups( void );
     QString workingPath( void );
 
     Listener m_listener;
@@ -85,7 +86,7 @@ private:
     /// The layer to display/store symbols.
     std::shared_ptr<LayerGeometry> m_layer_symb;
 
-    QwtPlotCurve *m_curve[2];
+    QwtPlotCurve *m_curve[4];
     QwtPlotZoomer *m_pZoomer[2];
     QwtPlotPanner *m_pPanner;
     QwtPlotPicker* m_picker;

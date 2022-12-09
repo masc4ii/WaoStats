@@ -19,6 +19,8 @@
 #include <QSplashScreen>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include "qwt.h"
 #include "math.h"
 #include "OsmWidget.h"
@@ -139,6 +141,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    saveTableToJson();
     writeSettings();
     delete ui;
 }
@@ -178,18 +181,22 @@ void MainWindow::scanTours()
             QTreeWidgetItem *fitItem = new QTreeWidgetItem( bikeItem );
             fitItem->setFlags( Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
-            scanFit( subdir+"/"+fitFile );
-            QDateTime startQTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
-            startQTime = startQTime.addSecs( m_listener.getSession().startTime );
+            if( !loadTrackFromJson( subdir+"/"+fitFile, fitItem ) )
+            {
+                scanFit( subdir+"/"+fitFile );
+                QDateTime startQTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
+                startQTime = startQTime.addSecs( m_listener.getSession().startTime );
 
-            fitItem->setText( 0, startQTime.toString( "yyyy-MM-dd - hh:mm:ss" ) );
-            fitItem->setText( 1, subdir+"/"+fitFile );
-            fitItem->setText( 2, QString( "%1 km" ).arg( (int)( m_listener.getSession().totalDistance / 1000.0 + 0.5 ) ) );
-            fitItem->setText( 3, QString( "%1" ).arg( m_listener.getSession().totalDistance / 1000.0, 0, 'f', 10 ) );
+                fitItem->setText( 0, startQTime.toString( "yyyy-MM-dd - hh:mm:ss" ) );
+                fitItem->setText( 1, subdir+"/"+fitFile );
+                fitItem->setText( 2, QString( "%1 km" ).arg( (int)( m_listener.getSession().totalDistance / 1000.0 + 0.5 ) ) );
+                fitItem->setText( 3, QString( "%1" ).arg( m_listener.getSession().totalDistance / 1000.0, 0, 'f', 10 ) );
+            }
         }
     }
     ui->treeWidgetTours->expandAll();
     calcBikeTotalDistances();
+    saveTableToJson();
 }
 
 void MainWindow::scanFit(QString fileName)
@@ -1270,6 +1277,67 @@ void MainWindow::configureActionGroups( void )
     ui->actionGearInfo->setCheckable( true );
     ui->actionSpeed->setChecked( true );
     QObject::connect( plot_value_group, &QActionGroup::triggered, this, &MainWindow::plotSelected );
+}
+
+void MainWindow::saveTableToJson()
+{
+    QJsonObject tours;
+    for( int i = 0; i < ui->treeWidgetTours->topLevelItemCount(); i++ )
+    {
+        QJsonObject parameters;
+        for( int j = 0; j < ui->treeWidgetTours->topLevelItem(i)->childCount(); j++ )
+        {
+            parameters.insert( "name", ui->treeWidgetTours->topLevelItem(i)->child(j)->text(0) );
+            parameters.insert( "distanceInt", ui->treeWidgetTours->topLevelItem(i)->child(j)->text(2) );
+            parameters.insert( "distanceDouble", ui->treeWidgetTours->topLevelItem(i)->child(j)->text(3) );
+            parameters.insert( "bike", ui->treeWidgetTours->topLevelItem(i)->text(0) );
+            tours.insert( ui->treeWidgetTours->topLevelItem(i)->child(j)->text(1).remove( workingPath() ), parameters );
+        }
+    }
+
+    QJsonDocument doc( tours );
+    /* write json doc into file */
+    QString fileName = QString( "%1%2" ).arg( workingPath() ).arg( "archive.json" );
+    QFile file( fileName );
+    if( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    {
+        /* Try to write the JSON document */
+        file.write( doc.toJson() );
+        file.close();
+    }
+}
+
+bool MainWindow::loadTrackFromJson( QString fitFile, QTreeWidgetItem *fitItem )
+{
+    /* Read file */
+    QString fileName = QString( "%1%2" ).arg( workingPath() ).arg( "archive.json" );
+    QFile file( fileName );
+    if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+        qDebug() << "open coefficients json file failed.";
+        return false;
+    }
+    QJsonDocument doc = QJsonDocument::fromJson( file.readAll() );
+    file.close();
+
+    /* JSON is invalid */
+    if (doc.isNull()) {
+        qDebug() << "archive json file invalid.";
+        return false;
+    }
+
+    QString archiveFile = fitFile;
+    archiveFile.remove( workingPath() );
+
+    if( !doc.object().contains( archiveFile ) ) return false;
+
+    QJsonObject track = doc.object().value( archiveFile ).toObject();
+    fitItem->setText( 0, track.value( "name" ).toString() );
+    fitItem->setText( 1, fitFile );
+    fitItem->setText( 2, track.value( "distanceInt" ).toString() );
+    fitItem->setText( 3, track.value( "distanceDouble" ).toString() );
+
+    return true;
 }
 
 void MainWindow::calcBikeTotalDistances()

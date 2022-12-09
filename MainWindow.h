@@ -73,6 +73,8 @@ private:
     void writeSettings();
     void readSettings();
     void configureActionGroups( void );
+    void saveTableToJson( void );
+    bool loadTrackFromJson( QString fitFile, QTreeWidgetItem *fitItem );
     QString workingPath( void );
 
     Listener m_listener;

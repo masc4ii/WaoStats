@@ -2,7 +2,7 @@
 
 <img width="128" alt="icon" src="https://user-images.githubusercontent.com/30245296/205703174-b3d32a43-6e8e-415d-a7e5-00cdec2a0b6c.png">
 
-A desktop application to analyse and archive your Wahoo ELEMNT bike computer tracks.
+A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer tracks. It runs on **macOS** and **Windows**, maybe also **Linux**.
 
 <img width="1000" alt="waostats" src="https://user-images.githubusercontent.com/30245296/195997239-19587c70-079c-4a51-8231-fe0a10e137cb.png">
 
@@ -26,7 +26,7 @@ A desktop application to analyse and archive your Wahoo ELEMNT bike computer tra
 - Download Qwt 6.2.0 and copy archive content into qwt-6.2.0 folder, compile and install as usual
 - Download FitSDKRelease_21.94.00 and copy archive content into FitSDKRelease_21.94.00 folder
 - Compile dropboxQt, as described in subfolder dropboxQt. You should get "WaoStats/dropboxQt/prj/libdropboxQt.a"
-- Open WaoStats.pro into QtCreator, compile with Qt5.15.3 and Clang(macOS) or minGW(Windows)
+- Open WaoStats.pro into QtCreator, compile with **Qt5.15.3 and Clang(macOS) or minGW(Windows)**
 - On Windows, install OpenSSL and copy library files to application folder
 
 ## Application - First Start

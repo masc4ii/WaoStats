@@ -24,6 +24,7 @@
 */
 
 #include "MapAdapterYahoo.h"
+#include "MapCopyrightString.h"
 
 namespace qmapcontrol
 {
@@ -42,13 +43,13 @@ namespace qmapcontrol
         ///: MapAdapterTile(QUrl("http://png.maps.yimg.com/png?v=3.1.0&x=%x&y=%y&z=%zoom"), { projection::EPSG::SphericalMercator }, 17, 0, 1, true, parent) @todo re-add once MSVC supports initializer lists.
         : MapAdapterTile(QUrl("http://png.maps.yimg.com/png?v=3.1.0&x=%x&y=%y&z=%zoom"), supportedProjections(), 17, 0, 1, true, parent) /// @todo remove once MSVC supports initializer lists.
     {
-
+        MapCopyrightString::instance()->setCopyright( "Yahoo" );
     }
 
     MapAdapterYahoo::MapAdapterYahoo(const QUrl& url)
         ///: MapAdapterTile(url, { projection::EPSG::SphericalMercator }, 17, 0, 1, true) @todo re-add once MSVC supports initializer lists.
         : MapAdapterTile(url, supportedProjections(), 17, 0, 1, true) /// @todo remove once MSVC supports initializer lists.
     {
-
+        MapCopyrightString::instance()->setCopyright( "Yahoo" );
     }
 }

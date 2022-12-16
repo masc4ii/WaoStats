@@ -40,6 +40,7 @@
 #include "ImageManager.h"
 #include "LayerGeometry.h"
 #include "Projection.h"
+#include "MapCopyrightString.h"
 
 #include <QDebug>
 
@@ -1314,6 +1315,18 @@ namespace qmapcontrol
                 painter.drawText(PointViewportPx(scalebar_line_length_px + 10.0, m_viewport_size_px.height() - 15.0).rawPoint(), scalebar_text);
             }
         }
+
+        // Show map copyright
+        QBrush brush = painter.background();
+        brush.setColor( QColor( 255, 255, 255, 100 ) );
+        painter.setBackground( brush );
+        painter.setBackgroundMode( Qt::OpaqueMode );
+        painter.drawText( 3, 3,
+                          m_viewport_size_px.width()-6,
+                          m_viewport_size_px.height()-6,
+                          Qt::AlignLeft|Qt::AlignBottom,
+                          MapCopyrightString::instance()->copyright() );
+        painter.setBackgroundMode( Qt::TransparentMode );
 
         // Should we draw the crosshairs?
         if(m_crosshairs_enabled)

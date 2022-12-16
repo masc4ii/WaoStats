@@ -24,7 +24,8 @@
 */
 
 #include "MapAdapterBing.h"
-#include <QDebug>
+#include "MapCopyrightString.h"
+//#include <QDebug>
 
 namespace qmapcontrol
 {
@@ -49,7 +50,7 @@ namespace qmapcontrol
     // https://t.ssl.ak.tiles.virtualearth.net/tiles/a1203032112310101.jpeg?g=8318
     // https://t.ssl.ak.dynamic.tiles.virtualearth.net/comp/ch/12030321123101013?it=G,BX,RL
     // https://t.ssl.ak.dynamic.tiles.virtualearth.net/comp/ch/120303211211300?mkt=en-US&it=G,BX,RL&shading=hill&n=z&og=804&c4w=1&cstl=vb&src=h
-
+        MapCopyrightString::instance()->setCopyright( "Microsoft® Bing™ Maps" );
     }
 
 //    QString MapAdapterBing::layerTypeToString(const MapAdapterBing::BingLayerType& layer_type)
@@ -93,7 +94,7 @@ namespace qmapcontrol
                                  static_cast<quint32>(y)
                                  );
         QString URL = getBaseUrl().toString().replace("%25q", id);
-        qDebug() << "x = " << x << "; y = " << y << "; z = " << zoom_controller << "; " << id;
+        //qDebug() << "x = " << x << "; y = " << y << "; z = " << zoom_controller << "; " << id;
         return QUrl(URL);
     }
 }

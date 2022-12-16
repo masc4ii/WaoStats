@@ -3206,3 +3206,7 @@ qwt-6.2.0/tests/splinetest/splinetest.pro
 qwt-6.2.0/tests/tests.pri
 qwt-6.2.0/tests/tests.pro
 WaoStats.pro.user
+QMapControl/lib/libqmapcontrol.1.0.0.dylib
+QMapControl/lib/libqmapcontrol.1.0.dylib
+QMapControl/lib/libqmapcontrol.1.dylib
+QMapControl/lib/libqmapcontrol.dylib

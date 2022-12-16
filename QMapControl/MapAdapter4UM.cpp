@@ -24,6 +24,7 @@
 */
 
 #include "MapAdapter4UM.h"
+#include "MapCopyrightString.h"
 
 namespace qmapcontrol
 {
@@ -43,6 +44,6 @@ namespace qmapcontrol
         : MapAdapterTile(QUrl("https://tileserver.4umaps.com/%zoom/%x/%y.png"),
                          supportedProjections(), 0, 15, 0, false, parent) /// @todo remove once MSVC supports initializer lists.
     {
-
+        MapCopyrightString::instance()->setCopyright( "4UMaps.com, OpenStreetMap and contributors, CC BY-SA" );
     }
 }

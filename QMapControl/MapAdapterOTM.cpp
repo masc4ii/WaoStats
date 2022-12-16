@@ -24,6 +24,7 @@
 */
 
 #include "MapAdapterOTM.h"
+#include "MapCopyrightString.h"
 
 namespace qmapcontrol
 {
@@ -43,6 +44,6 @@ namespace qmapcontrol
         : MapAdapterTile(QUrl("https://a.tile.opentopomap.org/%zoom/%x/%y.png"),
                          supportedProjections(), 0, 17, 0, false, parent) /// @todo remove once MSVC supports initializer lists.
     {
-
+        MapCopyrightString::instance()->setCopyright( "OpenStreetMap contributors, SRTM | OpenTopoMap (CC-BY-SA)" );
     }
 }

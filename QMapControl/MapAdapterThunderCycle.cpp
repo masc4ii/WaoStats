@@ -23,6 +23,7 @@
 */
 
 #include "MapAdapterThunderCycle.h"
+#include "MapCopyrightString.h"
 
 namespace qmapcontrol
 {
@@ -43,7 +44,7 @@ namespace qmapcontrol
         : MapAdapterTile(QUrl("http://a.tile.thunderforest.com/"+layerTypeToString(layer_type)+"/%zoom/%x/%y.png"),
                          supportedProjections(), 0, 17, 0, false, parent) /// @todo remove once MSVC supports initializer lists.
     {
-
+        MapCopyrightString::instance()->setCopyright( "Thunderforest, Data © OpenStreetMap contributors" );
     }
 
     QString MapAdapterThunderCycle::layerTypeToString(const ThunderforestLayerType &layer_type)

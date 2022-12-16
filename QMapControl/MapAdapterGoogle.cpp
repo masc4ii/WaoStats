@@ -24,6 +24,7 @@
 */
 
 #include "MapAdapterGoogle.h"
+#include "MapCopyrightString.h"
 
 namespace qmapcontrol
 {
@@ -52,7 +53,7 @@ namespace qmapcontrol
                          false,
                          parent) /// @todo remove once MSVC supports initializer lists.
     {
-
+        MapCopyrightString::instance()->setCopyright( "Google" );
     }
 
     QString MapAdapterGoogle::layerTypeToString(const MapAdapterGoogle::GoogleLayerType& layer_type)

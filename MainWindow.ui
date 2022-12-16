@@ -34,8 +34,10 @@
     </item>
     <item row="0" column="0">
      <widget class="OsmWidget" name="widgetOsm" native="true">
-      <property name="autoFillBackground">
-       <bool>false</bool>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
       </property>
      </widget>
     </item>

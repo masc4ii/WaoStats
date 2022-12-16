@@ -34,6 +34,7 @@ DEFINES += QMAPCONTROL_LIBRARY
 # Add header files.
 HEADERS +=                                      \
     QMapControl/qmapcontrol_global.h                        \
+    QMapControl/MapCopyrightString.h                        \
     QMapControl/Geometry.h                                  \
     QMapControl/GeometryLineString.h                        \
     QMapControl/GeometryPoint.h                             \
@@ -74,6 +75,7 @@ HEADERS +=                                      \
 
 # Add source files.
 SOURCES +=                                      \
+    QMapControl/MapCopyrightString.cpp                      \
     QMapControl/Geometry.cpp                                \
     QMapControl/GeometryLineString.cpp                      \
     QMapControl/GeometryPoint.cpp                           \

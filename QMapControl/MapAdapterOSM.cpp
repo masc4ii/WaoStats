@@ -24,6 +24,7 @@
 */
 
 #include "MapAdapterOSM.h"
+#include "MapCopyrightString.h"
 
 namespace qmapcontrol
 {
@@ -42,6 +43,6 @@ namespace qmapcontrol
         ///: MapAdapterTile(QUrl("http://tile.openstreetmap.org/%zoom/%x/%y.png"), { projection::EPSG::SphericalMercator }, 0, 17, 0, false, parent) @todo re-add once MSVC supports initializer lists.
         : MapAdapterTile(QUrl("http://tile.openstreetmap.org/%zoom/%x/%y.png"), supportedProjections(), 0, 17, 0, false, parent) /// @todo remove once MSVC supports initializer lists.
     {
-
+        MapCopyrightString::instance()->setCopyright( "OpenStreetMap contributors" );
     }
 }

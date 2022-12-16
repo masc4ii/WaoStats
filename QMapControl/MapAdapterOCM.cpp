@@ -23,6 +23,7 @@
 */
 
 #include "MapAdapterOCM.h"
+#include "MapCopyrightString.h"
 
 namespace qmapcontrol
 {
@@ -42,6 +43,6 @@ namespace qmapcontrol
         : MapAdapterTile(QUrl("https://a.tile-cyclosm.openstreetmap.fr/cyclosm/%zoom/%x/%y.png"),
                          supportedProjections(), 0, 17, 0, false, parent) /// @todo remove once MSVC supports initializer lists.
     {
-
+        MapCopyrightString::instance()->setCopyright( "CyclOSM | Map data © OpenStreetMap contributors" );
     }
 }

@@ -24,6 +24,7 @@
 */
 
 #include "LayerGeometry.h"
+#include <QDebug>
 
 // Local includes.
 #include "GeometryPoint.h"
@@ -343,9 +344,14 @@ namespace qmapcontrol
             // Save the current painter's state.
             painter.save();
 
+            int i=0;
+
             // Loop through each geometry and draw it.
             for(const auto& geometry : getGeometries(backbuffer_rect_coord))
             {
+                if(i) break;
+                i++;
+                //qDebug() << "draw" << i;
                 // Draw the geometry (this will not move widgets).
                 geometry->draw(painter, backbuffer_rect_coord, controller_zoom);
             }

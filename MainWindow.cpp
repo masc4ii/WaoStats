@@ -723,7 +723,7 @@ void MainWindow::drawPlots( void )
     m_pZoomer[1]->setZoomBase( true );
 }
 
-void MainWindow::drawTourToMap(Listener listener)
+void MainWindow::drawTourToMap(Listener listener, bool autoZoom = true)
 {
     if( !listener.containsPositionInfo() )
     {
@@ -735,17 +735,20 @@ void MainWindow::drawTourToMap(Listener listener)
     }
 
     // Create a pen to draw.
-    QPen pen(QColor(0, 0, 255, 100));
+    QPen pen(QColor(0, 0, 255));
     pen.setWidth(3);
     // Add the points of the sights tour.
     std::vector<PointWorldCoord> points;
-    for( int i = 0; i < listener.getTourPosLat().size(); i+=5 )
+
+    for( int i = 0; i < listener.getTourPosLat().size(); i++ )
     {
         points.emplace_back( listener.getTourPosLong().at(i) * ( 180 / pow(2,31) ),
                              listener.getTourPosLat().at(i) * ( 180 / pow(2,31) ) );
     }
+    //qDebug() << "Draw track with" << points.size() << "points.";
+
     // Autozoom to track
-    m_map_control->setMapFocusPoint( points, true );
+    if( autoZoom ) m_map_control->setMapFocusPoint( points, true );
 
     // Create the sights tour as a Line String and add it to the notes layer.
     m_tour_sights = std::make_shared<GeometryLineString>(points);
@@ -1246,25 +1249,25 @@ void MainWindow::readSettings()
 
 void MainWindow::configureActionGroups( void )
 {
-    QActionGroup* plot_type_group = new QActionGroup(this);
-    plot_type_group->addAction( ui->actionPlotDistance );
-    plot_type_group->addAction( ui->actionPlotTime );
+    QActionGroup* plotTypeGroup = new QActionGroup(this);
+    plotTypeGroup->addAction( ui->actionPlotDistance );
+    plotTypeGroup->addAction( ui->actionPlotTime );
     ui->actionPlotDistance->setCheckable( true );
     ui->actionPlotTime->setCheckable( true );
     ui->actionPlotDistance->setChecked( true );
-    QObject::connect( plot_type_group, &QActionGroup::triggered, this, &MainWindow::plotSelected );
+    QObject::connect( plotTypeGroup, &QActionGroup::triggered, this, &MainWindow::plotSelected );
 
-    QActionGroup* plot_value_group = new QActionGroup(this);
-    plot_value_group->addAction( ui->actionSpeed );
-    plot_value_group->addAction( ui->actionDeviceBattery );
-    plot_value_group->addAction( ui->actionCadence );
-    plot_value_group->addAction( ui->actionTemperature );
-    plot_value_group->addAction( ui->actionGrade );
-    plot_value_group->addAction( ui->actionHeartRate );
-    plot_value_group->addAction( ui->actionCalories );
-    plot_value_group->addAction( ui->actionPower );
-    plot_value_group->addAction( ui->actionLRBalance );
-    plot_value_group->addAction( ui->actionGearInfo );
+    QActionGroup* plotValueGroup = new QActionGroup(this);
+    plotValueGroup->addAction( ui->actionSpeed );
+    plotValueGroup->addAction( ui->actionDeviceBattery );
+    plotValueGroup->addAction( ui->actionCadence );
+    plotValueGroup->addAction( ui->actionTemperature );
+    plotValueGroup->addAction( ui->actionGrade );
+    plotValueGroup->addAction( ui->actionHeartRate );
+    plotValueGroup->addAction( ui->actionCalories );
+    plotValueGroup->addAction( ui->actionPower );
+    plotValueGroup->addAction( ui->actionLRBalance );
+    plotValueGroup->addAction( ui->actionGearInfo );
     ui->actionSpeed->setCheckable( true );
     ui->actionDeviceBattery->setCheckable( true );
     ui->actionCadence->setCheckable( true );
@@ -1276,7 +1279,7 @@ void MainWindow::configureActionGroups( void )
     ui->actionLRBalance->setCheckable( true );
     ui->actionGearInfo->setCheckable( true );
     ui->actionSpeed->setChecked( true );
-    QObject::connect( plot_value_group, &QActionGroup::triggered, this, &MainWindow::plotSelected );
+    QObject::connect( plotValueGroup, &QActionGroup::triggered, this, &MainWindow::plotSelected );
 }
 
 void MainWindow::saveTableToJson()

@@ -69,7 +69,7 @@ private:
     void unconfigurePlots( void );
     void configurePlots( void );
     void drawPlots( void );
-    void drawTourToMap( Listener listener );
+    void drawTourToMap( Listener listener, bool autoZoom );
     void writeSettings();
     void readSettings();
     void configureActionGroups( void );

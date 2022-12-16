@@ -75,6 +75,7 @@ private:
     void configureActionGroups( void );
     void saveTableToJson( void );
     bool loadTrackFromJson( QString fitFile, QTreeWidgetItem *fitItem );
+    void markActiveTour( QTreeWidgetItem *item );
     QString workingPath( void );
 
     Listener m_listener;
@@ -93,6 +94,7 @@ private:
     QwtPlotPanner *m_pPanner;
     QwtPlotPicker* m_picker;
     QVector<QwtPlotMarker*> m_lapMarker;
+    QTreeWidgetItem *currentActiveTreeWidgetItem;
 
     QPixmap m_iconCrossHairs;
     QString m_workingPath;

@@ -125,6 +125,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //UI setup
     m_timePlot = false;
+    currentActiveTreeWidgetItem = nullptr;
     configureActionGroups();
     ui->qwtPlot->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->widgetOsm->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -766,6 +767,9 @@ QString MainWindow::workingPath()
 void MainWindow::on_treeWidgetTours_itemActivated(QTreeWidgetItem *item, int column)
 {
     QString fileName = item->text( 1 );
+
+    markActiveTour( item );
+
     if( QFileInfo( fileName ).exists() )
     {
         //qDebug() << fileName;
@@ -1341,6 +1345,21 @@ bool MainWindow::loadTrackFromJson( QString fitFile, QTreeWidgetItem *fitItem )
     fitItem->setText( 3, track.value( "distanceDouble" ).toString() );
 
     return true;
+}
+
+void MainWindow::markActiveTour(QTreeWidgetItem *item)
+{
+    for( int i = 0; i < 4; i++ )
+    {
+        QFont font = item->font( i );
+        font.setItalic( false );
+        font.setBold( false );
+        if( currentActiveTreeWidgetItem != nullptr ) currentActiveTreeWidgetItem->setFont( i, font );
+        font.setItalic( true );
+        font.setBold( true );
+        item->setFont( i, font );
+    }
+    currentActiveTreeWidgetItem = item;
 }
 
 void MainWindow::calcBikeTotalDistances()

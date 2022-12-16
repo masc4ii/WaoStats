@@ -344,14 +344,14 @@ namespace qmapcontrol
             // Save the current painter's state.
             painter.save();
 
-            int i=0;
+            int i=0; //TODO: find another fix!
 
             // Loop through each geometry and draw it.
             for(const auto& geometry : getGeometries(backbuffer_rect_coord))
             {
-                if(i) break;
-                i++;
-                //qDebug() << "draw" << i;
+                if(i) break; //TODO: find another fix!
+                i++; //TODO: find another fix!
+                //qDebug() << "draw" << i; //TODO: find another fix!
                 // Draw the geometry (this will not move widgets).
                 geometry->draw(painter, backbuffer_rect_coord, controller_zoom);
             }

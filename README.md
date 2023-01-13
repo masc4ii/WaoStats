@@ -2,10 +2,14 @@
 
 <img width="128" alt="icon" src="https://user-images.githubusercontent.com/30245296/205703174-b3d32a43-6e8e-415d-a7e5-00cdec2a0b6c.png">
 
+[![macOS](https://img.shields.io/badge/mac%20os-000000?style=flat&logo=apple&logoColor=white)](https://www.apple.com/de/macos)
+[![Windows](https://img.shields.io/badge/Windows-0078D6?style=flat&logo=windows&logoColor=white)](https://www.microsoft.com/de-de/windows)
 [![Qt&5](https://img.shields.io/badge/Qt-5-brightgreen)](https://doc.qt.io/qt-5/)
 [![Commit Activity](https://img.shields.io/github/commit-activity/m/masc4ii/WaoStats)](https://github.com/masc4ii/WaoStats/pulse)
 [![Last Commit](https://img.shields.io/github/last-commit/masc4ii/WaoStats)](https://github.com/masc4ii/WaoStats/pulse)
 [![Contributors](https://img.shields.io/github/contributors/masc4ii/WaoStats)](https://github.com/masc4ii/WaoStats/graphs/contributors)
+[![Open Issues](https://img.shields.io/github/issues/masc4ii/WaoStats)](https://github.com/masc4ii/WaoStats/issues)
+[![Closed Issues](https://img.shields.io/github/issues-closed/masc4ii/WaoStats)](https://github.com/masc4ii/WaoStats/issues?q=is%3Aissue+is%3Aclosed)
 
 A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer tracks. It runs on **macOS** and **Windows**, maybe also **Linux**.
 

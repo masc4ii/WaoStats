@@ -4,7 +4,7 @@
 
 [![macOS](https://img.shields.io/badge/mac%20os-000000?style=flat&logo=apple&logoColor=white)](https://www.apple.com/de/macos)
 [![Windows](https://img.shields.io/badge/Windows-0078D6?style=flat&logo=windows&logoColor=white)](https://www.microsoft.com/de-de/windows)
-
+[![wahooELEMNT](https://img.shields.io/badge/wahoo-ELEMNT-red)](https://de-eu.wahoofitness.com/devices/bike-computers)
 [![Qt&5](https://img.shields.io/badge/Qt-5-brightgreen)](https://doc.qt.io/qt-5/)
 [![Qwt&620](https://img.shields.io/badge/Qwt-6.2.0-brightgreen)](https://qwt.sourceforge.io/)
 [![FitSDK](https://img.shields.io/badge/FitSDKRelease-21.94.00-brightgreen)](https://developer.garmin.com/fit/download/)

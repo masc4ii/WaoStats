@@ -1321,6 +1321,7 @@ namespace qmapcontrol
         brush.setColor( QColor( 255, 255, 255, 100 ) );
         painter.setBackground( brush );
         painter.setBackgroundMode( Qt::OpaqueMode );
+        painter.setPen( QColor( 0, 0, 0 ) );
         painter.drawText( 3, 3,
                           m_viewport_size_px.width()-6,
                           m_viewport_size_px.height()-6,

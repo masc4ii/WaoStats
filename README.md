@@ -1,6 +1,7 @@
 # WaoStats
 
 <img width="128" alt="icon" src="https://user-images.githubusercontent.com/30245296/205703174-b3d32a43-6e8e-415d-a7e5-00cdec2a0b6c.png">
+
 [![Qt&5](https://img.shields.io/badge/Qt-5-brightgreen)](https://doc.qt.io/qt-5/)
 [![Commit Activity](https://img.shields.io/github/commit-activity/m/masc4ii/WaoStats)](https://github.com/masc4ii/WaoStats/pulse)
 [![Last Commit](https://img.shields.io/github/last-commit/masc4ii/WaoStats)](https://github.com/masc4ii/WaoStats/pulse)

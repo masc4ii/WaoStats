@@ -1,88 +1,14 @@
-#include "Listener.h"
+#include "FitListener.h"
 #include "math.h"
-#include <QDebug>
 
 //#define LOGOUT
 
-Listener::Listener()
+FitListener::FitListener() : TourData()
 {
-    reset();
+
 }
 
-void Listener::reset()
-{
-    m_session.minTemperature = 9999;
-    m_tourTimeStamp.clear();
-    m_tourDistance.clear();
-    m_tourBatterySoc.clear();
-    m_tourSpeed.clear();
-    m_tourCadence.clear();
-    m_tourAltitude.clear();
-    m_tourTemperature.clear();
-    m_tourGrade.clear();
-    m_tourPosLat.clear();
-    m_tourPosLong.clear();
-    m_tourHeartRate.clear();
-    m_tourCalories.clear();
-    m_tourPower.clear();
-    m_tourLRBalance.clear();
-    m_altCorrectionDone = false;
-    m_posCorrectionDone = false;
-    m_tempCorrectionDone = false;
-    m_battCorrectionDone = false;
-    m_firstPosRead = false;
-    m_posRead = false;
-
-    m_gearTimeStamp.clear();
-    m_gearDistance.clear();
-    m_gearNumFront.clear();
-    m_gearToothFront.clear();
-    m_gearNumRear.clear();
-    m_gearToothRear.clear();
-    m_gearRatio.clear();
-    m_gearInfoRear = false;
-    m_gearInfoFront = false;
-    m_gearCountFront = 0;
-    m_gearCountRear = 0;
-
-    m_session.totalElapsedTime = 0;
-    m_session.totalTimerTime = 0;
-    m_session.avgSpeed = 0;
-    m_session.maxSpeed = 0;
-    m_session.totalDistance = 0;
-    m_session.avgCadence = 0;
-    m_session.maxCadence = 0;
-    m_session.ascent = 0;
-    m_session.descent = 0;
-    m_session.altitudeMax = 0;
-    m_session.altitudeMin = 9999;
-    m_session.avgTemperature = 0;
-    m_session.maxTemperature = 0;
-    m_session.minTemperature = 9999;
-    m_session.startTime = 0;
-    m_session.startDistance = 0;
-    m_session.maxGrade = 0;
-    m_session.minGrade = 0;
-    m_session.minHeartRate = 0;
-    m_session.avgHeartRate = 0;
-    m_session.maxHeartRate = 0;
-    m_session.avgPower = 0;
-    m_session.maxPower = 0;
-    m_session.leftRightBalance = 0;
-    m_session.totalWork = 0;
-    m_session.totalCalories = 0;
-    m_session.normalizedPower = 0;
-    m_session.thresholdPower = 0;
-    m_session.trainingStressScore = 0;
-    m_session.itensityFactor = 0;
-    m_altCorrectionDone = false;
-
-    m_deviceInfo.clear();
-
-    m_sections.clear();
-}
-
-void Listener::PrintValues(const fit::FieldBase& field)
+void FitListener::PrintValues(const fit::FieldBase& field)
 {
     for (FIT_UINT8 j=0; j< (FIT_UINT8)field.GetNumValues(); j++)
     {
@@ -122,7 +48,7 @@ void Listener::PrintValues(const fit::FieldBase& field)
     }
 }
 
-void Listener::OnMesg(fit::Mesg& mesg)
+void FitListener::OnMesg(fit::Mesg& mesg)
 {
     if( QString( mesg.GetName().c_str() ) != QString( "device_info" )
      && QString( mesg.GetName().c_str() ) != QString( "record" )
@@ -431,7 +357,7 @@ void Listener::OnMesg(fit::Mesg& mesg)
     }
 }
 
-void Listener::OnMesg(fit::FileIdMesg& mesg)
+void FitListener::OnMesg(fit::FileIdMesg& mesg)
 {
 #ifdef LOGOUT
   printf("File ID:\n");
@@ -446,22 +372,4 @@ void Listener::OnMesg(fit::FileIdMesg& mesg)
   if (mesg.IsNumberValid())
      printf("   Number: %d\n", mesg.GetNumber());
 #endif
-}
-
-bool Listener::deviceIdIsIncluded(deviceInfo_t a)
-{
-    foreach( deviceInfo_t deviceInfo, m_deviceInfo )
-    {
-        if( deviceInfo.deviceId == a.deviceId ) return true;
-    }
-    return false;
-}
-
-int Listener::deviceIdInVectorAt(deviceInfo_t a)
-{
-    for( int i = 0; i < m_deviceInfo.size(); i++ )
-    {
-        if( m_deviceInfo.at( i ).deviceId == a.deviceId ) return i;
-    }
-    return -1;
 }

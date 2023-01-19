@@ -19,7 +19,8 @@
 #include <qwt_plot_marker.h>
 
 //fit listener
-#include "Listener.h"
+#include "FitListener.h"
+#include "TourData.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -48,16 +49,16 @@ private slots:
     void on_actionNewBike_triggered();
     void on_actionSetArchivePath_triggered();
     void on_actionScanTourFolder_triggered();
-    void on_actionShowPlot_triggered(bool checked);
+    void on_actionShowPlot_triggered( bool checked );
     void on_actionSyncDropbox_triggered();
-    void on_actionMapCaching_triggered(bool checked);
+    void on_actionMapCaching_triggered( bool checked );
     void on_actionClearMapCache_triggered();
     void on_treeWidgetTours_itemActivated( QTreeWidgetItem *item, int column );
-    void on_treeWidgetTours_itemsDropped(QList<QTreeWidgetItem *> pSource, QTreeWidgetItem* pTarget);
+    void on_treeWidgetTours_itemsDropped( QList<QTreeWidgetItem *> pSource, QTreeWidgetItem* pTarget );
     void on_treeWidgetTours_itemDoubleClicked( QTreeWidgetItem *item, int column );
-    void on_widgetOsm_customContextMenuRequested(const QPoint &pos);
-    void on_qwtPlot_customContextMenuRequested(const QPoint &pos);
-    void on_lineEditFilter_textChanged(const QString &arg1);
+    void on_widgetOsm_customContextMenuRequested( const QPoint &pos );
+    void on_qwtPlot_customContextMenuRequested( const QPoint &pos );
+    void on_lineEditFilter_textChanged( const QString &arg1 );
     void calcBikeTotalDistances();
 
 private:
@@ -69,7 +70,7 @@ private:
     void unconfigurePlots( void );
     void configurePlots( void );
     void drawPlots( void );
-    void drawTourToMap( Listener listener, bool autoZoom );
+    void drawTourToMap( TourData *pTourData, bool autoZoom );
     void writeSettings();
     void readSettings();
     void configureActionGroups( void );
@@ -78,7 +79,8 @@ private:
     void markActiveTour( QTreeWidgetItem *item );
     QString workingPath( void );
 
-    Listener m_listener;
+    TourData *m_pTourData;
+    FitListener m_fitListener;
 
     /// The main map control.
     QMapControl* m_map_control;

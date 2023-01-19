@@ -42,6 +42,7 @@ win32: LIBS += -L$${PWD}/dropboxQt/prj/release/ -ldropboxQt
 
 SOURCES += \
     DropBoxAuthDialog.cpp \
+    FitListener.cpp \
     FitSDKRelease_21.94.00/cpp/fit.cpp \
     FitSDKRelease_21.94.00/cpp/fit_accumulated_field.cpp \
     FitSDKRelease_21.94.00/cpp/fit_accumulator.cpp \
@@ -67,9 +68,9 @@ SOURCES += \
     FitSDKRelease_21.94.00/cpp/fit_protocol_validator.cpp \
     FitSDKRelease_21.94.00/cpp/fit_unicode.cpp \
     LineEditEscDelete.cpp \
-    Listener.cpp \
     OsmWidget.cpp \
     Splash.cpp \
+    TourData.cpp \
     VScrollArea.cpp \
     main.cpp \
     MainWindow.cpp
@@ -77,6 +78,7 @@ SOURCES += \
 HEADERS += \
     BikeEditingDelegate.h \
     DropBoxAuthDialog.h \
+    FitListener.h \
     FitSDKRelease_21.94.00/cpp/fit.hpp \
     FitSDKRelease_21.94.00/cpp/fit_accelerometer_data_mesg.hpp \
     FitSDKRelease_21.94.00/cpp/fit_accelerometer_data_mesg_listener.hpp \
@@ -291,10 +293,10 @@ HEADERS += \
     FitSDKRelease_21.94.00/cpp/fit_zones_target_mesg_listener.hpp \
     Globals.h \
     LineEditEscDelete.h \
-    Listener.h \
     MainWindow.h \
     OsmWidget.h \
     Splash.h \
+    TourData.h \
     VScrollArea.h
 
 FORMS += \

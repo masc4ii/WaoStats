@@ -1,28 +1,14 @@
-#ifndef LISTENER_H
-#define LISTENER_H
+#ifndef TOURDATA_H
+#define TOURDATA_H
 
-#include "fit_decode.hpp"
-#include "fit_mesg_broadcaster.hpp"
-#include "fit_developer_field_description.hpp"
-
-#include <fstream>
-#include <iostream>
 #include <QString>
 #include <QVector>
 
-class Listener
-        : public fit::FileIdMesgListener
-        , public fit::MesgListener
-        , public fit::DeveloperFieldDescriptionListener
+class TourData
 {
 public:
-    Listener();
+    TourData();
     void reset( void );
-
-    static void PrintValues(const fit::FieldBase& field);
-    void OnMesg(fit::Mesg& mesg);
-    void OnMesg(fit::FileIdMesg& mesg);
-    void OnDeveloperFieldDescription( const fit::DeveloperFieldDescription& desc ) override { return; }
 
     typedef struct{
         QString name;
@@ -98,7 +84,7 @@ public:
     uint8_t gearCountFront( void ){return m_gearCountFront;}
     uint8_t gearCountRear( void ){return m_gearCountRear;}
 
-private:
+protected:
     fitSection_t m_session;
     QVector<fitSection_t> m_sections;
     bool m_altCorrectionDone;
@@ -138,4 +124,4 @@ private:
     QVector<deviceInfo_t>m_deviceInfo;
 };
 
-#endif // LISTENER_H
+#endif // TOURDATA_H

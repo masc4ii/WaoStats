@@ -96,7 +96,7 @@ private:
     QwtPlotPanner *m_pPanner;
     QwtPlotPicker* m_picker;
     QVector<QwtPlotMarker*> m_lapMarker;
-    QTreeWidgetItem *currentActiveTreeWidgetItem;
+    QTreeWidgetItem *m_currentActiveTreeWidgetItem;
 
     QPixmap m_iconCrossHairs;
     QString m_workingPath;

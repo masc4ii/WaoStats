@@ -126,7 +126,7 @@ MainWindow::MainWindow(QWidget *parent)
     //UI setup
     m_pTourData = &m_fitListener;
     m_timePlot = false;
-    currentActiveTreeWidgetItem = nullptr;
+    m_currentActiveTreeWidgetItem = nullptr;
     configureActionGroups();
     ui->qwtPlot->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->widgetOsm->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -199,6 +199,7 @@ void MainWindow::scanTours()
     ui->treeWidgetTours->expandAll();
     calcBikeTotalDistances();
     saveTableToJson();
+    m_currentActiveTreeWidgetItem = nullptr;
 }
 
 void MainWindow::scanFit(QString fileName)
@@ -1357,12 +1358,12 @@ void MainWindow::markActiveTour(QTreeWidgetItem *item)
         QFont font = item->font( i );
         font.setItalic( false );
         font.setBold( false );
-        if( currentActiveTreeWidgetItem != nullptr ) currentActiveTreeWidgetItem->setFont( i, font );
+        if( m_currentActiveTreeWidgetItem != nullptr ) m_currentActiveTreeWidgetItem->setFont( i, font );
         font.setItalic( true );
         font.setBold( true );
         item->setFont( i, font );
     }
-    currentActiveTreeWidgetItem = item;
+    m_currentActiveTreeWidgetItem = item;
 }
 
 void MainWindow::calcBikeTotalDistances()

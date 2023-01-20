@@ -172,7 +172,7 @@ void MainWindow::scanTours()
         bikeItem->setText( 1, subdir );
         QStringList fits;
         QDir subQDir( subdir );
-        fits = subQDir.entryList( QStringList() << "*.fit" << "*.FIT", QDir::Files, QDir::Name | QDir::Reversed );
+        fits = subQDir.entryList( QStringList() << "*.fit" << "*.FIT" << "*.gpx" << "*.GPX", QDir::Files, QDir::Name | QDir::Reversed );
         if( fits.empty() && bikeItem->text( 0 ) == "New" )
         {
             bikeItem->setHidden( true );
@@ -185,7 +185,8 @@ void MainWindow::scanTours()
 
             if( !loadTrackFromJson( subdir+"/"+fitFile, fitItem ) )
             {
-                scanFit( subdir+"/"+fitFile );
+                if( fitFile.endsWith( ".fit", Qt::CaseInsensitive ) ) scanFit( subdir+"/"+fitFile );
+                else scanGpx( subdir+"/"+fitFile );
                 QDateTime startQTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
                 startQTime = startQTime.addSecs( m_pTourData->getSession().startTime );
 
@@ -229,6 +230,12 @@ void MainWindow::scanFit(QString fileName)
     file.close();
 }
 
+void MainWindow::scanGpx(QString fileName)
+{
+    m_pTourData = &m_gpxParser;
+    m_gpxParser.loadGpx( fileName );
+}
+
 void MainWindow::adjustGui()
 {
     ui->comboBoxSection->clear();
@@ -258,6 +265,7 @@ void MainWindow::statistics( void )
     ui->groupBoxHeartRate->setVisible( (int)m_pTourData->getSession().maxHeartRate != 0 );
     ui->groupBoxPower->setVisible( (int)m_pTourData->getSession().maxPower != 0 );
     ui->groupBoxProfile->setVisible( ( (int)m_pTourData->getSession().ascent != 0 ) && ( (int)m_pTourData->getSession().descent != 0 ) );
+    ui->groupBoxTemperature->setVisible( (int)m_pTourData->getSession().minTemperature != 9999 );
 
     ui->actionCadence->setEnabled( (int)m_pTourData->getSession().maxCadence != 0 );
     ui->actionGrade->setEnabled( ( (int)m_pTourData->getSession().ascent != 0 ) && ( (int)m_pTourData->getSession().descent != 0 ) );
@@ -266,6 +274,7 @@ void MainWindow::statistics( void )
     ui->actionPower->setEnabled( (int)m_pTourData->getSession().maxPower != 0 );
     ui->actionLRBalance->setEnabled( (int)m_pTourData->getSession().maxPower != 0 );
     ui->actionGearInfo->setEnabled( m_pTourData->containsGearInfoFront() || m_pTourData->containsGearInfoRear() );
+    ui->actionTemperature->setEnabled( (int)m_pTourData->getSession().minTemperature != 9999 );
 
     if( ( ui->actionCadence->isChecked()   && !ui->actionCadence->isEnabled() )
      || ( ui->actionGrade->isChecked()     && !ui->actionGrade->isEnabled() )
@@ -291,6 +300,8 @@ void MainWindow::statistics( void )
     ui->labelPickerAltitudeName->setVisible( (int)m_pTourData->getSession().altitudeMax != 0 && (int)m_pTourData->getSession().altitudeMin != 0 );
     ui->labelPickerGrade->setVisible( (int)m_pTourData->getSession().descent != 0 && (int)m_pTourData->getSession().ascent != 0 );
     ui->labelPickerGradeName->setVisible( (int)m_pTourData->getSession().descent != 0 && (int)m_pTourData->getSession().ascent != 0 );
+    ui->labelPickerTemperature->setVisible( (int)m_pTourData->getSession().minTemperature != 9999 );
+    ui->labelPickerTemperatureName->setVisible( (int)m_pTourData->getSession().minTemperature != 9999 );
 
     if( ind < 1 )
     {
@@ -777,7 +788,8 @@ void MainWindow::on_treeWidgetTours_itemActivated(QTreeWidgetItem *item, int col
     if( QFileInfo( fileName ).exists() )
     {
         //qDebug() << fileName;
-        scanFit( fileName );
+        if( fileName.endsWith( ".fit", Qt::CaseInsensitive ) ) scanFit( fileName );
+        else scanGpx( fileName );
         adjustGui();
         statistics();
         drawPlots();
@@ -1395,4 +1407,3 @@ void MainWindow::on_lineEditFilter_textChanged(const QString &arg1)
 {
     ui->treeWidgetTours->setFilter( arg1 );
 }
-

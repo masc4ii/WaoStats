@@ -20,6 +20,7 @@
 
 //fit listener
 #include "FitListener.h"
+#include "GpxParser.h"
 #include "TourData.h"
 
 QT_BEGIN_NAMESPACE
@@ -65,6 +66,7 @@ private:
     Ui::MainWindow *ui;
     void scanTours( void );
     void scanFit( QString fileName );
+    void scanGpx( QString fileName );
     void adjustGui();
     void configureMap( void );
     void unconfigurePlots( void );
@@ -81,6 +83,7 @@ private:
 
     TourData *m_pTourData;
     FitListener m_fitListener;
+    GpxParser m_gpxParser;
 
     /// The main map control.
     QMapControl* m_map_control;

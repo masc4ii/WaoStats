@@ -12,11 +12,8 @@ GpxParser::GpxParser() : TourData()
 bool GpxParser::loadGpx( QString fileName )
 {
     reset();
-    for( int i = 0; i < FILTERSIZE; i++ )
-    {
-        m_filter[i] = 0.0;
-    }
-    m_cnt = 0;
+    filterReset( 0.0, FILTERGRADE );
+    filterReset( 0.0, FILTERALTIT );
 
     //Open a XML stream for the file
     QXmlStreamReader Rxml;
@@ -85,8 +82,13 @@ bool GpxParser::loadGpx( QString fileName )
         //Altitude
         else if( Rxml.isStartElement() && ( Rxml.name() == QString( "ele" ) ) )
         {
-            ele = Rxml.readElementText().toDouble();
-            if( lastEle == -1 ) lastEle = ele;
+            if( lastEle == -1 )
+            {
+                ele = Rxml.readElementText().toDouble();
+                filterReset( ele, FILTERALTIT );
+                lastEle = ele;
+            }
+            else ele = filter( Rxml.readElementText().toDouble(), FILTERALTIT );
         }
         //Timestamp
         else if( Rxml.isStartElement() && ( Rxml.name() == QString( "time" ) ) )
@@ -117,7 +119,7 @@ bool GpxParser::loadGpx( QString fileName )
             m_tourAltitude.append( ele );
             double grade = 0;
             if( distSinceLast > 0.005 ) grade = ( ele - lastEle ) / distSinceLast / 10.0;
-            m_tourGrade.append( gradeFilter( grade ) );
+            m_tourGrade.append( filter( grade, FILTERGRADE ) );
             m_tourBatterySoc.append( 0 );
             lastTime = time;
             lastEle = ele;
@@ -184,12 +186,21 @@ double GpxParser::deg2rad( double deg )
     return deg * ( M_PI / 180.0 );
 }
 
-double GpxParser::gradeFilter( double newValue )
+double GpxParser::filter( double newValue, int channel )
 {
-    m_filter[m_cnt] = newValue;
-    m_cnt++;
-    if( m_cnt >= FILTERSIZE ) m_cnt = 0;
+    m_filter[m_cnt[channel]][channel] = newValue;
+    m_cnt[channel]++;
+    if( m_cnt[channel] >= FILTERSIZE ) m_cnt[channel] = 0;
     double sum = 0;
-    for( int i = 0; i < FILTERSIZE; i++ ) sum += m_filter[i];
+    for( int i = 0; i < FILTERSIZE; i++ ) sum += m_filter[i][channel];
     return sum / FILTERSIZE;
+}
+
+void GpxParser::filterReset( double initValue, int channel )
+{
+    for( int i = 0; i < FILTERSIZE; i++ )
+    {
+        m_filter[i][channel] = initValue;
+    }
+    m_cnt[channel] = 0;
 }

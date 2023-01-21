@@ -29,6 +29,7 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 - link your tracks to your used devices (bikes) and see total kilometers per device
 - dropbox sync your FIT files
 - display your track on 11 different maps (google, openstreetmap, bing and more)
+- load GPX tracks into the application with reduced statistics (compared to FIT)
 
 ## Used Libraries
 - dropboxQt, under [MIT](https://github.com/masc4ii/WaoStats/blob/main/dropboxQt/LICENSE)

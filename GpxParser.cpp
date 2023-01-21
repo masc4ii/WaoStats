@@ -12,6 +12,11 @@ GpxParser::GpxParser() : TourData()
 bool GpxParser::loadGpx( QString fileName )
 {
     reset();
+    for( int i = 0; i < FILTERSIZE; i++ )
+    {
+        m_filter[i] = 0.0;
+    }
+    m_cnt = 0;
 
     //Open a XML stream for the file
     QXmlStreamReader Rxml;
@@ -25,13 +30,26 @@ bool GpxParser::loadGpx( QString fileName )
     double factor = ( 180.0 / pow(2,31) );
     double lat = 0, lon = 0, distSinceLast = 0;
     double breakSecs = 0;
-    double avgSpdHelper = 0;
 
     //Parse
     Rxml.setDevice(&file);
     while( !Rxml.atEnd() )
     {
         Rxml.readNext();
+        if( Rxml.isStartElement() && ( Rxml.name() == QString( "gpx" ) ) )
+        {
+            for( int i = 0; i < Rxml.attributes().size(); i++ )
+            {
+                if( Rxml.attributes().at(i).name() == QString( "creator" ) )
+                {
+                    deviceInfo_t deviceInfo;
+                    deviceInfo.name = Rxml.attributes().at(i).value().toString();
+                    deviceInfo.battery = "";
+                    deviceInfo.deviceId = 0;
+                    m_deviceInfo.append( deviceInfo );
+                }
+            }
+        }
         //GPS Position
         if( Rxml.isStartElement() && ( Rxml.name() == QString( "trkpt" ) ) )
         {
@@ -77,6 +95,7 @@ bool GpxParser::loadGpx( QString fileName )
             timeString.remove( "T" );
             timeString.remove( "Z" );
             time = QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) ).secsTo( QDateTime().fromString( timeString, "yyyy-MM-ddhh:mm:ss.zzz" ) );
+            if( !time ) time = QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) ).secsTo( QDateTime().fromString( timeString, "yyyy-MM-ddhh:mm:ss" ) );
             if( lastTime == -1 ) lastTime = time;
         }
         //Copy data into vectors
@@ -97,7 +116,7 @@ bool GpxParser::loadGpx( QString fileName )
             m_tourTemperature.append( 0 );
             m_tourAltitude.append( ele );
             double grade = 0;
-            if( lastEle - ele != 0 ) grade = ( ele - lastEle ) / distSinceLast / 10.0;
+            if( distSinceLast > 0.005 ) grade = ( ele - lastEle ) / distSinceLast / 10.0;
             m_tourGrade.append( gradeFilter( grade ) );
             m_tourBatterySoc.append( 0 );
             lastTime = time;
@@ -137,7 +156,6 @@ bool GpxParser::loadGpx( QString fileName )
         if( m_session.maxGrade < m_tourGrade.at(i) ) m_session.maxGrade = m_tourGrade.at(i);
         else if( m_session.minGrade > m_tourGrade.at(i) ) m_session.minGrade = m_tourGrade.at(i);
     }
-    for( int i = 0; i < m_tourGrade.size(); i++ ) qDebug() << m_tourGrade.at(i);
     m_session.altitudeMax = maxAlt;
     m_session.altitudeMin = minAlt;
     m_session.ascent = gradePos;
@@ -168,12 +186,10 @@ double GpxParser::deg2rad( double deg )
 
 double GpxParser::gradeFilter( double newValue )
 {
-    static double filter[10] = {0.0};
-    static int cnt = 0;
-    filter[cnt] = newValue;
-    cnt++;
-    if( cnt >= 10 ) cnt = 0;
+    m_filter[m_cnt] = newValue;
+    m_cnt++;
+    if( m_cnt >= FILTERSIZE ) m_cnt = 0;
     double sum = 0;
-    for( int i = 0; i < 10; i++ ) sum += filter[i];
-    return sum / 10.0;
+    for( int i = 0; i < FILTERSIZE; i++ ) sum += m_filter[i];
+    return sum / FILTERSIZE;
 }

@@ -120,7 +120,7 @@ bool GpxParser::loadGpx( QString fileName )
             double grade = 0;
             if( distSinceLast > 0.005 ) grade = ( ele - lastEle ) / distSinceLast / 10.0;
             m_tourGrade.append( filter( grade, FILTERGRADE ) );
-            m_tourBatterySoc.append( 0 );
+            m_tourBatterySoc.append( -1 );
             lastTime = time;
             lastEle = ele;
         }

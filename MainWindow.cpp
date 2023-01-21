@@ -275,14 +275,16 @@ void MainWindow::statistics( void )
     ui->actionLRBalance->setEnabled( (int)m_pTourData->getSession().maxPower != 0 );
     ui->actionGearInfo->setEnabled( m_pTourData->containsGearInfoFront() || m_pTourData->containsGearInfoRear() );
     ui->actionTemperature->setEnabled( (int)m_pTourData->getSession().minTemperature != 9999 );
+    ui->actionDeviceBattery->setEnabled( (int)m_pTourData->getTourBatterySoc().first() >= 0 );
 
-    if( ( ui->actionCadence->isChecked()   && !ui->actionCadence->isEnabled() )
-     || ( ui->actionGrade->isChecked()     && !ui->actionGrade->isEnabled() )
-     || ( ui->actionHeartRate->isChecked() && !ui->actionHeartRate->isEnabled() )
-     || ( ui->actionCalories->isChecked()  && !ui->actionCalories->isEnabled() )
-     || ( ui->actionPower->isChecked()     && !ui->actionPower->isEnabled() )
-     || ( ui->actionLRBalance->isChecked() && !ui->actionLRBalance->isEnabled() )
-     || ( ui->actionGearInfo->isChecked()  && !ui->actionGearInfo->isEnabled() ) )
+    if( ( ui->actionCadence->isChecked()        && !ui->actionCadence->isEnabled() )
+     || ( ui->actionGrade->isChecked()          && !ui->actionGrade->isEnabled() )
+     || ( ui->actionHeartRate->isChecked()      && !ui->actionHeartRate->isEnabled() )
+     || ( ui->actionCalories->isChecked()       && !ui->actionCalories->isEnabled() )
+     || ( ui->actionPower->isChecked()          && !ui->actionPower->isEnabled() )
+     || ( ui->actionLRBalance->isChecked()      && !ui->actionLRBalance->isEnabled() )
+     || ( ui->actionGearInfo->isChecked()       && !ui->actionGearInfo->isEnabled() )
+     || ( ui->actionDeviceBattery->isChecked()  && !ui->actionDeviceBattery->isEnabled() ) )
     {
         ui->actionSpeed->setChecked( true );
         plotSelected();

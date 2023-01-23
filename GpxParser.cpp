@@ -3,6 +3,7 @@
 #include <QXmlStreamReader>
 #include <QDebug>
 #include <QDateTime>
+#include <math.h>
 
 GpxParser::GpxParser() : TourData()
 {

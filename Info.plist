@@ -9,7 +9,7 @@
     <key>CFBundleIconFile</key>
     <string>WaoStatsLogoMapSmall.icns</string>
     <key>CFBundleIdentifier</key>
-    <string>masc4ii.WaoStats</string>
+    <string>masc.WaoStats</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleSignature</key>

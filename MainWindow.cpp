@@ -1204,7 +1204,7 @@ void MainWindow::on_actionClearMapCache_triggered()
 //Save some settings to registry
 void MainWindow::writeSettings()
 {
-    QSettings set( QSettings::UserScope, "masc4ii.WaoStats", "WaoStats" );
+    QSettings set( QSettings::UserScope, "masc.WaoStats", "WaoStats" );
     set.setValue( "mainWindowGeometry", saveGeometry() );
     //set.setValue( "mainWindowState", saveState() ); // docks, toolbars, etc...
     set.setValue( "mapCaching", ui->actionMapCaching->isChecked() );
@@ -1227,7 +1227,7 @@ void MainWindow::writeSettings()
 //Read some settings from registry
 void MainWindow::readSettings()
 {
-    QSettings set( QSettings::UserScope, "masc4ii.WaoStats", "WaoStats" );
+    QSettings set( QSettings::UserScope, "masc.WaoStats", "WaoStats" );
     restoreGeometry( set.value( "mainWindowGeometry" ).toByteArray() );
     //restoreState( set.value( "mainWindowState" ).toByteArray() ); // create docks, toolbars, etc...
     if( set.value( "mapCaching", false ).toBool() ) ui->actionMapCaching->setChecked( true );

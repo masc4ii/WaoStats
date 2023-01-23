@@ -201,6 +201,7 @@ void MainWindow::scanTours()
     calcBikeTotalDistances();
     saveTableToJson();
     m_currentActiveTreeWidgetItem = nullptr;
+    ui->treeWidgetTours->setFilter( ui->lineEditFilter->text() );
 }
 
 void MainWindow::scanFit(QString fileName)
@@ -1134,10 +1135,15 @@ void MainWindow::on_treeWidgetTours_itemsDropped(QList<QTreeWidgetItem *> pSourc
 
 void MainWindow::on_actionSetArchivePath_triggered()
 {
-    m_workingPath = QFileDialog::getExistingDirectory(this, tr("Choose Working Path"),
+    QString path = QFileDialog::getExistingDirectory(this, tr("Choose Working Path"),
                                                             QFileInfo( workingPath() ).absolutePath(),
                                                             QFileDialog::ShowDirsOnly
                                                             | QFileDialog::DontResolveSymlinks);
+    if( path.size() )
+    {
+        m_workingPath = path;
+        scanTours();
+    }
 }
 
 void MainWindow::on_qwtPlot_customContextMenuRequested(const QPoint &pos)
@@ -1215,7 +1221,7 @@ void MainWindow::writeSettings()
     else if( ui->action_thunderforest_landscape->isChecked() ) mapType = 9;
     else if( ui->action_bing->isChecked() ) mapType = 10;
     set.setValue( "maptype", mapType );
-    set.setValue( "lastExportPath", m_workingPath );
+    set.setValue( "workingPath", m_workingPath );
 }
 
 //Read some settings from registry
@@ -1266,7 +1272,12 @@ void MainWindow::readSettings()
             break;
     }
 
-    m_workingPath = set.value( "lastExportPath", QDir::homePath() + "/Documents/FahrradTracking" ).toString();
+    m_workingPath = set.value( "workingPath", QDir::homePath() + "/Documents/BikeTracking" ).toString();
+    if( !QDir( m_workingPath ).exists() )
+    {
+        QMessageBox::information( this, APPNAME, tr( "Please setup archive path!" ) );
+        on_actionSetArchivePath_triggered();
+    }
 }
 
 void MainWindow::configureActionGroups( void )

@@ -4,16 +4,19 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
 
-macx{arm64{
-    QMAKE_CC = /opt/homebrew/opt/llvm@11/bin/clang
-    QMAKE_CXX = /opt/homebrew/opt/llvm@11/bin/clang++
-    QMAKE_LINK = /opt/homebrew/opt/llvm@11/bin/clang++
-    QMAKE_CFLAGS += -fopenmp -ftree-vectorize
-    QMAKE_CXXFLAGS += -fopenmp -std=c++11 -ftree-vectorize
-    INCLUDEPATH += -I/opt/homebrew/opt/llvm@11/include
-    LIBS += -L/opt/homebrew/opt/llvm@11/lib -lomp
-    QMAKE_APPLE_DEVICE_ARCHS = arm64
-}}
+macx{
+    arm64{
+        QMAKE_CC = /opt/homebrew/opt/llvm@11/bin/clang
+        QMAKE_CXX = /opt/homebrew/opt/llvm@11/bin/clang++
+        QMAKE_LINK = /opt/homebrew/opt/llvm@11/bin/clang++
+        QMAKE_CFLAGS += -fopenmp -ftree-vectorize
+        QMAKE_CXXFLAGS += -fopenmp -std=c++11 -ftree-vectorize
+        INCLUDEPATH += -I/opt/homebrew/opt/llvm@11/include
+        LIBS += -L/opt/homebrew/opt/llvm@11/lib -lomp
+        QMAKE_APPLE_DEVICE_ARCHS = arm64
+    }
+    else: QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.13
+}
 
 CONFIG += qwt
 include( $${PWD}/qwt-6.2.0/qwtconfig.pri )

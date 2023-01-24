@@ -61,6 +61,7 @@ private slots:
     void on_qwtPlot_customContextMenuRequested( const QPoint &pos );
     void on_lineEditFilter_textChanged( const QString &arg1 );
     void calcBikeTotalDistances();
+    void setupArchive( void );
 
 private:
     Ui::MainWindow *ui;

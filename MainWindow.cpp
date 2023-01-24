@@ -137,6 +137,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect( ui->comboBoxSection, SIGNAL(currentIndexChanged(int)), this, SLOT(statistics()) );
 
     QTimer::singleShot( 1, this, SLOT( adjustMap() ) );
+    QTimer::singleShot( 1000, this, SLOT( setupArchive() ) );
 
     splash.finish( this );
 }
@@ -1273,11 +1274,6 @@ void MainWindow::readSettings()
     }
 
     m_workingPath = set.value( "workingPath", QDir::homePath() + "/Documents/BikeTracking" ).toString();
-    if( !QDir( m_workingPath ).exists() )
-    {
-        QMessageBox::information( this, APPNAME, tr( "Please setup archive path!" ) );
-        on_actionSetArchivePath_triggered();
-    }
 }
 
 void MainWindow::configureActionGroups( void )
@@ -1414,6 +1410,26 @@ void MainWindow::calcBikeTotalDistances()
 
     for( int i = 0; i < ui->treeWidgetTours->topLevelItemCount(); i++ )
         ui->treeWidgetTours->topLevelItem( i )->sortChildren( 0, Qt::DescendingOrder );
+}
+
+void MainWindow::setupArchive( void )
+{
+    while( !QDir( m_workingPath ).exists() )
+    {
+        if( QMessageBox::Ok == QMessageBox::information( this,
+                                                         APPNAME,
+                                                         tr( "Please setup archive path!" ),
+                                                         QMessageBox::Ok | QMessageBox::Abort,
+                                                         QMessageBox::Ok ) )
+        {
+            on_actionSetArchivePath_triggered();
+        }
+        else
+        {
+            qApp->quit();
+            return;
+        }
+    }
 }
 
 void MainWindow::on_lineEditFilter_textChanged(const QString &arg1)

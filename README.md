@@ -47,10 +47,9 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 
 ## Application - First Start
 - Open application.
-- Choose from WaoStats menu: Archive - Set Archive Path.
-- Create / select a path of your choice.
+- Create / select a path of your choice, which shall contain your track files (fit/gpx).
 - In this path, create subfolders for your bikes (or choose from WaoStats menu: Archive - Add New Bike).
-- Put your fit files into these subfolders.
+- Put your track files (fit/gpx) into these subfolders.
 - Choose from WaoStats menu: Archive - Scan Tour Folder.
 <img width="450" alt="archive" src="https://user-images.githubusercontent.com/30245296/206466669-40a9026a-cb13-4f36-8610-01840d039c42.png">
 

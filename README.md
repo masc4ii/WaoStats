@@ -38,6 +38,10 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 - FitSDKRelease_21.94.00, download code from Garmin official SDK webpage
 - App Icon by [71M](https://zez.am/71m)
 
+## Download
+- Download [here](https://github.com/masc4ii/WaoStats/releases)
+- Currently supported OS: macOS 10.13.6 and later, Windows 8 and later
+
 ## Compile
 - Download Qwt 6.2.0 and copy archive content into qwt-6.2.0 folder, compile and install as usual
 - Download FitSDKRelease_21.94.00 and copy archive content into FitSDKRelease_21.94.00 folder

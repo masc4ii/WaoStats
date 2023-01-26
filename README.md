@@ -65,3 +65,8 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 - Copy the token from dropbox page into WaoStats menu.
 - WaoStats now is allowed to read your fit files (once). Another reading process needs a new token with same keys.
 - Find downloaded fit tracks in archive folder / WaoStats left list "New"
+
+## Plot
+- Left Drag: zoom in
+- Double click: zoom out
+- Right click: select between curves

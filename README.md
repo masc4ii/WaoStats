@@ -67,6 +67,6 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 - Find downloaded fit tracks in archive folder / WaoStats left list "New"
 
 ## Plot
-- Left Drag: zoom in
+- Left drag: zoom in
 - Double click: zoom out
 - Right click: select between curves

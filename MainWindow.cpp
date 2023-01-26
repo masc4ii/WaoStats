@@ -785,6 +785,8 @@ QString MainWindow::workingPath()
 
 void MainWindow::on_treeWidgetTours_itemActivated(QTreeWidgetItem *item, int column)
 {
+    Q_UNUSED( column );
+
     QString fileName = item->text( 1 );
 
     markActiveTour( item );
@@ -1089,7 +1091,7 @@ void MainWindow::onBikeItemEditingFinished(QTreeWidgetItem *item)
 
 void MainWindow::on_actionAbout_triggered()
 {
-    QByteArray byteArray;
+    //QByteArray byteArray;
     //QString pic = QString("<img width='128' height='112' align='right' src=\"data:image/png;base64,") + byteArray.toBase64() + "\"/>";
 
     QMessageBox::about( this, APPNAME, QString(
@@ -1328,12 +1330,12 @@ void MainWindow::saveTableToJson()
     }
 
     QJsonDocument doc( tours );
-    /* write json doc into file */
+    //write json doc into file
     QString fileName = QString( "%1%2" ).arg( workingPath() ).arg( "archive.json" );
     QFile file( fileName );
     if( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
     {
-        /* Try to write the JSON document */
+        //Try to write the JSON document
         file.write( doc.toJson() );
         file.close();
     }
@@ -1341,20 +1343,21 @@ void MainWindow::saveTableToJson()
 
 bool MainWindow::loadTrackFromJson( QString fitFile, QTreeWidgetItem *fitItem )
 {
-    /* Read file */
+    //Read file
     QString fileName = QString( "%1%2" ).arg( workingPath() ).arg( "archive.json" );
     QFile file( fileName );
     if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
-        qDebug() << "open archive json file failed.";
+        qDebug() << "open archive.json file failed.";
         return false;
     }
     QJsonDocument doc = QJsonDocument::fromJson( file.readAll() );
     file.close();
 
-    /* JSON is invalid */
-    if (doc.isNull()) {
-        qDebug() << "archive json file invalid.";
+    //JSON is invalid
+    if( doc.isNull() )
+    {
+        qDebug() << "archive.json file invalid.";
         return false;
     }
 

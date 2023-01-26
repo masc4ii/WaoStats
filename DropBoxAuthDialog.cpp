@@ -8,8 +8,8 @@
 
 DropBoxAuthDialog::DropBoxAuthDialog(QString workingPath, QWidget *parent) :
     QDialog(parent),
-    m_workingPath(workingPath),
-    ui(new Ui::DropBoxAuthDialog)
+    ui(new Ui::DropBoxAuthDialog),
+    m_workingPath(workingPath)
 {
     ui->setupUi(this);
     if( m_appInfo.readFromFile( m_workingPath + "app.info" ) )

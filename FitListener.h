@@ -21,9 +21,9 @@ public:
     FitListener();
 
     static void PrintValues(const fit::FieldBase& field);
-    void OnMesg(fit::Mesg& mesg);
-    void OnMesg(fit::FileIdMesg& mesg);
-    void OnDeveloperFieldDescription( const fit::DeveloperFieldDescription& desc ) override { return; }
+    void OnMesg(fit::Mesg& mesg) override;
+    void OnMesg(fit::FileIdMesg& mesg) override;
+    void OnDeveloperFieldDescription( const fit::DeveloperFieldDescription& desc ) override { Q_UNUSED( desc ); return; }
 };
 
 #endif // FITLISTENER_H

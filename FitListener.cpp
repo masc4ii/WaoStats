@@ -329,7 +329,7 @@ void FitListener::OnMesg(fit::Mesg& mesg)
         if( !deviceIdIsIncluded( deviceInfo ) )
         {
             m_deviceInfo.append( deviceInfo );
-            qSort(m_deviceInfo.begin(), m_deviceInfo.end(), [](const deviceInfo_t& a, const deviceInfo_t& b) { return a.deviceId < b.deviceId; });
+            std::sort(m_deviceInfo.begin(), m_deviceInfo.end(), [](const deviceInfo_t& a, const deviceInfo_t& b) { return a.deviceId < b.deviceId; });
         }
         else
         {
@@ -371,5 +371,7 @@ void FitListener::OnMesg(fit::FileIdMesg& mesg)
      printf("   Serial Number: %u\n", mesg.GetSerialNumber());
   if (mesg.IsNumberValid())
      printf("   Number: %d\n", mesg.GetNumber());
+#else
+    Q_UNUSED( mesg );
 #endif
 }

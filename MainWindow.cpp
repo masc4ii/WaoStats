@@ -1346,7 +1346,7 @@ bool MainWindow::loadTrackFromJson( QString fitFile, QTreeWidgetItem *fitItem )
     QFile file( fileName );
     if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
-        qDebug() << "open coefficients json file failed.";
+        qDebug() << "open archive json file failed.";
         return false;
     }
     QJsonDocument doc = QJsonDocument::fromJson( file.readAll() );

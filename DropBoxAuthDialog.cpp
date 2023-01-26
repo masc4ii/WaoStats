@@ -27,6 +27,7 @@ DropBoxAuthDialog::~DropBoxAuthDialog()
 void DropBoxAuthDialog::on_pushButtonGetToken_clicked()
 {
     m_appInfo.setKeySecret( ui->lineEditAppKey->text(), ui->lineEditAppSecret->text() );
+    m_appInfo.storeToFile( m_workingPath + "app.info" );
     m_url = DropboxWebAuth::getCodeAuthorizeUrl( m_appInfo );
     QDesktopServices::openUrl( QUrl( m_url ) );
     ui->lineEditAuthCode->setEnabled( true );

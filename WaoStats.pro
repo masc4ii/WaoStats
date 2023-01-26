@@ -31,7 +31,7 @@ win32{
     LIBS += -L$${PWD}/qwt-6.2.0/lib/ -lqwt
     INCLUDEPATH += $${PWD}/qwt-6.2.0/src
 }
-unix{
+linux-g++{
     LIBS += -L$${PWD}/qwt-6.2.0/lib/ -lqwt
     INCLUDEPATH += $${PWD}/qwt-6.2.0/src
 }
@@ -46,7 +46,7 @@ include( QMapControl/QMapControl.pro )
 INCLUDEPATH += dropboxQt/src
 macx:  LIBS += -L$${PWD}/dropboxQt/prj/ -ldropboxQt
 win32: LIBS += -L$${PWD}/dropboxQt/prj/release/ -ldropboxQt
-unix:  LIBS += -L$${PWD}/dropboxQt/prj/ -ldropboxQt
+linux-g++:  LIBS += -L$${PWD}/dropboxQt/prj/ -ldropboxQt
 
 SOURCES += \
     DropBoxAuthDialog.cpp \

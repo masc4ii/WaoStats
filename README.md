@@ -7,7 +7,7 @@
 [![wahooELEMNT](https://img.shields.io/badge/wahoo-ELEMNT-red)](https://de-eu.wahoofitness.com/devices/bike-computers)
 [![Qt&5](https://img.shields.io/badge/Qt-5-brightgreen)](https://doc.qt.io/qt-5/)
 [![Qwt&620](https://img.shields.io/badge/Qwt-6.2.0-brightgreen)](https://qwt.sourceforge.io/)
-[![FitSDK](https://img.shields.io/badge/FitSDKRelease-21.94.00-brightgreen)](https://developer.garmin.com/fit/download/)
+[![FitSDK](https://img.shields.io/badge/FitSDKRelease-21.101.00-brightgreen)](https://developer.garmin.com/fit/download/)
 [![dropboxQt](https://img.shields.io/badge/dropboxQt-yellow)](https://github.com/osoftteam/dropboxQt)
 [![QMapControl](https://img.shields.io/badge/QMapControl-yellow)](https://github.com/TheDZhon/QMapControl)
 
@@ -44,7 +44,7 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 
 ## Compile
 - Download Qwt 6.2.0 and copy archive content into qwt-6.2.0 folder, compile and install as usual
-- Download FitSDKRelease_21.94.00 and copy archive content into FitSDKRelease_21.94.00 folder
+- Download FitSDKRelease_21.101.00 and copy archive content into FitSDKRelease_21.101.00 folder
 - Compile dropboxQt, as described in subfolder dropboxQt. You should get "WaoStats/dropboxQt/prj/libdropboxQt.a"
 - Open WaoStats.pro into QtCreator, compile with **Qt5.15.2 and Clang(macOS) or minGW(Windows)**
 - On Windows, install OpenSSL and copy library files to application folder

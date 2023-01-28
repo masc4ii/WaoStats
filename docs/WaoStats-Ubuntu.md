@@ -25,9 +25,8 @@ $ unzip -d FitSDKRelease_21.101.00 FitSDKRelease_21.101.00.zip
 - [qwt-6.2.0.zip](https://sourceforge.net/projects/qwt/files/qwt/6.2.0/qwt-6.2.0.zip/download)
 ```
 $ unzip qwt-6.2.0.zip
-$ mkdir -p qwt-6.2.0/build
-$ cd qwt-6.2.0/build
-$ qmake .. && make && make install
+$ cd qwt-6.2.0
+$ qmake && make && make install
 ```
 
 ## dropboxQt

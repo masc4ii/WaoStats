@@ -17,7 +17,7 @@
 [![Open Issues](https://img.shields.io/github/issues/masc4ii/WaoStats)](https://github.com/masc4ii/WaoStats/issues)
 [![Closed Issues](https://img.shields.io/github/issues-closed/masc4ii/WaoStats)](https://github.com/masc4ii/WaoStats/issues?q=is%3Aissue+is%3Aclosed)
 
-A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer tracks. It runs on **macOS** and **Windows**, maybe also **Linux**.
+A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer tracks. It runs on **macOS**, **Windows** and **Linux**.
 
 <img width="1000" alt="waostats" src="https://user-images.githubusercontent.com/30245296/195997239-19587c70-079c-4a51-8231-fe0a10e137cb.png">
 
@@ -48,6 +48,8 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 - Compile dropboxQt, as described in subfolder dropboxQt. You should get "WaoStats/dropboxQt/prj/libdropboxQt.a"
 - Open WaoStats.pro into QtCreator, compile with **Qt5.15.2 and Clang(macOS) or minGW(Windows)**
 - On Windows, install OpenSSL and copy library files to application folder
+
+Compiling on Ubuntu: [howto](https://github.com/masc4ii/WaoStats/blob/main/docs/WaoStats-Ubuntu.md) (thanks to [Intyre](https://gist.github.com/Intyre))
 
 ## Application - First Start
 - Open application.

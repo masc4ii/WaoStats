@@ -40,7 +40,7 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 
 ## Download
 - Download [here](https://github.com/masc4ii/WaoStats/releases)
-- Currently supported OS: macOS 10.13.6 and later, Windows 8 and later
+- Currently supported OS: macOS 10.13.6 and later, Windows 8 and later, Ubuntu 14.04 and later
 
 ## Compile
 - Download Qwt 6.2.0 and copy archive content into qwt-6.2.0 folder, compile and install as usual

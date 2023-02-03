@@ -25,11 +25,12 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 - load all your Wahoo FIT files into the application
 - view the statistics (entire track and lap/section) from your FIT files
 - view your Wahoo computer firmware versions, used sensors and their battery status (when track ended)
-- plot the recorded values (altitude, speed, cadence, temperature, grade, heartrate, power, battery, calories, L/R balance, gears, gear ratio) from your FIT files, over time or over distance
+- plot the recorded values (altitude, speed, cadence, temperature, grade, heartrate, power, battery, calories, L/R balance, gears, gear ratio, gps accuracy) from your FIT files, over time or over distance
 - link your tracks to your used devices (bikes) and see total kilometers per device
 - dropbox sync your FIT files
 - display your track on 11 different maps (google, openstreetmap, bing and more)
 - load GPX tracks into the application with reduced statistics (compared to FIT)
+- log service activities
 
 ## Used Libraries
 - dropboxQt, under [MIT](https://github.com/masc4ii/WaoStats/blob/main/dropboxQt/LICENSE)

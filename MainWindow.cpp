@@ -4,6 +4,7 @@
 #include "BikeEditingDelegate.h"
 #include "Splash.h"
 #include "Globals.h"
+#include "ServiceDialog.h"
 
 #include <QDebug>
 #include <QWidget>
@@ -21,6 +22,7 @@
 #include <QScrollBar>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QStyleFactory>
 #include "qwt.h"
 #include "math.h"
 #include "OsmWidget.h"
@@ -278,6 +280,7 @@ void MainWindow::statistics( void )
     ui->actionGearInfo->setEnabled( m_pTourData->containsGearInfoFront() || m_pTourData->containsGearInfoRear() );
     ui->actionTemperature->setEnabled( (int)m_pTourData->getSession().minTemperature != 9999 );
     ui->actionDeviceBattery->setEnabled( (int)m_pTourData->getTourBatterySoc().first() >= 0 );
+    ui->actionGpsAccuracy->setEnabled( !m_pTourData->getTourGpsAccuracy().empty() );
 
     if( ( ui->actionCadence->isChecked()        && !ui->actionCadence->isEnabled() )
      || ( ui->actionGrade->isChecked()          && !ui->actionGrade->isEnabled() )
@@ -286,7 +289,8 @@ void MainWindow::statistics( void )
      || ( ui->actionPower->isChecked()          && !ui->actionPower->isEnabled() )
      || ( ui->actionLRBalance->isChecked()      && !ui->actionLRBalance->isEnabled() )
      || ( ui->actionGearInfo->isChecked()       && !ui->actionGearInfo->isEnabled() )
-     || ( ui->actionDeviceBattery->isChecked()  && !ui->actionDeviceBattery->isEnabled() ) )
+     || ( ui->actionDeviceBattery->isChecked()  && !ui->actionDeviceBattery->isEnabled() )
+     || ( ui->actionGpsAccuracy->isChecked()    && !ui->actionGpsAccuracy->isEnabled() ) )
     {
         ui->actionSpeed->setChecked( true );
         plotSelected();
@@ -569,6 +573,11 @@ void MainWindow::configurePlots( void )
         p.setColor( QColor( 255, 200, 0 ) );
         m_curve[3]->setPen( p );
     }
+    else if( ui->actionGpsAccuracy->isChecked() )
+    {
+        m_curve[1] = new QwtPlotCurve( QString( "GPS Accuracy" ) );
+        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "GPS Accuracy [m]" ) );
+    }
     m_curve[1]->setYAxis( QwtPlot::yRight );
     m_curve[1]->setRenderHint( QwtPlotItem::RenderAntialiased );
     ui->qwtPlot->setAxisVisible( QwtPlot::yRight );
@@ -702,6 +711,12 @@ void MainWindow::drawPlots( void )
         m_curve[3]->setStyle( QwtPlotCurve::Steps );
         m_curve[2]->attach( ui->qwtPlot );
         m_curve[3]->attach( ui->qwtPlot );
+    }
+    else if( ui->actionGpsAccuracy->isChecked() )
+    {
+        if( !m_timePlot ) m_curve[1]->setSamples( pTourData->getTourDistance().data(), pTourData->getTourGpsAccuracy().data(), pTourData->getTourDistance().count() );
+        else              m_curve[1]->setSamples( pTourData->getTourTimeStamp().data(), pTourData->getTourGpsAccuracy().data(), pTourData->getTourDistance().count() );
+        m_curve[1]->setTitle( QString( "GPS Accuracy" ) );
     }
     m_curve[1]->attach( ui->qwtPlot );
 
@@ -1188,8 +1203,13 @@ void MainWindow::on_actionMapCaching_triggered(bool checked)
     if( checked )
     {
         // Enable caching
+#ifdef Q_OS_LINUX
+        //qDebug() << QDir::homePath() + "/.cache/WaoStats/QMapCache";
+        m_map_control->enablePersistentCache( std::chrono::minutes(0), QDir( QDir::homePath() + "/.cache/WaoStats/QMapCache" ) );
+#else
         //qDebug() << QCoreApplication::applicationDirPath() + "/QMapCache";
         m_map_control->enablePersistentCache( std::chrono::minutes(0), QDir( QCoreApplication::applicationDirPath() + "/QMapCache" ) );
+#endif
     }
     else
     {
@@ -1299,6 +1319,7 @@ void MainWindow::configureActionGroups( void )
     plotValueGroup->addAction( ui->actionPower );
     plotValueGroup->addAction( ui->actionLRBalance );
     plotValueGroup->addAction( ui->actionGearInfo );
+    plotValueGroup->addAction( ui->actionGpsAccuracy );
     ui->actionSpeed->setCheckable( true );
     ui->actionDeviceBattery->setCheckable( true );
     ui->actionCadence->setCheckable( true );
@@ -1309,6 +1330,7 @@ void MainWindow::configureActionGroups( void )
     ui->actionPower->setCheckable( true );
     ui->actionLRBalance->setCheckable( true );
     ui->actionGearInfo->setCheckable( true );
+    ui->actionGpsAccuracy->setCheckable( true );
     ui->actionSpeed->setChecked( true );
     QObject::connect( plotValueGroup, &QActionGroup::triggered, this, &MainWindow::plotSelected );
 }
@@ -1348,7 +1370,7 @@ bool MainWindow::loadTrackFromJson( QString fitFile, QTreeWidgetItem *fitItem )
     QFile file( fileName );
     if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
-        qDebug() << "open archive.json file failed.";
+        //qDebug() << "open archive.json file failed.";
         return false;
     }
     QJsonDocument doc = QJsonDocument::fromJson( file.readAll() );
@@ -1409,6 +1431,7 @@ void MainWindow::calcBikeTotalDistances()
             totalDistance += bikeItem->child( j )->text( 3 ).toDouble();
         }
         bikeItem->setText( 2, QString( "%1 km" ).arg( (int)( totalDistance + 0.5 ) ) );
+        bikeItem->setText( 3, QString( "%1" ).arg( totalDistance, 0, 'f', 10 ) );
     }
 
     for( int i = 0; i < ui->treeWidgetTours->topLevelItemCount(); i++ )
@@ -1439,3 +1462,11 @@ void MainWindow::on_lineEditFilter_textChanged(const QString &arg1)
 {
     ui->treeWidgetTours->setFilter( arg1 );
 }
+
+void MainWindow::on_actionService_triggered()
+{
+    ServiceDialog *service = new ServiceDialog( this, ui->treeWidgetTours );
+    service->exec();
+    delete service;
+}
+

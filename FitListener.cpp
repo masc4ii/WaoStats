@@ -63,6 +63,7 @@ void FitListener::OnMesg(fit::Mesg& mesg)
 
     double tourTimeStamp = 0;
     double tourAltitude = 0;
+    double tourGpsAccuracy = 0;
     double tourDistance = 0;
     static double tourBatterySoc = 0;
     double tourCadence = 0;
@@ -163,6 +164,7 @@ void FitListener::OnMesg(fit::Mesg& mesg)
         {
             if(      QString( field->GetName().c_str() ) == QString( "timestamp" ) ) tourTimeStamp = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "altitude" ) ) tourAltitude = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "gps_accuracy" ) ) tourGpsAccuracy = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "distance" ) )
             {
                 tourDistance = field->GetFLOAT64Value(0) / 1000.0;
@@ -304,6 +306,7 @@ void FitListener::OnMesg(fit::Mesg& mesg)
         m_tourSpeed.append( tourSpeed );
         m_tourCadence.append( tourCadence );
         m_tourAltitude.append( tourAltitude );
+        m_tourGpsAccuracy.append( tourGpsAccuracy );
         m_tourTemperature.append( tourTemperature );
         m_tourGrade.append( tourGrade );
         m_tourHeartRate.append( tourHeartRate );

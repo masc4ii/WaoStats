@@ -305,6 +305,7 @@
      <addaction name="actionCalories"/>
      <addaction name="actionTemperature"/>
      <addaction name="actionGearInfo"/>
+     <addaction name="actionGpsAccuracy"/>
     </widget>
     <addaction name="menu_map"/>
     <addaction name="menuPlot"/>
@@ -319,6 +320,8 @@
     <addaction name="actionSyncDropbox"/>
     <addaction name="separator"/>
     <addaction name="actionSetArchivePath"/>
+    <addaction name="separator"/>
+    <addaction name="actionService"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -1200,6 +1203,20 @@
   <action name="actionGearInfo">
    <property name="text">
     <string>Gear Info</string>
+   </property>
+  </action>
+  <action name="actionService">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Icons/Icons/Actions-configure-icon.png</normaloff>:/Icons/Icons/Actions-configure-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Service List</string>
+   </property>
+  </action>
+  <action name="actionGpsAccuracy">
+   <property name="text">
+    <string>GPS Accuracy</string>
    </property>
   </action>
  </widget>

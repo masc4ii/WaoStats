@@ -60,6 +60,7 @@ public:
     QVector<double>getTourSpeed(){return m_tourSpeed;}
     QVector<double>getTourCadence(){return m_tourCadence;}
     QVector<double>getTourAltitude(){return m_tourAltitude;}
+    QVector<double>getTourGpsAccuracy(){return m_tourGpsAccuracy;}
     QVector<double>getTourTemperature(){return m_tourTemperature;}
     QVector<double>getTourGrade(){return m_tourGrade;}
     QVector<double>getTourPosLat(){return m_tourPosLat;}
@@ -112,6 +113,7 @@ protected:
     QVector<double>m_tourSpeed;
     QVector<double>m_tourCadence;
     QVector<double>m_tourAltitude;
+    QVector<double>m_tourGpsAccuracy;
     QVector<double>m_tourTemperature;
     QVector<double>m_tourGrade;
     QVector<double>m_tourPosLat;

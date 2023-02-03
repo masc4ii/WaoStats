@@ -14,6 +14,7 @@ void TourData::reset()
     m_tourSpeed.clear();
     m_tourCadence.clear();
     m_tourAltitude.clear();
+    m_tourGpsAccuracy.clear();
     m_tourTemperature.clear();
     m_tourGrade.clear();
     m_tourPosLat.clear();

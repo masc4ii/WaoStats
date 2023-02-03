@@ -6,13 +6,13 @@ CONFIG += c++17
 
 macx{
     arm64{
-        QMAKE_CC = /opt/homebrew/opt/llvm@11/bin/clang
-        QMAKE_CXX = /opt/homebrew/opt/llvm@11/bin/clang++
-        QMAKE_LINK = /opt/homebrew/opt/llvm@11/bin/clang++
+        QMAKE_CC = /opt/homebrew/opt/llvm/bin/clang
+        QMAKE_CXX = /opt/homebrew/opt/llvm/bin/clang++
+        QMAKE_LINK = /opt/homebrew/opt/llvm/bin/clang++
         QMAKE_CFLAGS += -fopenmp -ftree-vectorize
-        QMAKE_CXXFLAGS += -fopenmp -std=c++11 -ftree-vectorize
-        INCLUDEPATH += -I/opt/homebrew/opt/llvm@11/include
-        LIBS += -L/opt/homebrew/opt/llvm@11/lib -lomp
+        QMAKE_CXXFLAGS += -fopenmp -std=c++15 -ftree-vectorize
+        INCLUDEPATH += -I/opt/homebrew/opt/llvm/include
+        LIBS += -L/opt/homebrew/opt/llvm/lib -lomp -L/opt/homebrew/opt/openssl/lib -lssl
         QMAKE_APPLE_DEVICE_ARCHS = arm64
     }
     else: QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.13
@@ -78,6 +78,8 @@ SOURCES += \
     GpxParser.cpp \
     LineEditEscDelete.cpp \
     OsmWidget.cpp \
+    ServiceDialog.cpp \
+    ServiceEntryDialog.cpp \
     Splash.cpp \
     TourData.cpp \
     VScrollArea.cpp \
@@ -309,13 +311,17 @@ HEADERS += \
     LineEditEscDelete.h \
     MainWindow.h \
     OsmWidget.h \
+    ServiceDialog.h \
+    ServiceEntryDialog.h \
     Splash.h \
     TourData.h \
     VScrollArea.h
 
 FORMS += \
     DropBoxAuthDialog.ui \
-    MainWindow.ui
+    MainWindow.ui \
+    ServiceDialog.ui \
+    ServiceEntryDialog.ui
 
 INCLUDEPATH += -I FitSDKRelease_21.101.00/cpp/
 

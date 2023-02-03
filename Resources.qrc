@@ -7,5 +7,8 @@
         <file>Icons/Window-Add-icon.png</file>
         <file>WaoStatsLogoMap.png</file>
         <file>Splash.png</file>
+        <file>Icons/minus.png</file>
+        <file>Icons/plus.png</file>
+        <file>Icons/Actions-configure-icon.png</file>
     </qresource>
 </RCC>

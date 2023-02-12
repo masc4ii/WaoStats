@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>715</width>
+    <width>933</width>
     <height>610</height>
    </rect>
   </property>
@@ -66,6 +66,11 @@
      </column>
      <column>
       <property name="text">
+       <string>Proposed Interval</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>Part</string>
       </property>
      </column>
@@ -96,15 +101,20 @@
      </item>
      <item row="0" column="3">
       <property name="text">
-       <string>Chain</string>
+       <string>2km</string>
       </property>
      </item>
      <item row="0" column="4">
       <property name="text">
-       <string>Replaced</string>
+       <string>Chain</string>
       </property>
      </item>
      <item row="0" column="5">
+      <property name="text">
+       <string>Replaced</string>
+      </property>
+     </item>
+     <item row="0" column="6">
       <property name="text">
        <string>Shimano</string>
       </property>
@@ -126,15 +136,20 @@
      </item>
      <item row="1" column="3">
       <property name="text">
-       <string>Chain</string>
+       <string>5km</string>
       </property>
      </item>
      <item row="1" column="4">
       <property name="text">
-       <string>Replaced</string>
+       <string>Chain</string>
       </property>
      </item>
      <item row="1" column="5">
+      <property name="text">
+       <string>Replaced</string>
+      </property>
+     </item>
+     <item row="1" column="6">
       <property name="text">
        <string>NoName</string>
       </property>

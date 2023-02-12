@@ -322,6 +322,7 @@
     <addaction name="actionSetArchivePath"/>
     <addaction name="separator"/>
     <addaction name="actionService"/>
+    <addaction name="actionStatistics"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -1217,6 +1218,15 @@
   <action name="actionGpsAccuracy">
    <property name="text">
     <string>GPS Accuracy</string>
+   </property>
+  </action>
+  <action name="actionStatistics">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Icons/Icons/plot.png</normaloff>:/Icons/Icons/plot.png</iconset>
+   </property>
+   <property name="text">
+    <string>Statistics</string>
    </property>
   </action>
  </widget>

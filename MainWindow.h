@@ -55,6 +55,7 @@ private slots:
     void on_actionMapCaching_triggered( bool checked );
     void on_actionClearMapCache_triggered();
     void on_actionService_triggered();
+    void on_actionStatistics_triggered();
     void on_treeWidgetTours_itemActivated( QTreeWidgetItem *item, int column );
     void on_treeWidgetTours_itemsDropped( QList<QTreeWidgetItem *> pSource, QTreeWidgetItem* pTarget );
     void on_treeWidgetTours_itemDoubleClicked( QTreeWidgetItem *item, int column );
@@ -62,6 +63,7 @@ private slots:
     void on_qwtPlot_customContextMenuRequested( const QPoint &pos );
     void on_lineEditFilter_textChanged( const QString &arg1 );
     void calcBikeTotalDistances();
+    void showServiceInTree();
     void setupArchive( void );
 
 private:

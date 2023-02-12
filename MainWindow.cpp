@@ -5,6 +5,7 @@
 #include "Splash.h"
 #include "Globals.h"
 #include "ServiceDialog.h"
+#include "StatisticsDialog.h"
 
 #include <QDebug>
 #include <QWidget>
@@ -98,11 +99,11 @@ public:
     {
         baseTime = QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
     }
-virtual QwtText label(double v)const
-{
-    QDateTime upTime = baseTime.addSecs((int)v);
-    return upTime.toString( "hh:mm" );
-}
+    virtual QwtText label(double v)const
+    {
+        QDateTime upTime = baseTime.addSecs((int)v);
+        return upTime.toString( "hh:mm" );
+    }
 private:
     QDateTime baseTime;
 };
@@ -202,6 +203,7 @@ void MainWindow::scanTours()
     }
     ui->treeWidgetTours->expandAll();
     calcBikeTotalDistances();
+    showServiceInTree();
     saveTableToJson();
     m_currentActiveTreeWidgetItem = nullptr;
     ui->treeWidgetTours->setFilter( ui->lineEditFilter->text() );
@@ -494,7 +496,7 @@ void MainWindow::configurePlots( void )
 
     //Background
     QwtPlotCanvas *canvas = (QwtPlotCanvas *)ui->qwtPlot->canvas();
-    canvas->setBorderRadius( 10 );
+    canvas->setBorderRadius( 5 );
     ui->qwtPlot->setCanvas( canvas );
     ui->qwtPlot->setCanvasBackground( Qt::white );
 
@@ -1149,6 +1151,7 @@ void MainWindow::on_treeWidgetTours_itemsDropped(QList<QTreeWidgetItem *> pSourc
         pSource.at(i)->setText( 1, target );
     }
     QTimer::singleShot( 1, this, SLOT( calcBikeTotalDistances() ) );
+    QTimer::singleShot( 2, this, SLOT( showServiceInTree() ) );
 }
 
 void MainWindow::on_actionSetArchivePath_triggered()
@@ -1160,6 +1163,7 @@ void MainWindow::on_actionSetArchivePath_triggered()
     if( path.size() )
     {
         m_workingPath = path;
+        if( !QDir( path + "/Planned" ).exists() ) QDir( path ).mkdir( "Planned" );
         scanTours();
     }
 }
@@ -1438,6 +1442,32 @@ void MainWindow::calcBikeTotalDistances()
         ui->treeWidgetTours->topLevelItem( i )->sortChildren( 0, Qt::DescendingOrder );
 }
 
+void MainWindow::showServiceInTree()
+{
+    ServiceDialog *service = new ServiceDialog( this, ui->treeWidgetTours );
+    int bike = 0;
+    for( int i = 0; i < ui->treeWidgetTours->topLevelItemCount(); i++ )
+    {
+        //if( "New" == ui->treeWidgetTours->topLevelItem( i )->text( 0 ) ) continue;
+        if( service->bikeNeedsService( bike ) )
+        {
+            ui->treeWidgetTours->topLevelItem( i )->setBackgroundColor( 0, QColor( 255, 0, 0, 96 ) );
+            ui->treeWidgetTours->topLevelItem( i )->setBackgroundColor( 2, QColor( 255, 0, 0, 96 ) );
+            ui->treeWidgetTours->topLevelItem( i )->setToolTip( 0, tr( "Check Service List!" ) );
+            ui->treeWidgetTours->topLevelItem( i )->setToolTip( 2, tr( "Check Service List!" ) );
+        }
+        else
+        {
+            ui->treeWidgetTours->topLevelItem( i )->setBackgroundColor( 0, QColor( 255, 0, 0, 0 ) );
+            ui->treeWidgetTours->topLevelItem( i )->setBackgroundColor( 2, QColor( 255, 0, 0, 0 ) );
+            ui->treeWidgetTours->topLevelItem( i )->setToolTip( 0, tr( "" ) );
+            ui->treeWidgetTours->topLevelItem( i )->setToolTip( 2, tr( "" ) );
+        }
+        bike++;
+    }
+    delete service;
+}
+
 void MainWindow::setupArchive( void )
 {
     while( !QDir( m_workingPath ).exists() )
@@ -1468,5 +1498,13 @@ void MainWindow::on_actionService_triggered()
     ServiceDialog *service = new ServiceDialog( this, ui->treeWidgetTours );
     service->exec();
     delete service;
+    showServiceInTree();
+}
+
+void MainWindow::on_actionStatistics_triggered()
+{
+    StatisticsDialog *statisticsDialog = new StatisticsDialog( this, ui->treeWidgetTours );
+    statisticsDialog->exec();
+    delete statisticsDialog;
 }
 

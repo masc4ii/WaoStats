@@ -81,6 +81,7 @@ SOURCES += \
     ServiceDialog.cpp \
     ServiceEntryDialog.cpp \
     Splash.cpp \
+    StatisticsDialog.cpp \
     TourData.cpp \
     VScrollArea.cpp \
     main.cpp \
@@ -314,6 +315,7 @@ HEADERS += \
     ServiceDialog.h \
     ServiceEntryDialog.h \
     Splash.h \
+    StatisticsDialog.h \
     TourData.h \
     VScrollArea.h
 
@@ -321,7 +323,8 @@ FORMS += \
     DropBoxAuthDialog.ui \
     MainWindow.ui \
     ServiceDialog.ui \
-    ServiceEntryDialog.ui
+    ServiceEntryDialog.ui \
+    StatisticsDialog.ui
 
 INCLUDEPATH += -I FitSDKRelease_21.101.00/cpp/
 

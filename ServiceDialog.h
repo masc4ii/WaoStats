@@ -17,6 +17,7 @@ class ServiceDialog : public QDialog
 public:
     explicit ServiceDialog(QWidget *parent = nullptr, QTreeWidget *tree = nullptr);
     ~ServiceDialog();
+    bool bikeNeedsService( int index );
 
 private slots:
     void on_pushButtonClose_clicked();
@@ -28,12 +29,13 @@ private slots:
 private:
     Ui::ServiceDialog *ui;
 
-    void fillTableRow( ServiceEntryDialog *entryDialog, int row );
-    double odoAtDateTime( QDateTime dateTime );
-    double odoInUse( int row );
-    void updateOdoInUseColumn( void );
-    void writeToJson( void );
-    void loadFromJson( void );
+    void fillTableRow(ServiceEntryDialog *entryDialog, int row , int index);
+    double odoAtDateTime(QDateTime dateTime , int index);
+    double odoInUse( int row, int index );
+    void updateOdoInUseColumn( int index );
+    void updateCellColor( void );
+    void writeToJson( int index );
+    void loadFromJson( int index );
 
     QTreeWidget *m_tourTree;
 };

@@ -17,12 +17,14 @@ public:
                                 QString part = "Chain",
                                 QString description = "brand xy",
                                 QString actionText = "Replaced",
-                                QDateTime dateTime = QDateTime::currentDateTime() );
+                                QDateTime dateTime = QDateTime::currentDateTime(),
+                                int interval = 0 );
     ~ServiceEntryDialog();
     QString part( void );
     QString description( void );
     QString actionText( void );
     QDateTime dateTime( void );
+    int interval( void );
 
 private slots:
     void on_pushButtonNow_clicked();

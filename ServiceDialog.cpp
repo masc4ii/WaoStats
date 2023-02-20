@@ -63,7 +63,7 @@ void ServiceDialog::on_pushButtonClose_clicked()
 
 void ServiceDialog::on_pushButtonAdd_clicked()
 {
-    ServiceEntryDialog *entryDialog = new ServiceEntryDialog( this );
+    ServiceEntryDialog *entryDialog = new ServiceEntryDialog( this, partList() );
     if( QDialog::Accepted == entryDialog->exec() )
     {
         ui->tableWidget->insertRow( ui->tableWidget->rowCount() );
@@ -93,6 +93,7 @@ void ServiceDialog::on_tableWidget_cellDoubleClicked(int row, int column)
 {
     Q_UNUSED( column );
     ServiceEntryDialog *entryDialog = new ServiceEntryDialog( this,
+                                                              partList(),
                                                               ui->tableWidget->item( row, 4 )->text(),
                                                               ui->tableWidget->item( row, 6 )->text(),
                                                               ui->tableWidget->item( row, 5 )->text(),
@@ -272,6 +273,7 @@ void ServiceDialog::loadFromJson( int index )
         QJsonObject info = doc.object().value( QString( "%1" ).arg( i ) ).toObject();
 
         ServiceEntryDialog *entryDialog = new ServiceEntryDialog( this,
+                                                                  partList(),
                                                                   info.value( "part" ).toString(),
                                                                   info.value( "description" ).toString(),
                                                                   info.value( "action" ).toString(),
@@ -291,6 +293,17 @@ void ServiceDialog::loadFromJson( int index )
     }
     updateOdoInUseColumn( index );
     updateCellColor();
+}
+
+QStringList ServiceDialog::partList()
+{
+    QStringList parts;
+    parts.clear();
+    for( int i = 0; i < ui->tableWidget->rowCount(); i++ )
+    {
+        if( !parts.contains( ui->tableWidget->item( i, 4 )->text() ) ) parts.append( ui->tableWidget->item( i, 4 )->text() );
+    }
+    return parts;
 }
 
 void ServiceDialog::on_comboBoxBike_currentIndexChanged(int index)

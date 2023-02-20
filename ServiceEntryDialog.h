@@ -14,6 +14,7 @@ class ServiceEntryDialog : public QDialog
 
 public:
     explicit ServiceEntryDialog(QWidget *parent = nullptr,
+                                QStringList partList = QStringList(),
                                 QString part = "Chain",
                                 QString description = "brand xy",
                                 QString actionText = "Replaced",

@@ -36,6 +36,7 @@ private:
     void updateCellColor( void );
     void writeToJson( int index );
     void loadFromJson( int index );
+    QStringList partList( void );
 
     QTreeWidget *m_tourTree;
 };

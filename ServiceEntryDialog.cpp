@@ -1,13 +1,19 @@
 #include "ServiceEntryDialog.h"
 #include "ui_ServiceEntryDialog.h"
 #include <QDebug>
+#include <QCompleter>
 
-ServiceEntryDialog::ServiceEntryDialog(QWidget *parent, QString part, QString description, QString actionText, QDateTime dateTime, int interval):
+ServiceEntryDialog::ServiceEntryDialog(QWidget *parent, QStringList partList, QString part, QString description, QString actionText, QDateTime dateTime, int interval):
     QDialog(parent),
     ui(new Ui::ServiceEntryDialog)
 {
     ui->setupUi(this);
     //ui->dateTimeEdit->setDateTime( dateTime );
+
+    QCompleter *completer = new QCompleter( partList, this );
+    completer->setCaseSensitivity( Qt::CaseInsensitive );
+    ui->lineEditPart->setCompleter( completer );
+
     ui->calendarWidget->setSelectedDate( dateTime.date() );
     ui->timeEdit->setTime( dateTime.time() );
     ui->lineEditPart->setText( part );

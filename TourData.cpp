@@ -7,7 +7,6 @@ TourData::TourData()
 
 void TourData::reset()
 {
-    m_session.minTemperature = 9999;
     m_tourTimeStamp.clear();
     m_tourDistance.clear();
     m_tourBatterySoc.clear();
@@ -52,7 +51,7 @@ void TourData::reset()
     m_session.ascent = 0;
     m_session.descent = 0;
     m_session.altitudeMax = 0;
-    m_session.altitudeMin = 9999;
+    m_session.altitudeMin = 0;
     m_session.avgTemperature = 0;
     m_session.maxTemperature = 0;
     m_session.minTemperature = 9999;

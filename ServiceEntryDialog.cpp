@@ -8,17 +8,24 @@ ServiceEntryDialog::ServiceEntryDialog(QWidget *parent, QStringList partList, QS
     ui(new Ui::ServiceEntryDialog)
 {
     ui->setupUi(this);
-    //ui->dateTimeEdit->setDateTime( dateTime );
 
     QCompleter *completer = new QCompleter( partList, this );
     completer->setCaseSensitivity( Qt::CaseInsensitive );
     ui->lineEditPart->setCompleter( completer );
 
+    if( partList.isEmpty() && part.isEmpty() )
+    {
+        ui->lineEditPart->setText( "Chain" );
+        ui->lineEditDescr->setText( "Replaced with brand xy" );
+    }
+    else
+    {
+        ui->lineEditPart->setText( part );
+        ui->lineEditDescr->setText( description );
+    }
     ui->calendarWidget->setSelectedDate( dateTime.date() );
     ui->timeEdit->setTime( dateTime.time() );
-    ui->lineEditPart->setText( part );
     ui->comboBoxAction->setCurrentText( actionText );
-    ui->lineEditDescr->setText( description );
     ui->spinBoxInterval->setValue( interval );
 
     ui->labelAction->setHidden( true );

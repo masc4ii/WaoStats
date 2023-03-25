@@ -266,12 +266,13 @@ void FitListener::OnMesg(fit::Mesg& mesg)
     }
     if( QString( mesg.GetName().c_str() ) == QString( "record" ) && mesg.GetNumFields() > 5 )
     {
-        if( !m_tourAltitude.empty() && fabs( m_tourAltitude.last() - tourAltitude ) > 50 && !m_altCorrectionDone )
+        if( !m_tourAltitude.empty() && fabs( m_tourAltitude.last() - tourAltitude ) > 20 && !m_altCorrectionDone )
         {
             m_altCorrectionDone = true;
             for( int i = 0; i < m_tourAltitude.count(); i++ )
                 m_tourAltitude[i] = tourAltitude;
         }
+        else if( !m_tourAltitude.empty() && tourAltitude != 0 && m_tourAltitude.last() != 0 ) m_altCorrectionDone = true;
 
         if( !m_tourBatterySoc.empty() && fabs( m_tourBatterySoc.last() - tourBatterySoc ) > 3 && !m_battCorrectionDone )
         {

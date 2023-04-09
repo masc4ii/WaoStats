@@ -83,6 +83,7 @@ private:
     void saveTableToJson( void );
     bool loadTrackFromJson( QString fitFile, QTreeWidgetItem *fitItem );
     void markActiveTour( QTreeWidgetItem *item );
+    void drawHrPlot(TourData::fitSection_t section );
     QString workingPath( void );
 
     TourData *m_pTourData;

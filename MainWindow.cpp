@@ -351,6 +351,8 @@ void MainWindow::statistics( void )
         ui->labelTempAverage->setText( QString( "%1 °C" ).arg( m_pTourData->getSession().avgTemperature ) );
         ui->labelTempMax->setText( QString( "%1 °C" ).arg( m_pTourData->getSession().maxTemperature ) );
         ui->labelTempMin->setText( QString( "%1 °C" ).arg( m_pTourData->getSession().minTemperature ) );
+
+        drawHrPlot( m_pTourData->getSession() );
     }
     else
     {
@@ -392,6 +394,8 @@ void MainWindow::statistics( void )
         ui->labelTempAverage->setText( QString( "%1 °C" ).arg( m_pTourData->getSections().at(ind).avgTemperature ) );
         ui->labelTempMax->setText( QString( "%1 °C" ).arg( m_pTourData->getSections().at(ind).maxTemperature ) );
         ui->labelTempMin->setText( QString( "%1 °C" ).arg( m_pTourData->getSections().at(ind).minTemperature ) );
+
+        drawHrPlot( m_pTourData->getSections().at(ind) );
     }
 }
 
@@ -1414,6 +1418,36 @@ void MainWindow::markActiveTour(QTreeWidgetItem *item)
         item->setFont( i, font );
     }
     m_currentActiveTreeWidgetItem = item;
+}
+
+void MainWindow::drawHrPlot(TourData::fitSection_t section)
+{
+    int b = 8 * devicePixelRatio(); //boarder
+    int h = (ui->labelHrZone->height() * devicePixelRatio() ) - 1;
+    int w = 164 * devicePixelRatio();//ui->labelHrZone->width();
+    int w5 = (w-b) / 5;
+    int max = 0;
+    QPixmap pix( w, h );
+    QPainter paint( &pix );
+    pix.fill( ui->groupBoxCadence->palette().background().color() );
+    QVector<QBrush> brushes = { QBrush( "dodgerblue" ), QBrush( "limegreen" ), QBrush( "gold" ), QBrush( "darkorange" ), QBrush( "orangered" ) };
+    for( int i = 0; i < 5; i++ )
+    {
+        if( section.hrTimeInZone[i] > max ) max = section.hrTimeInZone[i];
+    }
+    for( int i = 0; i < 5; i++ )
+    {
+        paint.fillRect( QRect( (w5*i)+b, h-b, w5-b, (int)(-(h-b-b)*(section.hrTimeInZone[i]/max) )-1 ), brushes[i] );
+    }
+    pix.setDevicePixelRatio( devicePixelRatio() );
+    ui->labelHrZone->setPixmap( pix );
+    QString toolTip = QString( "0..%1: %2\%\n%3..%4: %5\%\n%6..%7: %8\%\n%9..%10: %11\%\n%12..∞: %13\%" )
+                        .arg( m_pTourData->getHrZoneHigh()[0] ).arg( (int)(section.hrTimeInZone[0]/section.totalTimerTime*100+0.5) )
+                        .arg( m_pTourData->getHrZoneHigh()[0]+1 ).arg( m_pTourData->getHrZoneHigh()[1] ).arg( (int)(section.hrTimeInZone[1]/section.totalTimerTime*100+0.5) )
+                        .arg( m_pTourData->getHrZoneHigh()[1]+1 ).arg( m_pTourData->getHrZoneHigh()[2] ).arg( (int)(section.hrTimeInZone[2]/section.totalTimerTime*100+0.5) )
+                        .arg( m_pTourData->getHrZoneHigh()[2]+1 ).arg( m_pTourData->getHrZoneHigh()[3] ).arg( (int)(section.hrTimeInZone[3]/section.totalTimerTime*100+0.5) )
+                        .arg( m_pTourData->getHrZoneHigh()[3]+1 ).arg( (int)(section.hrTimeInZone[4]/section.totalTimerTime*100+0.5) );
+    ui->labelHrZone->setToolTip( toolTip );
 }
 
 void MainWindow::calcBikeTotalDistances()

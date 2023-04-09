@@ -146,13 +146,13 @@ double ServiceDialog::odoInUse(int row, int index)
     double odoTotal2 = m_tourTree->topLevelItem(index)->text(3).toDouble();
 
     QDateTime dateTime1 = QDateTime().fromString( ui->tableWidget->item( row, 0 )->text(), "yyyy-MM-dd - hh:mm" );
-    QString part = ui->tableWidget->item( row, 3 )->text();
+    QString part = ui->tableWidget->item( row, 4 )->text();
     int row2 = -1;
 
     //2nd entry availlable?
     for( int i = 0; i < row; i++ )
     {
-        if( part == ui->tableWidget->item( i, 3 )->text() ) row2 = i;
+        if( part == ui->tableWidget->item( i, 4 )->text() ) row2 = i;
     }
 
     //Original distance

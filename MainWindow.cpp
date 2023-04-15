@@ -201,7 +201,7 @@ void MainWindow::scanTours()
             }
         }
     }
-    ui->treeWidgetTours->expandAll();
+    ui->treeWidgetTours->collapseAll();
     calcBikeTotalDistances();
     showServiceInTree();
     saveTableToJson();
@@ -312,6 +312,8 @@ void MainWindow::statistics( void )
     ui->labelPickerGradeName->setVisible( (int)m_pTourData->getSession().descent != 0 && (int)m_pTourData->getSession().ascent != 0 );
     ui->labelPickerTemperature->setVisible( (int)m_pTourData->getSession().minTemperature != 9999 );
     ui->labelPickerTemperatureName->setVisible( (int)m_pTourData->getSession().minTemperature != 9999 );
+    ui->labelPickerGear->setVisible( m_pTourData->containsGearInfoFront() || m_pTourData->containsGearInfoRear() );
+    ui->labelPickerGearName->setVisible( m_pTourData->containsGearInfoFront() || m_pTourData->containsGearInfoRear() );
 
     if( ind < 1 )
     {
@@ -916,6 +918,16 @@ void MainWindow::pointInfo( QPoint point )
     {
         double distance = ui->qwtPlot->invTransform( QwtPlot::xBottom, point.x() );
 
+        for( int i = 0; i < m_pTourData->getGearDistance().size(); i++ )
+        {
+            if( m_pTourData->getGearDistance().at(i) >= distance )
+            {
+                ui->labelPickerGear->setText( QString( "%1;%2;%3" ).arg( (int)m_pTourData->getGearNumFront().at( i ) )
+                                                 .arg( (int)m_pTourData->getGearNumRear().at( i ) )
+                                                 .arg( m_pTourData->getGearRatio().at( i ), 0, 'f', 2 ) );
+                break;
+            }
+        }
         for( int i = 0; i < m_pTourData->getTourDistance().size(); i++ )
         {
             if( m_pTourData->getTourDistance().at(i) >= distance )
@@ -946,6 +958,16 @@ void MainWindow::pointInfo( QPoint point )
     {
         double time = ui->qwtPlot->invTransform( QwtPlot::xBottom, point.x() );
 
+        for( int i = 0; i < m_pTourData->getGearTimeStamp().size(); i++ )
+        {
+            if( m_pTourData->getGearTimeStamp().at(i) >= time )
+            {
+                ui->labelPickerGear->setText( QString( "%1;%2;%3" ).arg( (int)m_pTourData->getGearNumFront().at( i ) )
+                                                 .arg( (int)m_pTourData->getGearNumRear().at( i ) )
+                                                 .arg( m_pTourData->getGearRatio().at( i ), 0, 'f', 2 ) );
+                break;
+            }
+        }
         for( int i = 0; i < m_pTourData->getTourTimeStamp().size(); i++ )
         {
             if( m_pTourData->getTourTimeStamp().at(i) >= time )
@@ -960,6 +982,9 @@ void MainWindow::pointInfo( QPoint point )
                 ui->labelPickerHeartRate->setText( QString( "%1 bpm" ).arg( (int)m_pTourData->getTourHeartRate().at( i ) ) );
                 ui->labelPickerPower->setText( QString( "%1 W" ).arg( m_pTourData->getTourPower().at( i ), 0, 'f', 1 ) );
                 ui->labelPickerCalories->setText( QString( "%1 kcal" ).arg( (int)m_pTourData->getTourCalories().at( i ) ) );
+                ui->labelPickerGear->setText( QString( "%1;%2;%3" ).arg( (int)m_pTourData->getGearNumFront().at( i ) )
+                                                                   .arg( (int)m_pTourData->getGearNumRear().at( i ) )
+                                                                   .arg( m_pTourData->getGearRatio().at( i ) ) );
 
                 // Create the "cross" and add it to the layer.
                 std::shared_ptr<GeometryPoint> cross(std::make_shared<GeometryPointImage>( PointWorldCoord( m_pTourData->getTourPosLong().at(i) * ( 180 / pow(2,31) ),
@@ -987,6 +1012,7 @@ void MainWindow::pointInfoHide( bool on )
     ui->labelPickerHeartRate->setText( QString( "-" ) );
     ui->labelPickerPower->setText( QString( "-" ) );
     ui->labelPickerCalories->setText( QString( "-" ) );
+    ui->labelPickerGear->setText( QString( "Fr;Re;Rat" ) );
     m_layer_symb->setVisible( false );
 }
 

@@ -58,6 +58,33 @@
        <string>Picker Info</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_13">
+       <item row="0" column="8">
+        <widget class="QLabel" name="labelPickerCaloriesName">
+         <property name="text">
+          <string>Calories:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QLabel" name="label_19">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Speed:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="9">
+        <widget class="QLabel" name="labelPickerTemperatureName">
+         <property name="text">
+          <string>Temperature:</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label_35">
          <property name="text">
@@ -65,8 +92,8 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="labelPickerDistance">
+       <item row="1" column="6">
+        <widget class="QLabel" name="labelPickerHeartRate">
          <property name="text">
           <string>-</string>
          </property>
@@ -76,6 +103,69 @@
         <widget class="QLabel" name="label_36">
          <property name="text">
           <string>Time:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLabel" name="labelPickerGrade">
+         <property name="text">
+          <string>-</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="labelPickerGradeName">
+         <property name="text">
+          <string>Grade:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4">
+        <widget class="QLabel" name="labelPickerSpeed">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>-</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="7">
+        <widget class="QLabel" name="labelPickerPowerName">
+         <property name="text">
+          <string>Power:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLabel" name="labelPickerAltitude">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>-</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="8">
+        <widget class="QLabel" name="labelPickerCalories">
+         <property name="text">
+          <string>-</string>
          </property>
         </widget>
        </item>
@@ -99,65 +189,10 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="2">
-        <widget class="QLabel" name="labelPickerAltitude">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
+       <item row="0" column="6">
+        <widget class="QLabel" name="labelPickerHeartRateName">
          <property name="text">
-          <string>-</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QLabel" name="labelPickerGradeName">
-         <property name="text">
-          <string>Grade:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="3">
-        <widget class="QLabel" name="labelPickerGrade">
-         <property name="text">
-          <string>-</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="4">
-        <widget class="QLabel" name="label_19">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Speed:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="4">
-        <widget class="QLabel" name="labelPickerSpeed">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>-</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          <string>Heart Rate:</string>
          </property>
         </widget>
        </item>
@@ -171,6 +206,23 @@
          </property>
          <property name="text">
           <string>Cadence:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="labelPickerDistance">
+         <property name="text">
+          <string>-</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="9">
+        <widget class="QLabel" name="labelPickerTemperature">
+         <property name="text">
+          <string>-</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
@@ -190,27 +242,6 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="6">
-        <widget class="QLabel" name="labelPickerHeartRateName">
-         <property name="text">
-          <string>Heart Rate:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="6">
-        <widget class="QLabel" name="labelPickerHeartRate">
-         <property name="text">
-          <string>-</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="7">
-        <widget class="QLabel" name="labelPickerPowerName">
-         <property name="text">
-          <string>Power:</string>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="7">
         <widget class="QLabel" name="labelPickerPower">
          <property name="text">
@@ -218,31 +249,17 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="8">
-        <widget class="QLabel" name="labelPickerCaloriesName">
+       <item row="0" column="10">
+        <widget class="QLabel" name="labelPickerGearName">
          <property name="text">
-          <string>Calories:</string>
+          <string>Gear:</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="8">
-        <widget class="QLabel" name="labelPickerCalories">
+       <item row="1" column="10">
+        <widget class="QLabel" name="labelPickerGear">
          <property name="text">
-          <string>-</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="9">
-        <widget class="QLabel" name="labelPickerTemperatureName">
-         <property name="text">
-          <string>Temperature:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="9">
-        <widget class="QLabel" name="labelPickerTemperature">
-         <property name="text">
-          <string>-</string>
+          <string>Fr;Re;Rat</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -461,7 +478,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-75</y>
+          <y>0</y>
           <width>218</width>
           <height>932</height>
          </rect>

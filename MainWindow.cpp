@@ -1467,12 +1467,12 @@ void MainWindow::drawHrPlot(TourData::fitSection_t section)
     }
     pix.setDevicePixelRatio( devicePixelRatio() );
     ui->labelHrZone->setPixmap( pix );
-    QString toolTip = QString( "0..%1: %2\%\n%3..%4: %5\%\n%6..%7: %8\%\n%9..%10: %11\%\n%12..∞: %13\%" )
-                        .arg( m_pTourData->getHrZoneHigh()[0] ).arg( (int)( section.hrTimeInZone[0] / section.totalTimerTime * 100 + 0.5 ) )
-                        .arg( m_pTourData->getHrZoneHigh()[0] + 1 ).arg( m_pTourData->getHrZoneHigh()[1] ).arg( (int)( section.hrTimeInZone[1] / section.totalTimerTime * 100 + 0.5 ) )
-                        .arg( m_pTourData->getHrZoneHigh()[1] + 1 ).arg( m_pTourData->getHrZoneHigh()[2] ).arg( (int)( section.hrTimeInZone[2] / section.totalTimerTime * 100 + 0.5 ) )
-                        .arg( m_pTourData->getHrZoneHigh()[2] + 1 ).arg( m_pTourData->getHrZoneHigh()[3] ).arg( (int)( section.hrTimeInZone[3] / section.totalTimerTime * 100 + 0.5 ) )
-                        .arg( m_pTourData->getHrZoneHigh()[3] + 1 ).arg( (int)( section.hrTimeInZone[4] / section.totalTimerTime * 100 + 0.5 ) );
+    QString toolTip = QString( "0..%1: %2\%, %3\n%4..%5: %6\%, %7\n%8..%9: %10\%, %11\n%12..%13: %14\%, %15\n%16..∞: %17\%, %18" )
+                        .arg( m_pTourData->getHrZoneHigh()[0] ).arg( (int)( section.hrTimeInZone[0] / section.totalTimerTime * 100 + 0.5 ) ).arg( QTime(0,0).addSecs( section.hrTimeInZone[0] ).toString( "hh:mm:ss" ) )
+                        .arg( m_pTourData->getHrZoneHigh()[0] + 1 ).arg( m_pTourData->getHrZoneHigh()[1] ).arg( (int)( section.hrTimeInZone[1] / section.totalTimerTime * 100 + 0.5 ) ).arg( QTime(0,0).addSecs( section.hrTimeInZone[1] ).toString( "hh:mm:ss" ) )
+                        .arg( m_pTourData->getHrZoneHigh()[1] + 1 ).arg( m_pTourData->getHrZoneHigh()[2] ).arg( (int)( section.hrTimeInZone[2] / section.totalTimerTime * 100 + 0.5 ) ).arg( QTime(0,0).addSecs( section.hrTimeInZone[2] ).toString( "hh:mm:ss" ) )
+                        .arg( m_pTourData->getHrZoneHigh()[2] + 1 ).arg( m_pTourData->getHrZoneHigh()[3] ).arg( (int)( section.hrTimeInZone[3] / section.totalTimerTime * 100 + 0.5 ) ).arg( QTime(0,0).addSecs( section.hrTimeInZone[3] ).toString( "hh:mm:ss" ) )
+                        .arg( m_pTourData->getHrZoneHigh()[3] + 1 ).arg( (int)( section.hrTimeInZone[4] / section.totalTimerTime * 100 + 0.5 ) ).arg( QTime(0,0).addSecs( section.hrTimeInZone[4] ).toString( "hh:mm:ss" ) );
     ui->labelHrZone->setToolTip( toolTip );
 }
 

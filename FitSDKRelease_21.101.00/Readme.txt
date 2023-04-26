@@ -1,1 +1,0 @@
-Install FitSDKRelease_21.101.00 here!

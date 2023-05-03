@@ -1,7 +1,7 @@
 #include "FitListener.h"
 #include "math.h"
 
-#define LOGOUT
+//#define LOGOUT
 
 FitListener::FitListener() : TourData()
 {

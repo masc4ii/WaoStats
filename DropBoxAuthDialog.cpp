@@ -5,6 +5,7 @@
 #include <QUrl>
 #include <QDesktopServices>
 #include <QMessageBox>
+#include <QClipboard>
 
 DropBoxAuthDialog::DropBoxAuthDialog(QString workingPath, QWidget *parent) :
     QDialog(parent),
@@ -31,6 +32,7 @@ void DropBoxAuthDialog::on_pushButtonGetToken_clicked()
     m_url = DropboxWebAuth::getCodeAuthorizeUrl( m_appInfo );
     QDesktopServices::openUrl( QUrl( m_url ) );
     ui->lineEditAuthCode->setEnabled( true );
+    ui->pushButtonPaste->setEnabled( true );
 }
 
 void DropBoxAuthDialog::on_lineEditAuthCode_textChanged(const QString &arg1)
@@ -61,3 +63,7 @@ void DropBoxAuthDialog::on_pushButtonOk_clicked()
     return;
 }
 
+void DropBoxAuthDialog::on_pushButtonPaste_clicked()
+{
+    ui->lineEditAuthCode->setText( QGuiApplication::clipboard()->text() );
+}

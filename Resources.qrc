@@ -11,5 +11,6 @@
         <file>Icons/plus.png</file>
         <file>Icons/Actions-configure-icon.png</file>
         <file>Icons/plot.png</file>
+        <file>Icons/paste.png</file>
     </qresource>
 </RCC>

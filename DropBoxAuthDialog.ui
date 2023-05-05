@@ -49,13 +49,6 @@
       <string>Token</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <widget class="QPushButton" name="pushButtonGetToken">
-        <property name="text">
-         <string>Get Token</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0">
        <widget class="QLineEdit" name="lineEditAuthCode">
         <property name="enabled">
@@ -63,6 +56,27 @@
         </property>
         <property name="placeholderText">
          <string>Authorization Code</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QPushButton" name="pushButtonGetToken">
+        <property name="text">
+         <string>Get Token</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="pushButtonPaste">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="Resources.qrc">
+          <normaloff>:/Icons/Icons/paste.png</normaloff>:/Icons/Icons/paste.png</iconset>
         </property>
        </widget>
       </item>
@@ -105,7 +119,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="Resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>pushButtonAbort</sender>

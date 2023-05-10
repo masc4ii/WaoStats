@@ -1330,6 +1330,7 @@ void MainWindow::readSettings()
     }
 
     m_workingPath = set.value( "workingPath", QDir::homePath() + "/Documents/BikeTracking" ).toString();
+    setupArchive();
 }
 
 void MainWindow::configureActionGroups( void )
@@ -1455,7 +1456,7 @@ void MainWindow::drawHrPlot(TourData::fitSection_t section)
     int max = 0;
     QPixmap pix( w, h );
     QPainter paint( &pix );
-    pix.fill( ui->groupBoxCadence->palette().background().color() );
+    pix.fill( ui->groupBoxCadence->palette().window().color() );
     QVector<QBrush> brushes = { QBrush( "dodgerblue" ), QBrush( "limegreen" ), QBrush( "gold" ), QBrush( "darkorange" ), QBrush( "orangered" ) };
     for( int i = 0; i < 5; i++ )
     {
@@ -1511,15 +1512,15 @@ void MainWindow::showServiceInTree()
         //if( "New" == ui->treeWidgetTours->topLevelItem( i )->text( 0 ) ) continue;
         if( service->bikeNeedsService( bike ) )
         {
-            ui->treeWidgetTours->topLevelItem( i )->setBackgroundColor( 0, QColor( 255, 0, 0, 96 ) );
-            ui->treeWidgetTours->topLevelItem( i )->setBackgroundColor( 2, QColor( 255, 0, 0, 96 ) );
+            ui->treeWidgetTours->topLevelItem( i )->setBackground( 0, QColor( 255, 0, 0, 96 ) );
+            ui->treeWidgetTours->topLevelItem( i )->setBackground( 2, QColor( 255, 0, 0, 96 ) );
             ui->treeWidgetTours->topLevelItem( i )->setToolTip( 0, tr( "Check Service List!" ) );
             ui->treeWidgetTours->topLevelItem( i )->setToolTip( 2, tr( "Check Service List!" ) );
         }
         else
         {
-            ui->treeWidgetTours->topLevelItem( i )->setBackgroundColor( 0, QColor( 255, 0, 0, 0 ) );
-            ui->treeWidgetTours->topLevelItem( i )->setBackgroundColor( 2, QColor( 255, 0, 0, 0 ) );
+            ui->treeWidgetTours->topLevelItem( i )->setBackground( 0, QColor( 255, 0, 0, 0 ) );
+            ui->treeWidgetTours->topLevelItem( i )->setBackground( 2, QColor( 255, 0, 0, 0 ) );
             ui->treeWidgetTours->topLevelItem( i )->setToolTip( 0, tr( "" ) );
             ui->treeWidgetTours->topLevelItem( i )->setToolTip( 2, tr( "" ) );
         }

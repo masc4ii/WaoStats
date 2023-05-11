@@ -7,7 +7,7 @@
 [![wahooELEMNT](https://img.shields.io/badge/wahoo-ELEMNT-red)](https://de-eu.wahoofitness.com/devices/bike-computers)
 [![Qt&5](https://img.shields.io/badge/Qt-5-brightgreen)](https://doc.qt.io/qt-5/)
 [![Qwt&620](https://img.shields.io/badge/Qwt-6.2.0-brightgreen)](https://qwt.sourceforge.io/)
-[![FitSDK](https://img.shields.io/badge/FitSDKRelease-21.101.00-brightgreen)](https://developer.garmin.com/fit/download/)
+[![FitSDK](https://img.shields.io/badge/FitSDKRelease-21.105.00-brightgreen)](https://developer.garmin.com/fit/download/)
 [![dropboxQt](https://img.shields.io/badge/dropboxQt-yellow)](https://github.com/osoftteam/dropboxQt)
 [![QMapControl](https://img.shields.io/badge/QMapControl-yellow)](https://github.com/TheDZhon/QMapControl)
 
@@ -19,7 +19,7 @@
 
 A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer tracks. It runs on **macOS**, **Windows** and **Linux**.
 
-<img width="1000" alt="waostats" src="https://user-images.githubusercontent.com/30245296/195997239-19587c70-079c-4a51-8231-fe0a10e137cb.png">
+<img width="1000" alt="waostats" src="https://github.com/masc4ii/WaoStats/assets/30245296/6cfd02fc-df87-4b66-8074-3f30f2dde2bd">
 
 ## Main features are:
 - load all your Wahoo FIT files into the application
@@ -30,13 +30,13 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 - dropbox sync your FIT files
 - display your track on 11 different maps (google, openstreetmap, bing and more)
 - load GPX tracks into the application with reduced statistics (compared to FIT)
-- log service activities
+- log service activities and get service reminders
 
 ## Used Libraries
 - dropboxQt, under [MIT](https://github.com/masc4ii/WaoStats/blob/main/dropboxQt/LICENSE)
 - Qwt 6.2.0, under [Qwt License](https://qwt.sourceforge.io/qwtlicense.html), download code from official webpage
 - QMapControl, under [LGPL 3.0](https://github.com/masc4ii/WaoStats/blob/main/QMapControl/COPYING.LESSER)
-- FitSDKRelease_21.101.00, download code from Garmin official SDK webpage
+- FitSDKRelease_21.105.00, download code from Garmin official SDK webpage
 - App Icon by [71M](https://zez.am/71m)
 
 ## Download

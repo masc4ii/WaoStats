@@ -16,9 +16,9 @@ git clone http://github.com/masc4ii/WaoStats
 ```
 
 ## FitSDKRelease:
-- [FitSDKRelease_21.101.00.zip](https://developer.garmin.com/downloads/fit/sdk/FitSDKRelease_21.101.00.zip)
+- [FitSDKRelease_21.105.00.zip](https://developer.garmin.com/downloads/fit/sdk/FitSDKRelease_21.105.00.zip)
 ```
-$ unzip -d FitSDKRelease_21.101.00 FitSDKRelease_21.101.00.zip
+$ unzip -d FitSDKRelease_21.105.00 FitSDKRelease_21.105.00.zip
 ```
 
 ## qwt-6.2.0

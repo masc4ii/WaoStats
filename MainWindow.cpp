@@ -55,6 +55,7 @@
 #include <QMapControl/MapAdapterThunderCycle.h>
 #include <QMapControl/MapAdapterBing.h>
 #include <QMapControl/MapAdapterSigma.h>
+#include <QMapControl/MapAdapterKomoot.h>
 
 #include "dropbox/DropboxClient.h"
 #include "dropbox/files/FilesRoutes.h"
@@ -440,6 +441,7 @@ void MainWindow::configureMap()
     map_provider_group->addAction( ui->action_sigmasport_maps );
     map_provider_group->addAction( ui->action_sigmasport_topo );
     map_provider_group->addAction( ui->action_sigmasport_cycle );
+    map_provider_group->addAction( ui->action_komoot );
     // Ensure the map provider actions are checkable.
     ui->action_google_map->setCheckable( true );
     ui->action_google_satelite->setCheckable( true );
@@ -456,6 +458,7 @@ void MainWindow::configureMap()
     ui->action_sigmasport_maps->setCheckable( true );
     ui->action_sigmasport_topo->setCheckable( true );
     ui->action_sigmasport_cycle->setCheckable( true );
+    ui->action_komoot->setCheckable( true );
     // Default to OTM map.
     ui->action_otm->setChecked( true );
     // Connect signal/slot to set the map provider.
@@ -916,6 +919,11 @@ void MainWindow::mapProviderSelected(QAction* action)
     {
         map_layer->setMapAdapter(std::make_shared<MapAdapterSigma>(qmapcontrol::MapAdapterSigma::MapAdapterSigmaType::CYCLE));
     }
+    // Set the map to Komoot.
+    else if(action == ui->action_komoot)
+    {
+        map_layer->setMapAdapter(std::make_shared<MapAdapterKomoot>());
+    }
 
     // Add the replacement map layer.
     m_map_control->addLayer(map_layer, 0);
@@ -1311,6 +1319,7 @@ void MainWindow::writeSettings()
     else if( ui->action_sigmasport_maps->isChecked() ) mapType = 12;
     else if( ui->action_sigmasport_topo->isChecked() ) mapType = 13;
     else if( ui->action_sigmasport_cycle->isChecked() ) mapType = 14;
+    else if( ui->action_komoot->isChecked() ) mapType = 15;
     set.setValue( "maptype", mapType );
     set.setValue( "workingPath", m_workingPath );
 }
@@ -1367,6 +1376,9 @@ void MainWindow::readSettings()
             break;
     case 14: ui->action_sigmasport_cycle->setChecked( true );
             mapProviderSelected( ui->action_sigmasport_cycle );
+            break;
+    case 15: ui->action_komoot->setChecked( true );
+            mapProviderSelected( ui->action_komoot );
             break;
     case 0:
     default:

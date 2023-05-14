@@ -51,8 +51,10 @@
 #include <QMapControl/MapAdapter4UM.h>
 #include <QMapControl/MapAdapterOTM.h>
 #include <QMapControl/MapAdapterOCM.h>
+#include <QMapControl/MapAdapterMtbMap.h>
 #include <QMapControl/MapAdapterThunderCycle.h>
 #include <QMapControl/MapAdapterBing.h>
+#include <QMapControl/MapAdapterSigma.h>
 
 #include "dropbox/DropboxClient.h"
 #include "dropbox/files/FilesRoutes.h"
@@ -434,6 +436,10 @@ void MainWindow::configureMap()
     map_provider_group->addAction( ui->action_thunderforest_cycle );
     map_provider_group->addAction( ui->action_thunderforest_landscape );
     map_provider_group->addAction( ui->action_bing );
+    map_provider_group->addAction( ui->action_mtbmap );
+    map_provider_group->addAction( ui->action_sigmasport_maps );
+    map_provider_group->addAction( ui->action_sigmasport_topo );
+    map_provider_group->addAction( ui->action_sigmasport_cycle );
     // Ensure the map provider actions are checkable.
     ui->action_google_map->setCheckable( true );
     ui->action_google_satelite->setCheckable( true );
@@ -446,6 +452,10 @@ void MainWindow::configureMap()
     ui->action_thunderforest_cycle->setCheckable( true );
     ui->action_thunderforest_landscape->setCheckable( true );
     ui->action_bing->setCheckable( true );
+    ui->action_mtbmap->setCheckable( true );
+    ui->action_sigmasport_maps->setCheckable( true );
+    ui->action_sigmasport_topo->setCheckable( true );
+    ui->action_sigmasport_cycle->setCheckable( true );
     // Default to OTM map.
     ui->action_otm->setChecked( true );
     // Connect signal/slot to set the map provider.
@@ -861,6 +871,11 @@ void MainWindow::mapProviderSelected(QAction* action)
     {
         map_layer->setMapAdapter(std::make_shared<MapAdapterOTM>());
     }
+    // Set the map to MtbMap.
+    else if(action == ui->action_mtbmap)
+    {
+        map_layer->setMapAdapter(std::make_shared<MapAdapterMtbMap>());
+    }
     // Set the map to 4UMaps.
     else if(action == ui->action_4um)
     {
@@ -885,6 +900,21 @@ void MainWindow::mapProviderSelected(QAction* action)
     else if(action == ui->action_bing)
     {
         map_layer->setMapAdapter(std::make_shared<MapAdapterBing>());
+    }
+    // Set the map to Sigma Sport Flat.
+    else if(action == ui->action_sigmasport_maps)
+    {
+        map_layer->setMapAdapter(std::make_shared<MapAdapterSigma>(qmapcontrol::MapAdapterSigma::MapAdapterSigmaType::MAPS));
+    }
+    // Set the map to Sigma Sport Topo.
+    else if(action == ui->action_sigmasport_topo)
+    {
+        map_layer->setMapAdapter(std::make_shared<MapAdapterSigma>(qmapcontrol::MapAdapterSigma::MapAdapterSigmaType::TOPO));
+    }
+    // Set the map to Sigma Sport Cycle.
+    else if(action == ui->action_sigmasport_cycle)
+    {
+        map_layer->setMapAdapter(std::make_shared<MapAdapterSigma>(qmapcontrol::MapAdapterSigma::MapAdapterSigmaType::CYCLE));
     }
 
     // Add the replacement map layer.
@@ -1277,6 +1307,10 @@ void MainWindow::writeSettings()
     else if( ui->action_thunderforest_cycle->isChecked() ) mapType = 8;
     else if( ui->action_thunderforest_landscape->isChecked() ) mapType = 9;
     else if( ui->action_bing->isChecked() ) mapType = 10;
+    else if( ui->action_mtbmap->isChecked() ) mapType = 11;
+    else if( ui->action_sigmasport_maps->isChecked() ) mapType = 12;
+    else if( ui->action_sigmasport_topo->isChecked() ) mapType = 13;
+    else if( ui->action_sigmasport_cycle->isChecked() ) mapType = 14;
     set.setValue( "maptype", mapType );
     set.setValue( "workingPath", m_workingPath );
 }
@@ -1321,6 +1355,18 @@ void MainWindow::readSettings()
             break;
     case 10: ui->action_bing->setChecked( true );
             mapProviderSelected( ui->action_bing );
+            break;
+    case 11: ui->action_mtbmap->setChecked( true );
+            mapProviderSelected( ui->action_mtbmap );
+            break;
+    case 12: ui->action_sigmasport_maps->setChecked( true );
+            mapProviderSelected( ui->action_sigmasport_maps );
+            break;
+    case 13: ui->action_sigmasport_topo->setChecked( true );
+            mapProviderSelected( ui->action_sigmasport_topo );
+            break;
+    case 14: ui->action_sigmasport_cycle->setChecked( true );
+            mapProviderSelected( ui->action_sigmasport_cycle );
             break;
     case 0:
     default:

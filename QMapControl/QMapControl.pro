@@ -58,11 +58,13 @@ HEADERS +=                                      \
     QMapControl/MapAdapterOSM.h                             \
     QMapControl/MapAdapterOCM.h                             \
     QMapControl/MapAdapterOTM.h                             \
+    QMapControl/MapAdapterMtbMap.h                          \
     QMapControl/MapAdapter4UM.h                             \
     QMapControl/MapAdapterThunderCycle.h                    \
     QMapControl/MapAdapterTile.h                            \
     QMapControl/MapAdapterWMS.h                             \
     QMapControl/MapAdapterYahoo.h                           \
+    QMapControl/MapAdapterSigma.h                           \
     QMapControl/NetworkManager.h                            \
     QMapControl/Point.h                                     \
     QMapControl/Projection.h                                \
@@ -99,11 +101,13 @@ SOURCES +=                                      \
     QMapControl/MapAdapterOSM.cpp                           \
     QMapControl/MapAdapterOCM.cpp                           \
     QMapControl/MapAdapterOTM.cpp                           \
+    QMapControl/MapAdapterMtbMap.cpp                        \
     QMapControl/MapAdapter4UM.cpp                           \
     QMapControl/MapAdapterThunderCycle.cpp                  \
     QMapControl/MapAdapterTile.cpp                          \
     QMapControl/MapAdapterWMS.cpp                           \
     QMapControl/MapAdapterYahoo.cpp                         \
+    QMapControl/MapAdapterSigma.cpp                         \
     QMapControl/NetworkManager.cpp                          \
     QMapControl/Projection.cpp                              \
     QMapControl/ProjectionEquirectangular.cpp               \

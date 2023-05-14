@@ -305,6 +305,10 @@
      <addaction name="action_thunderforest_cycle"/>
      <addaction name="action_thunderforest_landscape"/>
      <addaction name="action_bing"/>
+     <addaction name="action_mtbmap"/>
+     <addaction name="action_sigmasport_maps"/>
+     <addaction name="action_sigmasport_topo"/>
+     <addaction name="action_sigmasport_cycle"/>
      <addaction name="separator"/>
      <addaction name="actionMapCaching"/>
      <addaction name="actionClearMapCache"/>
@@ -1278,6 +1282,29 @@
    </property>
    <property name="text">
     <string>Statistics</string>
+   </property>
+  </action>
+  <action name="action_mtbmap">
+   <property name="text">
+    <string>MTB Map</string>
+   </property>
+  </action>
+  <action name="action_sigmasport_topo">
+   <property name="text">
+    <string>Sigma Sport Topo</string>
+   </property>
+  </action>
+  <action name="action_sigmasport_cycle">
+   <property name="text">
+    <string>Sigma Sport Cycle</string>
+   </property>
+  </action>
+  <action name="action_sigmasport_maps">
+   <property name="text">
+    <string>Sigma Sport Maps</string>
+   </property>
+   <property name="toolTip">
+    <string>Sigma Sport Maps</string>
    </property>
   </action>
  </widget>

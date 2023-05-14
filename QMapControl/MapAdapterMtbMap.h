@@ -3,7 +3,7 @@
 * This file is part of QMapControl,
 * an open-source cross-platform map widget
 *
-* Copyright (C) 2022 masc4ii
+* Copyright (C) 2007 - 2008 Kai Winter
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU Lesser General Public License as published by
@@ -18,6 +18,7 @@
 * You should have received a copy of the GNU Lesser General Public License
 * along with QMapControl. If not, see <http://www.gnu.org/licenses/>.
 *
+* Contact e-mail: kaiwinter@gmx.de
 * Program URL   : http://qmapcontrol.sourceforge.net/
 *
 */
@@ -30,51 +31,33 @@
 
 namespace qmapcontrol
 {
-    //! MapAdapter for ThunderforestCycle.
+    //! MapAdapter for OpenTopoMap.
     /*!
      * This is a conveniece class, which extends and configures a MapAdapterTile.
      *
      * @author Kai Winter <kaiwinter@gmx.de>
      * @author Chris Stylianou <chris5287@gmail.com>
      * @author Andrii Shelestov <streamx3@gmail.com>
-     * @author masc4ii
      */
-    class QMAPCONTROL_EXPORT MapAdapterThunderCycle : public MapAdapterTile
+    class QMAPCONTROL_EXPORT MapAdapterMtbMap : public MapAdapterTile
     {
         Q_OBJECT
     public:
-        /// Different Thunderforest layer types available.
-        enum class ThunderforestLayerType
-        {
-            /// cycle layer.
-            CYCLE,
-            /// landscape layer.
-            LANDSCAPE
-        };
-
-    public:
         //! Constructor.
         /*!
-         * This construct a Thunderforest Cycle MapAdapter.
+         * This construct a OpenTopoMap MapAdapter.
          * @param parent QObject parent ownership.
          */
-        explicit MapAdapterThunderCycle(const ThunderforestLayerType &layer_type = ThunderforestLayerType::CYCLE, QObject* parent = 0);
+        explicit MapAdapterMtbMap(QObject* parent = 0);
 
         //! Destructor.
-        ~MapAdapterThunderCycle() { } /// = default; @todo re-add once MSVC supports default/delete syntax.
-
-        /*!
-         * Convert the enum to a string representation.
-         * @param layer_type The layer type to convert.
-         * @return the 1-character representation.
-         */
-        QString layerTypeToString(const MapAdapterThunderCycle::ThunderforestLayerType& layer_type);
+        ~MapAdapterMtbMap() { } /// = default; @todo re-add once MSVC supports default/delete syntax.
 
     private:
         //! Disable copy constructor.
-        MapAdapterThunderCycle(const MapAdapterThunderCycle&); /// @todo remove once MSVC supports default/delete syntax.
+        MapAdapterMtbMap(const MapAdapterMtbMap&); /// @todo remove once MSVC supports default/delete syntax.
 
         //! Disable copy assignment.
-        MapAdapterThunderCycle& operator=(const MapAdapterThunderCycle&); /// @todo remove once MSVC supports default/delete syntax.
+        MapAdapterMtbMap& operator=(const MapAdapterMtbMap&); /// @todo remove once MSVC supports default/delete syntax.
     };
 }

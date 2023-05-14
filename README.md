@@ -28,7 +28,7 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 - plot the recorded values (altitude, speed, cadence, temperature, grade, heartrate, power, battery, calories, L/R balance, gears, gear ratio, gps accuracy) from your FIT files, over time or over distance
 - link your tracks to your used devices (bikes) and see total kilometers per device
 - dropbox sync your FIT files
-- display your track on 11 different maps (google, openstreetmap, bing and more)
+- display your track on 16 different maps (google, openstreetmap, bing and more)
 - load GPX tracks into the application with reduced statistics (compared to FIT)
 - log service activities and get service reminders
 

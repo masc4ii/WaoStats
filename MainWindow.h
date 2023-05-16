@@ -40,6 +40,7 @@ public:
 private slots:
     void adjustMap( void );
     void statistics( void );
+    void bikeStatistics( QTreeWidgetItem *item );
     void pointInfo( QPoint point );
     void pointInfoHide( bool on );
     void mapProviderSelected( QAction* action );

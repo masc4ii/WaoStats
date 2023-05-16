@@ -136,6 +136,7 @@ MainWindow::MainWindow(QWidget *parent)
     configureActionGroups();
     ui->qwtPlot->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->widgetOsm->setContextMenuPolicy(Qt::CustomContextMenu);
+    ui->dockWidgetBikeData->setVisible( false );
     configurePlots();
     configureMap();
     readSettings();
@@ -158,10 +159,13 @@ MainWindow::~MainWindow()
 void MainWindow::scanTours()
 {
     ui->treeWidgetTours->clear();
-    ui->treeWidgetTours->setColumnCount( 4 );
+    ui->treeWidgetTours->setColumnCount( 7 );
     ui->treeWidgetTours->hideColumn( 1 );
     ui->treeWidgetTours->hideColumn( 3 );
-    ui->treeWidgetTours->setHeaderLabels( QStringList() << "Tour" << "Path" << "Distance" << "DistanceAsDouble" );
+    ui->treeWidgetTours->hideColumn( 4 );
+    ui->treeWidgetTours->hideColumn( 5 );
+    ui->treeWidgetTours->hideColumn( 6 );
+    ui->treeWidgetTours->setHeaderLabels( QStringList() << "Tour" << "Path" << "Distance" << "DistanceAsDouble" << "TimeInMotionSec" << "AscentMeters" << "DescentMeters" );
     ui->treeWidgetTours->setColumnWidth( 0, 190 );
     ui->treeWidgetTours->setColumnWidth( 2, 50 );
 
@@ -201,6 +205,9 @@ void MainWindow::scanTours()
                 fitItem->setText( 1, subdir+"/"+fitFile );
                 fitItem->setText( 2, QString( "%1 km" ).arg( (int)( m_pTourData->getSession().totalDistance / 1000.0 + 0.5 ) ) );
                 fitItem->setText( 3, QString( "%1" ).arg( m_pTourData->getSession().totalDistance / 1000.0, 0, 'f', 10 ) );
+                fitItem->setText( 4, QString( "%1" ).arg( (int)( m_pTourData->getSession().totalTimerTime ) ) );
+                fitItem->setText( 5, QString( "%1" ).arg( (int)( m_pTourData->getSession().ascent ) ) );
+                fitItem->setText( 6, QString( "%1" ).arg( (int)( m_pTourData->getSession().descent ) ) );
             }
         }
     }
@@ -327,8 +334,8 @@ void MainWindow::statistics( void )
 
         ui->labelDistance->setText( QString( "%1 km" ).arg( m_pTourData->getSession().totalDistance / 1000.0, 0, 'f', 3 ) );
 
-        ui->labelTimeTotal->setText( QTime(0,0).addSecs( m_pTourData->getSession().totalElapsedTime ).toString( "hh:mm:ss" ) );
-        ui->labelTimeMotion->setText( QTime(0,0).addSecs( m_pTourData->getSession().totalTimerTime ).toString( "hh:mm:ss" ) );
+        ui->labelTimeTotal->setText( QString( "%1:%2" ).arg( (m_pTourData->getSession().totalElapsedTime/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( m_pTourData->getSession().totalElapsedTime ).toString( "mm:ss" ) ) );
+        ui->labelTimeMotion->setText( QString( "%1:%2" ).arg( (m_pTourData->getSession().totalTimerTime/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( m_pTourData->getSession().totalTimerTime ).toString( "mm:ss" ) ) );
 
         ui->labelAscent->setText( QString( "%1 m" ).arg( (int)m_pTourData->getSession().ascent ) );
         ui->labelDescent->setText( QString( "%1 m" ).arg( (int)m_pTourData->getSession().descent ) );
@@ -402,6 +409,18 @@ void MainWindow::statistics( void )
 
         drawHrPlot( m_pTourData->getSections().at(ind) );
     }
+}
+
+void MainWindow::bikeStatistics(QTreeWidgetItem *item)
+{
+    if( item->parent() ) return;
+
+    ui->labelDistanceBike->setText( QString( "%1 km" ).arg( item->text( 3 ).toDouble(), 0, 'f', 1 ) );
+    ui->labelTimeMotionBike->setText( QString( "%1:%2" ).arg( (item->text( 4 ).toDouble()/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( item->text( 4 ).toDouble() ).toString( "mm:ss" ) ) );
+    ui->labelAscentBike->setText( QString( "%1 km" ).arg( item->text( 5 ).toDouble()/1000, 0, 'f', 3 ) );
+    ui->labelDescentBike->setText( QString( "%1 km" ).arg( item->text( 6 ).toDouble()/1000, 0, 'f', 3 ) );
+    if( item->text( 4 ).toDouble() > 1 ) ui->labelSpeedAverageBike->setText( QString( "%1 km/h" ).arg( item->text( 3 ).toDouble()/item->text( 4 ).toDouble()*3600, 0, 'f', 1 ) );
+    else ui->labelSpeedAverageBike->setText( "-" );
 }
 
 void MainWindow::configureMap()
@@ -823,19 +842,29 @@ void MainWindow::on_treeWidgetTours_itemActivated(QTreeWidgetItem *item, int col
 {
     Q_UNUSED( column );
 
-    QString fileName = item->text( 1 );
-
     markActiveTour( item );
 
-    if( QFileInfo( fileName ).exists() )
+    if( !item->parent() )
     {
-        //qDebug() << fileName;
-        if( fileName.endsWith( ".fit", Qt::CaseInsensitive ) ) scanFit( fileName );
-        else scanGpx( fileName );
-        adjustGui();
-        statistics();
-        drawPlots();
-        drawTourToMap( m_pTourData );
+        ui->dockWidgetStats->setVisible( false );
+        ui->dockWidgetBikeData->setVisible( true );
+        bikeStatistics( item );
+    }
+    else
+    {
+        ui->dockWidgetStats->setVisible( true );
+        ui->dockWidgetBikeData->setVisible( false );
+        QString fileName = item->text( 1 );
+        if( QFileInfo( fileName ).exists() )
+        {
+            //qDebug() << fileName;
+            if( fileName.endsWith( ".fit", Qt::CaseInsensitive ) ) scanFit( fileName );
+            else scanGpx( fileName );
+            adjustGui();
+            statistics();
+            drawPlots();
+            drawTourToMap( m_pTourData );
+        }
     }
 }
 
@@ -1439,6 +1468,9 @@ void MainWindow::saveTableToJson()
             parameters.insert( "name", ui->treeWidgetTours->topLevelItem(i)->child(j)->text(0) );
             parameters.insert( "distanceInt", ui->treeWidgetTours->topLevelItem(i)->child(j)->text(2) );
             parameters.insert( "distanceDouble", ui->treeWidgetTours->topLevelItem(i)->child(j)->text(3) );
+            parameters.insert( "timeInMotionSec", ui->treeWidgetTours->topLevelItem(i)->child(j)->text(4) );
+            parameters.insert( "ascentMeters", ui->treeWidgetTours->topLevelItem(i)->child(j)->text(5) );
+            parameters.insert( "descentMeters", ui->treeWidgetTours->topLevelItem(i)->child(j)->text(6) );
             parameters.insert( "bike", ui->treeWidgetTours->topLevelItem(i)->text(0) );
             tours.insert( ui->treeWidgetTours->topLevelItem(i)->child(j)->text(1).remove( workingPath() ), parameters );
         }
@@ -1486,6 +1518,9 @@ bool MainWindow::loadTrackFromJson( QString fitFile, QTreeWidgetItem *fitItem )
     fitItem->setText( 1, fitFile );
     fitItem->setText( 2, track.value( "distanceInt" ).toString() );
     fitItem->setText( 3, track.value( "distanceDouble" ).toString() );
+    fitItem->setText( 4, track.value( "timeInMotionSec" ).toString() );
+    fitItem->setText( 5, track.value( "ascentMeters" ).toString() );
+    fitItem->setText( 6, track.value( "descentMeters" ).toString() );
 
     return true;
 }
@@ -1540,8 +1575,24 @@ void MainWindow::calcBikeTotalDistances()
     for( int i = 0; i < ui->treeWidgetTours->topLevelItemCount(); i++ )
     {
         double totalDistance = 0;
+        double totalDistanceWithTime = 0;
+        unsigned int totalTimeSec = 0;
+        unsigned int totalAscent = 0;
+        unsigned int totalDescent = 0;
         QTreeWidgetItem *bikeItem = ui->treeWidgetTours->topLevelItem( i );
         QString subdir = bikeItem->text( 1 );
+        for( int j = 0; j < bikeItem->childCount(); j++ )
+        {
+            totalDistance += bikeItem->child( j )->text( 3 ).toDouble();
+            totalDistanceWithTime += bikeItem->child( j )->text( 3 ).toDouble();
+            totalTimeSec += bikeItem->child( j )->text( 4 ).toDouble();
+            totalAscent += bikeItem->child( j )->text( 5 ).toDouble();
+            totalDescent += bikeItem->child( j )->text( 6 ).toDouble();
+        }
+        bikeItem->setText( 3, QString( "%1" ).arg( totalDistance, 0, 'f', 10 ) );
+        bikeItem->setText( 4, QString( "%1" ).arg( totalTimeSec ) );
+        bikeItem->setText( 5, QString( "%1" ).arg( totalAscent ) );
+        bikeItem->setText( 6, QString( "%1" ).arg( totalDescent ) );
         if( QFileInfo( subdir+"/initKm.txt" ).exists() )
         {
             QFile initFile( subdir+"/initKm.txt" );
@@ -1549,12 +1600,7 @@ void MainWindow::calcBikeTotalDistances()
             totalDistance += initFile.readAll().toDouble();
             initFile.close();
         }
-        for( int j = 0; j < bikeItem->childCount(); j++ )
-        {
-            totalDistance += bikeItem->child( j )->text( 3 ).toDouble();
-        }
         bikeItem->setText( 2, QString( "%1 km" ).arg( (int)( totalDistance + 0.5 ) ) );
-        bikeItem->setText( 3, QString( "%1" ).arg( totalDistance, 0, 'f', 10 ) );
     }
 
     for( int i = 0; i < ui->treeWidgetTours->topLevelItemCount(); i++ )

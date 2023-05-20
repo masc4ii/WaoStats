@@ -1297,6 +1297,7 @@ void MainWindow::on_actionShowPlot_triggered(bool checked)
     ui->qwtPlot->setVisible( checked );
     qApp->processEvents();
     adjustMap();
+    pointInfoHide( false );
 }
 
 void MainWindow::on_actionMapCaching_triggered(bool checked)

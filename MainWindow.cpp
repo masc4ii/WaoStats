@@ -334,8 +334,10 @@ void MainWindow::statistics( void )
 
         ui->labelDistance->setText( QString( "%1 km" ).arg( m_pTourData->getSession().totalDistance / 1000.0, 0, 'f', 3 ) );
 
-        ui->labelTimeTotal->setText( QString( "%1:%2" ).arg( (m_pTourData->getSession().totalElapsedTime/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( m_pTourData->getSession().totalElapsedTime ).toString( "mm:ss" ) ) );
-        ui->labelTimeMotion->setText( QString( "%1:%2" ).arg( (m_pTourData->getSession().totalTimerTime/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( m_pTourData->getSession().totalTimerTime ).toString( "mm:ss" ) ) );
+        qDebug() << m_pTourData->getSession().totalTimerTime << m_pTourData->getSession().totalTimerTime/3600 << m_pTourData->getSession().totalElapsedTime << m_pTourData->getSession().totalElapsedTime/3600;
+
+        ui->labelTimeTotal->setText( QString( "%1:%2" ).arg( (int)(m_pTourData->getSession().totalElapsedTime/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( m_pTourData->getSession().totalElapsedTime ).toString( "mm:ss" ) ) );
+        ui->labelTimeMotion->setText( QString( "%1:%2" ).arg( (int)(m_pTourData->getSession().totalTimerTime/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( m_pTourData->getSession().totalTimerTime ).toString( "mm:ss" ) ) );
 
         ui->labelAscent->setText( QString( "%1 m" ).arg( (int)m_pTourData->getSession().ascent ) );
         ui->labelDescent->setText( QString( "%1 m" ).arg( (int)m_pTourData->getSession().descent ) );
@@ -377,8 +379,8 @@ void MainWindow::statistics( void )
 
         ui->labelDistance->setText( QString( "%1 km" ).arg( m_pTourData->getSections().at(ind).totalDistance / 1000.0, 0, 'f', 3 ) );
 
-        ui->labelTimeTotal->setText( QTime(0,0).addSecs( m_pTourData->getSections().at(ind).totalElapsedTime ).toString( "hh:mm:ss" ) );
-        ui->labelTimeMotion->setText( QTime(0,0).addSecs( m_pTourData->getSections().at(ind).totalTimerTime ).toString( "hh:mm:ss" ) );
+        ui->labelTimeTotal->setText( QString( "%1:%2" ).arg( (int)(m_pTourData->getSections().at(ind).totalElapsedTime/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( m_pTourData->getSections().at(ind).totalElapsedTime ).toString( "mm:ss" ) ) );
+        ui->labelTimeMotion->setText( QString( "%1:%2" ).arg( (int)(m_pTourData->getSections().at(ind).totalTimerTime/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( m_pTourData->getSections().at(ind).totalTimerTime ).toString( "mm:ss" ) ) );
 
         ui->labelAscent->setText( QString( "%1 m" ).arg( (int)m_pTourData->getSections().at(ind).ascent ) );
         ui->labelDescent->setText( QString( "%1 m" ).arg( (int)m_pTourData->getSections().at(ind).descent ) );
@@ -418,7 +420,7 @@ void MainWindow::bikeStatistics(QTreeWidgetItem *item)
     double initKm = odoInitKm( item->text(1) );
 
     ui->labelDistanceBike->setText( QString( "%1 km" ).arg( item->text( 3 ).toDouble()-initKm, 0, 'f', 1 ) );
-    ui->labelTimeMotionBike->setText( QString( "%1:%2" ).arg( (item->text( 4 ).toDouble()/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( item->text( 4 ).toDouble() ).toString( "mm:ss" ) ) );
+    ui->labelTimeMotionBike->setText( QString( "%1:%2" ).arg( (int)(item->text( 4 ).toDouble()/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( item->text( 4 ).toDouble() ).toString( "mm:ss" ) ) );
     ui->labelAscentBike->setText( QString( "%1 km" ).arg( item->text( 5 ).toDouble()/1000, 0, 'f', 3 ) );
     ui->labelDescentBike->setText( QString( "%1 km" ).arg( item->text( 6 ).toDouble()/1000, 0, 'f', 3 ) );
     if( item->text( 4 ).toDouble() > 1 ) ui->labelSpeedAverageBike->setText( QString( "%1 km/h" ).arg( (item->text( 3 ).toDouble()-initKm)/item->text( 4 ).toDouble()*3600, 0, 'f', 1 ) );

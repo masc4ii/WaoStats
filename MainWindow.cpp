@@ -415,11 +415,13 @@ void MainWindow::bikeStatistics(QTreeWidgetItem *item)
 {
     if( item->parent() ) return;
 
-    ui->labelDistanceBike->setText( QString( "%1 km" ).arg( item->text( 3 ).toDouble(), 0, 'f', 1 ) );
+    double initKm = odoInitKm( item->text(1) );
+
+    ui->labelDistanceBike->setText( QString( "%1 km" ).arg( item->text( 3 ).toDouble()-initKm, 0, 'f', 1 ) );
     ui->labelTimeMotionBike->setText( QString( "%1:%2" ).arg( (item->text( 4 ).toDouble()/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( item->text( 4 ).toDouble() ).toString( "mm:ss" ) ) );
     ui->labelAscentBike->setText( QString( "%1 km" ).arg( item->text( 5 ).toDouble()/1000, 0, 'f', 3 ) );
     ui->labelDescentBike->setText( QString( "%1 km" ).arg( item->text( 6 ).toDouble()/1000, 0, 'f', 3 ) );
-    if( item->text( 4 ).toDouble() > 1 ) ui->labelSpeedAverageBike->setText( QString( "%1 km/h" ).arg( item->text( 3 ).toDouble()/item->text( 4 ).toDouble()*3600, 0, 'f', 1 ) );
+    if( item->text( 4 ).toDouble() > 1 ) ui->labelSpeedAverageBike->setText( QString( "%1 km/h" ).arg( (item->text( 3 ).toDouble()-initKm)/item->text( 4 ).toDouble()*3600, 0, 'f', 1 ) );
     else ui->labelSpeedAverageBike->setText( "-" );
 }
 
@@ -1571,17 +1573,44 @@ void MainWindow::drawHrPlot(TourData::fitSection_t section)
     ui->labelHrZone->setToolTip( toolTip );
 }
 
+double MainWindow::odoInitKm(int bikeIndex)
+{
+    double odo = 0.0;
+    QTreeWidgetItem *bikeItem = ui->treeWidgetTours->topLevelItem( bikeIndex );
+    QString subdir = bikeItem->text( 1 );
+    if( QFileInfo( subdir+"/initKm.txt" ).exists() )
+    {
+        QFile initFile( subdir+"/initKm.txt" );
+        initFile.open( QFile::ReadOnly );
+        odo = initFile.readAll().toDouble();
+        initFile.close();
+    }
+    return odo;
+}
+
+double MainWindow::odoInitKm(QString bikePath)
+{
+    double odo = 0.0;
+    if( QFileInfo( bikePath+"/initKm.txt" ).exists() )
+    {
+        QFile initFile( bikePath+"/initKm.txt" );
+        initFile.open( QFile::ReadOnly );
+        odo = initFile.readAll().toDouble();
+        initFile.close();
+    }
+    return odo;
+}
+
 void MainWindow::calcBikeTotalDistances()
 {
     for( int i = 0; i < ui->treeWidgetTours->topLevelItemCount(); i++ )
     {
-        double totalDistance = 0;
+        QTreeWidgetItem *bikeItem = ui->treeWidgetTours->topLevelItem( i );
+        double totalDistance = odoInitKm( i );
         double totalDistanceWithTime = 0;
         unsigned int totalTimeSec = 0;
         unsigned int totalAscent = 0;
         unsigned int totalDescent = 0;
-        QTreeWidgetItem *bikeItem = ui->treeWidgetTours->topLevelItem( i );
-        QString subdir = bikeItem->text( 1 );
         for( int j = 0; j < bikeItem->childCount(); j++ )
         {
             totalDistance += bikeItem->child( j )->text( 3 ).toDouble();
@@ -1594,13 +1623,6 @@ void MainWindow::calcBikeTotalDistances()
         bikeItem->setText( 4, QString( "%1" ).arg( totalTimeSec ) );
         bikeItem->setText( 5, QString( "%1" ).arg( totalAscent ) );
         bikeItem->setText( 6, QString( "%1" ).arg( totalDescent ) );
-        if( QFileInfo( subdir+"/initKm.txt" ).exists() )
-        {
-            QFile initFile( subdir+"/initKm.txt" );
-            initFile.open( QFile::ReadOnly );
-            totalDistance += initFile.readAll().toDouble();
-            initFile.close();
-        }
         bikeItem->setText( 2, QString( "%1 km" ).arg( (int)( totalDistance + 0.5 ) ) );
     }
 

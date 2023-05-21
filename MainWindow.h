@@ -85,6 +85,8 @@ private:
     bool loadTrackFromJson( QString fitFile, QTreeWidgetItem *fitItem );
     void markActiveTour( QTreeWidgetItem *item );
     void drawHrPlot(TourData::fitSection_t section );
+    double odoInitKm( int bikeIndex );
+    double odoInitKm( QString bikePath );
     QString workingPath( void );
 
     TourData *m_pTourData;

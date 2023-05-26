@@ -6,6 +6,8 @@
 #include "Globals.h"
 #include "ServiceDialog.h"
 #include "StatisticsDialog.h"
+#include "AdbSelectDeviceDialog.h"
+#include "AdbWrapper.h"
 
 #include <QDebug>
 #include <QWidget>
@@ -24,6 +26,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QStyleFactory>
+#include <QProcess>
 #include "qwt.h"
 #include "math.h"
 #include "OsmWidget.h"
@@ -1696,5 +1699,63 @@ void MainWindow::on_actionStatistics_triggered()
     StatisticsDialog *statisticsDialog = new StatisticsDialog( this, ui->treeWidgetTours );
     statisticsDialog->exec();
     delete statisticsDialog;
+}
+
+void MainWindow::on_actionSyncAdb_triggered()
+{
+    //Dialog for ADB device selection
+    AdbSelectDeviceDialog *adbSelect = new AdbSelectDeviceDialog( this );
+    if( QDialog::Rejected == adbSelect->exec() )
+    {
+        delete adbSelect;
+        return;
+    }
+    QString deviceId = adbSelect->selectedDeviceId();
+    delete adbSelect;
+
+    //Get all names of files from Wahoo device
+    AdbWrapper *adbWrap = new AdbWrapper( this );
+    QStringList trackList = adbWrap->trackList( deviceId );
+    delete adbWrap;
+
+    if( trackList.empty() )
+    {
+        QMessageBox::critical( this, tr( "ADB Sync error" ), tr( "No tracks found on device!" ) );
+        return;
+    }
+    //qDebug() << trackList.size() << trackList;
+
+    //What are the new files?
+    QStringList downloadList;
+    QDirIterator it( workingPath(), QStringList() << "*.fit", QDir::Files, QDirIterator::Subdirectories);
+    QStringList localList;
+    while( it.hasNext() ) localList << QFileInfo( it.next() ).fileName();
+    foreach( QString fitFile, trackList )
+    {
+        if( !localList.contains( fitFile ) ) downloadList << fitFile;
+    }
+    //qDebug() << downloadList;
+    if( downloadList.isEmpty() )
+    {
+        QMessageBox::information( this, tr( "ADB Sync Error" ), tr( "No new track found!" ) );
+        return;
+    }
+
+    //Create Directory
+    if( !QDir( workingPath() + "New/" ).exists() )
+        QDir().mkdir( workingPath() + "New/" );
+
+    //Download all files
+    adbWrap = new AdbWrapper( this );
+    foreach( QString fitFile, downloadList )
+    {
+        if( !adbWrap->downloadTrack( deviceId, fitFile, workingPath() + "New/" ) )
+        {
+            QMessageBox::critical( this, tr( "ADB Sync error" ), tr( "ADB copy failed!" ) );
+        }
+    }
+    delete adbWrap;
+
+    scanTours();
 }
 

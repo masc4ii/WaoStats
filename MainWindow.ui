@@ -346,6 +346,7 @@
     <addaction name="separator"/>
     <addaction name="actionScanTourFolder"/>
     <addaction name="actionSyncDropbox"/>
+    <addaction name="actionSyncAdb"/>
     <addaction name="separator"/>
     <addaction name="actionSetArchivePath"/>
     <addaction name="separator"/>
@@ -489,7 +490,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-234</y>
+          <y>0</y>
           <width>218</width>
           <height>916</height>
          </rect>
@@ -1309,6 +1310,9 @@
    <property name="text">
     <string>Sync Dropbox</string>
    </property>
+   <property name="toolTip">
+    <string>Sync with Dropbox</string>
+   </property>
   </action>
   <action name="actionScanTourFolder">
    <property name="icon">
@@ -1481,6 +1485,18 @@
   <action name="action_komoot">
    <property name="text">
     <string>Komoot</string>
+   </property>
+  </action>
+  <action name="actionSyncAdb">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Icons/Icons/Android.png</normaloff>:/Icons/Icons/Android.png</iconset>
+   </property>
+   <property name="text">
+    <string>Sync ADB</string>
+   </property>
+   <property name="toolTip">
+    <string>Sync with ADB</string>
    </property>
   </action>
  </widget>

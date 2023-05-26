@@ -57,6 +57,7 @@ private slots:
     void on_actionClearMapCache_triggered();
     void on_actionService_triggered();
     void on_actionStatistics_triggered();
+    void on_actionSyncAdb_triggered();
     void on_treeWidgetTours_itemActivated( QTreeWidgetItem *item, int column );
     void on_treeWidgetTours_itemsDropped( QList<QTreeWidgetItem *> pSource, QTreeWidgetItem* pTarget );
     void on_treeWidgetTours_itemDoubleClicked( QTreeWidgetItem *item, int column );

@@ -12,5 +12,6 @@
         <file>Icons/Actions-configure-icon.png</file>
         <file>Icons/plot.png</file>
         <file>Icons/paste.png</file>
+        <file>Icons/Android.png</file>
     </qresource>
 </RCC>

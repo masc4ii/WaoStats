@@ -49,6 +49,8 @@ win32: LIBS += -L$${PWD}/dropboxQt/prj/release/ -ldropboxQt
 linux-g++:  LIBS += -L$${PWD}/dropboxQt/prj/ -ldropboxQt
 
 SOURCES += \
+    AdbSelectDeviceDialog.cpp \
+    AdbWrapper.cpp \
     DropBoxAuthDialog.cpp \
     FitListener.cpp \
     FitSDKRelease_21.105.00/cpp/fit.cpp \
@@ -88,6 +90,8 @@ SOURCES += \
     MainWindow.cpp
 
 HEADERS += \
+    AdbSelectDeviceDialog.h \
+    AdbWrapper.h \
     BikeEditingDelegate.h \
     DropBoxAuthDialog.h \
     FitListener.h \
@@ -320,6 +324,7 @@ HEADERS += \
     VScrollArea.h
 
 FORMS += \
+    AdbSelectDeviceDialog.ui \
     DropBoxAuthDialog.ui \
     MainWindow.ui \
     ServiceDialog.ui \
@@ -330,7 +335,7 @@ INCLUDEPATH += -I FitSDKRelease_21.105.00/cpp/
 
 #Application version
 VERSION_MAJOR = 1
-VERSION_MINOR = 0
+VERSION_MINOR = 1
 VERSION_PATCH = 0
 VERSION_BUILD = 0
 
@@ -360,3 +365,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     Resources.qrc
+
+#unpack & install adb on OSX
+macx: QMAKE_POST_LINK += unzip -o ../WaoStats/adb/macOS/adb.zip $$escape_expand(\n\t)
+macx: QMAKE_POST_LINK += "mv adb WaoStats.app/Contents/MacOS/" $$escape_expand(\n\t)

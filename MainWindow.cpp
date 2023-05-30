@@ -8,6 +8,7 @@
 #include "StatisticsDialog.h"
 #include "AdbSelectDeviceDialog.h"
 #include "AdbWrapper.h"
+#include "HelperFunctions.h"
 
 #include <QDebug>
 #include <QWidget>
@@ -162,13 +163,14 @@ MainWindow::~MainWindow()
 void MainWindow::scanTours()
 {
     ui->treeWidgetTours->clear();
-    ui->treeWidgetTours->setColumnCount( 7 );
+    ui->treeWidgetTours->setColumnCount( 8 );
     ui->treeWidgetTours->hideColumn( 1 );
     ui->treeWidgetTours->hideColumn( 3 );
     ui->treeWidgetTours->hideColumn( 4 );
     ui->treeWidgetTours->hideColumn( 5 );
     ui->treeWidgetTours->hideColumn( 6 );
-    ui->treeWidgetTours->setHeaderLabels( QStringList() << "Tour" << "Path" << "Distance" << "DistanceAsDouble" << "TimeInMotionSec" << "AscentMeters" << "DescentMeters" );
+    ui->treeWidgetTours->hideColumn( 7 );
+    ui->treeWidgetTours->setHeaderLabels( QStringList() << "Tour" << "Path" << "Distance" << "DistanceAsDouble" << "TimeInMotionSec" << "AscentMeters" << "DescentMeters" << "DistanceToCursor" );
     ui->treeWidgetTours->setColumnWidth( 0, 190 );
     ui->treeWidgetTours->setColumnWidth( 2, 50 );
 
@@ -211,6 +213,7 @@ void MainWindow::scanTours()
                 fitItem->setText( 4, QString( "%1" ).arg( (int)( m_pTourData->getSession().totalTimerTime ) ) );
                 fitItem->setText( 5, QString( "%1" ).arg( (int)( m_pTourData->getSession().ascent ) ) );
                 fitItem->setText( 6, QString( "%1" ).arg( (int)( m_pTourData->getSession().descent ) ) );
+                fitItem->setText( 7, QString( "0" ) );
             }
         }
     }
@@ -337,7 +340,7 @@ void MainWindow::statistics( void )
 
         ui->labelDistance->setText( QString( "%1 km" ).arg( m_pTourData->getSession().totalDistance / 1000.0, 0, 'f', 3 ) );
 
-        qDebug() << m_pTourData->getSession().totalTimerTime << m_pTourData->getSession().totalTimerTime/3600 << m_pTourData->getSession().totalElapsedTime << m_pTourData->getSession().totalElapsedTime/3600;
+        //qDebug() << m_pTourData->getSession().totalTimerTime << m_pTourData->getSession().totalTimerTime/3600 << m_pTourData->getSession().totalElapsedTime << m_pTourData->getSession().totalElapsedTime/3600;
 
         ui->labelTimeTotal->setText( QString( "%1:%2" ).arg( (int)(m_pTourData->getSession().totalElapsedTime/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( m_pTourData->getSession().totalElapsedTime ).toString( "mm:ss" ) ) );
         ui->labelTimeMotion->setText( QString( "%1:%2" ).arg( (int)(m_pTourData->getSession().totalTimerTime/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( m_pTourData->getSession().totalTimerTime ).toString( "mm:ss" ) ) );
@@ -1757,5 +1760,20 @@ void MainWindow::on_actionSyncAdb_triggered()
     delete adbWrap;
 
     scanTours();
+}
+
+void MainWindow::on_actionDistanceTest_triggered()
+{
+    HelperFunctions hF;
+    double minDist = 99999999;
+    for( int i = 0; i < m_pTourData->getTourPosLat().size(); i++ )
+    {
+        double dist =  hF.getDistanceFromLatLonInKm( m_map_control->mapFocusPointCoord().latitude(),
+                                                     m_map_control->mapFocusPointCoord().longitude(),
+                                                     m_pTourData->getTourPosLat().at(i) * ( 180 / pow(2,31) ),
+                                                     m_pTourData->getTourPosLong().at(i) * ( 180 / pow(2,31) ) );
+        if( dist < minDist ) minDist = dist;
+    }
+    qDebug() << "Minimum distance is" << minDist << "km";
 }
 

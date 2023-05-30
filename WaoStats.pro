@@ -313,6 +313,7 @@ HEADERS += \
     FitSDKRelease_21.105.00/cpp/fit_zones_target_mesg_listener.hpp \
     Globals.h \
     GpxParser.h \
+    HelperFunctions.h \
     LineEditEscDelete.h \
     MainWindow.h \
     OsmWidget.h \

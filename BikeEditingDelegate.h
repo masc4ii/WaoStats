@@ -138,7 +138,11 @@ public:
                         int entryNum = entry1.toInt();
                         this->topLevelItem(i)->child(j)->setHidden( filterNum >= entryNum );
                     }
-                    else
+                    else if( filter.startsWith( 'r1' ) )
+                    {
+                        this->topLevelItem(i)->child(j)->setHidden( this->topLevelItem(i)->child(j)->text( 7 ).toDouble() < 1 );
+                    }
+                    else //Name contains
                     {
                         QString entry0 = this->topLevelItem(i)->child(j)->text( 0 );
                         QString entry1 = this->topLevelItem(i)->child(j)->text( 2 );

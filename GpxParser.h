@@ -13,8 +13,6 @@ public:
     bool loadGpx( QString fileName );
 
 private:
-    double getDistanceFromLatLonInKm( double lat1, double lon1, double lat2, double lon2);
-    double deg2rad( double deg );
     double filter( double newValue, int channel );
     void filterReset( double initValue, int channel );
 

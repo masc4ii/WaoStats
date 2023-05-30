@@ -68,6 +68,8 @@ private slots:
     void showServiceInTree();
     void setupArchive( void );
 
+    void on_actionDistanceTest_triggered();
+
 private:
     Ui::MainWindow *ui;
     void scanTours( void );

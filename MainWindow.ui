@@ -352,6 +352,8 @@
     <addaction name="separator"/>
     <addaction name="actionService"/>
     <addaction name="actionStatistics"/>
+    <addaction name="separator"/>
+    <addaction name="actionDistanceTest"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -1497,6 +1499,11 @@
    </property>
    <property name="toolTip">
     <string>Sync with ADB</string>
+   </property>
+  </action>
+  <action name="actionDistanceTest">
+   <property name="text">
+    <string>DistanceTest</string>
    </property>
   </action>
  </widget>

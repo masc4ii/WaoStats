@@ -22,6 +22,7 @@ private slots:
 private:
     Ui::AdbSelectDeviceDialog *ui;
     void scan( void );
+    void reset( void );
 };
 
 #endif // ADBSELECTDEVICEDIALOG_H

@@ -9,6 +9,23 @@ AdbWrapper::AdbWrapper(QObject *parent) :
     m_adbProgram = QApplication::applicationDirPath() + "/adb";
 }
 
+void AdbWrapper::resetAdb()
+{
+    QStringList arguments;
+    arguments << "kill-server";
+    QProcess *myProcess = new QProcess(this);
+    myProcess->start(m_adbProgram, arguments);
+    myProcess->waitForFinished();
+    delete myProcess;
+
+    arguments.clear();
+    arguments << "start-server";
+    myProcess = new QProcess(this);
+    myProcess->start(m_adbProgram, arguments);
+    myProcess->waitForFinished();
+    delete myProcess;
+}
+
 QStringList AdbWrapper::deviceList()
 {
     QStringList arguments;
@@ -21,13 +38,13 @@ QStringList AdbWrapper::deviceList()
     if( myProcess->waitForFinished() )
     {
         QString res = myProcess->readAll();
-        res.chop( 1 ); //chop one \n
-        QString listStart = QString( "List of devices attached\n" );
+        QString listStart = QString( "List of devices attached\r\n" );
         //qDebug() << res;
         QString listString = res.right( res.size() - listStart.size() - res.indexOf( listStart ) );
         //ui->textEdit->setText( listString );
+        while( listString.right(1) == "\n" || listString.right(1) == "\r" ) listString.chop( 1 );
 
-        if( !listString.isEmpty() ) deviceList = listString.split( "\n\n" );
+        if( !listString.isEmpty() ) deviceList = listString.split( "\r\n" );
         //qDebug() << deviceList << deviceList.size();
     }
 
@@ -53,8 +70,12 @@ QStringList AdbWrapper::trackList(QString deviceId)
     QString res = myProcess->readAll();
     delete myProcess;
 
-    res.chop( 1 ); //chop one \n
-    if( !res.isEmpty() ) trackList = res.split( "\n" );
+    while( res.right(1) == "\n" || res.right(1) == "\r" ) res.chop( 1 );
+    if( !res.isEmpty() )
+    {
+        if( res.indexOf( "\r\n" ) >= 0 ) trackList = res.split( "\r\n" );
+        else trackList = res.split( "\n" );
+    }
     //qDebug() << trackList.size() << trackList;
 
     return trackList;
@@ -64,6 +85,7 @@ bool AdbWrapper::downloadTrack(QString deviceId, QString name, QString dst)
 {
     QStringList arguments;
     arguments<< "-s" << deviceId << "pull" << "/sdcard/exports/" + name << dst;
+    //qDebug() << arguments;
     QProcess *myProcess = new QProcess(this);
     myProcess->start(m_adbProgram, arguments);
 

@@ -26,7 +26,10 @@ QString AdbSelectDeviceDialog::selectedDeviceId()
 
 void AdbSelectDeviceDialog::on_pushButtonRefresh_clicked()
 {
+    setCursor( Qt::WaitCursor );
+    reset();
     scan();
+    unsetCursor();
 }
 
 void AdbSelectDeviceDialog::scan()
@@ -64,4 +67,11 @@ void AdbSelectDeviceDialog::scan()
 
     if( ui->tableWidget->rowCount() ) ui->tableWidget->selectRow( 0 );
     ui->pushButtonOk->setEnabled( ui->tableWidget->rowCount() );
+}
+
+void AdbSelectDeviceDialog::reset()
+{
+    AdbWrapper *adbWrap = new AdbWrapper( this );
+    adbWrap->resetAdb();
+    delete adbWrap;
 }

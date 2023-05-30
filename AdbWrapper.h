@@ -10,6 +10,7 @@ class AdbWrapper : public QObject
     Q_OBJECT
 public:
     AdbWrapper(QObject *parent = nullptr);
+    void resetAdb( void );
     QStringList deviceList( void );
     QStringList trackList( QString deviceId );
     bool downloadTrack(QString deviceId, QString src, QString dst );

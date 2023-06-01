@@ -94,6 +94,7 @@ bool TourData::deviceIdIsIncluded(deviceInfo_t a)
     foreach( deviceInfo_t deviceInfo, m_deviceInfo )
     {
         if( deviceInfo.deviceId == a.deviceId ) return true;
+        if( deviceInfo.name == a.name ) return true;
     }
     return false;
 }
@@ -103,6 +104,7 @@ int TourData::deviceIdInVectorAt(deviceInfo_t a)
     for( int i = 0; i < m_deviceInfo.size(); i++ )
     {
         if( m_deviceInfo.at( i ).deviceId == a.deviceId ) return i;
+        if( m_deviceInfo.at( i ).name == a.name ) return i;
     }
     return -1;
 }

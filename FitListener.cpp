@@ -51,6 +51,7 @@ void FitListener::PrintValues(const fit::FieldBase& field)
 void FitListener::OnMesg(fit::Mesg& mesg)
 {
     if( QString( mesg.GetName().c_str() ) != QString( "device_info" )
+     && QString( mesg.GetName().c_str() ) != QString( "file_id" )
      && QString( mesg.GetName().c_str() ) != QString( "record" )
      && QString( mesg.GetName().c_str() ) != QString( "session" )
      && QString( mesg.GetName().c_str() ) != QString( "lap" )
@@ -234,6 +235,17 @@ void FitListener::OnMesg(fit::Mesg& mesg)
                     break;
                 default:
                     break;
+                }
+            }
+        }
+        else if( QString( mesg.GetName().c_str() ) == QString( "file_id" ) )
+        {
+            if( QString( field->GetName().c_str() ) == QString( "product_name" ) )
+            {
+                deviceInfo.name = QString::fromStdWString( field->GetSTRINGValue(0) );
+                if( !deviceIdIsIncluded( deviceInfo ) )
+                {
+                    m_deviceInfo.append( deviceInfo );
                 }
             }
         }

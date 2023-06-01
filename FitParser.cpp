@@ -17,6 +17,8 @@ bool FitParser::loadFit(QString fileName)
     FIT_UINT32 buf_size;
     FIT_UINT32 mesg_index = 0;
 
+    int minTemp = 999;
+
     FitConvert_Init(FIT_TRUE);
 
     if((file = fopen(fileName.toLatin1().data(), "rb")) == NULL)
@@ -97,8 +99,8 @@ bool FitParser::loadFit(QString fileName)
                     m_session.avgSpeed = session->avg_speed / 1000.0;
                     m_session.maxSpeed = session->max_speed / 1000.0;
 
-                    m_session.avgCadence = session->avg_cadence;
-                    m_session.maxCadence = session->max_cadence;
+                    if( session->avg_cadence < 255 ) m_session.avgCadence = session->avg_cadence;
+                    if( session->max_cadence < 255 ) m_session.maxCadence = session->max_cadence;
 
                     m_session.ascent = session->total_ascent;
                     m_session.descent = session->total_descent;
@@ -111,20 +113,21 @@ bool FitParser::loadFit(QString fileName)
                     m_session.minTemperature = session->min_temperature;
                     m_session.maxTemperature = session->max_temperature; //wrong!
 
-                    m_session.minHeartRate = session->min_heart_rate;
-                    m_session.avgHeartRate = session->avg_heart_rate;
-                    m_session.maxHeartRate = session->max_heart_rate;
+                    if( session->min_heart_rate < 255 ) m_session.minHeartRate = session->min_heart_rate;
+                    if( session->avg_heart_rate < 255 ) m_session.avgHeartRate = session->avg_heart_rate;
+                    if( session->max_heart_rate < 255 ) m_session.maxHeartRate = session->max_heart_rate;
 
-                    //m_session.hrTimeInZone[5];
-                    m_session.avgPower = session->avg_power;
-                    m_session.maxPower = session->max_power;
-                    m_session.leftRightBalance = session->left_right_balance;
-                    m_session.totalWork = session->total_work;
-                    m_session.totalCalories = session->total_calories;
-                    m_session.normalizedPower = session->normalized_power;
-                    m_session.thresholdPower = session->threshold_power;
-                    m_session.trainingStressScore = session->training_stress_score;
-                    m_session.itensityFactor = session->intensity_factor;
+                    for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_HR_ZONE_COUNT; i++) m_session.hrTimeInZone[i] = session->time_in_hr_zone[i] / 1000.0;
+
+                    if( session->avg_power             < 65535 ) m_session.avgPower = session->avg_power;
+                    if( session->max_power             < 65535 ) m_session.maxPower = session->max_power;
+                    if( session->left_right_balance    < 65535 ) m_session.leftRightBalance = session->left_right_balance;
+                    if( session->total_work            < 65535 ) m_session.totalWork = session->total_work;
+                    if( session->total_calories        < 65535 ) m_session.totalCalories = session->total_calories;
+                    if( session->normalized_power      < 65535 ) m_session.normalizedPower = session->normalized_power;
+                    if( session->threshold_power       < 65535 ) m_session.thresholdPower = session->threshold_power;
+                    if( session->training_stress_score < 65535 ) m_session.trainingStressScore = session->training_stress_score;
+                    if( session->intensity_factor      < 65535 ) m_session.itensityFactor = session->intensity_factor;
                     break;
                 }
 
@@ -140,13 +143,13 @@ bool FitParser::loadFit(QString fileName)
                     lap.avgSpeed = lapMesg->avg_speed / 1000.0;
                     lap.maxSpeed = lapMesg->max_speed / 1000.0;
 
-                    lap.avgCadence = lapMesg->avg_cadence;
-                    lap.maxCadence = lapMesg->max_cadence;
+                    if( lapMesg->avg_cadence < 255 ) lap.avgCadence = lapMesg->avg_cadence;
+                    if( lapMesg->max_cadence < 255 ) lap.maxCadence = lapMesg->max_cadence;
 
                     lap.ascent = lapMesg->total_ascent;
                     lap.descent = lapMesg->total_descent;
-                    lap.altitudeMax = lapMesg->max_altitude / 5 - 500;
-                    lap.altitudeMin = lapMesg->min_altitude / 5 - 500;
+                    lap.altitudeMax = lapMesg->max_altitude / 5.0 - 500;
+                    lap.altitudeMin = lapMesg->min_altitude / 5.0 - 500;
                     lap.minGrade = lapMesg->max_neg_grade / 100.0; //wrong!
                     lap.maxGrade = lapMesg->max_pos_grade / 100.0; //wrong!
 
@@ -154,17 +157,17 @@ bool FitParser::loadFit(QString fileName)
                     lap.minTemperature = lapMesg->min_temperature;
                     lap.maxTemperature = lapMesg->max_temperature; //wrong!
 
-                    lap.minHeartRate = lapMesg->min_heart_rate;
-                    lap.avgHeartRate = lapMesg->avg_heart_rate;
-                    lap.maxHeartRate = lapMesg->max_heart_rate;
+                    if( lapMesg->min_heart_rate < 255 ) lap.minHeartRate = lapMesg->min_heart_rate;
+                    if( lapMesg->avg_heart_rate < 255 ) lap.avgHeartRate = lapMesg->avg_heart_rate;
+                    if( lapMesg->max_heart_rate < 255 ) lap.maxHeartRate = lapMesg->max_heart_rate;
 
                     //lap.hrTimeInZone[5];
-                    lap.avgPower = lapMesg->avg_power;
-                    lap.maxPower = lapMesg->max_power;
-                    lap.leftRightBalance = lapMesg->left_right_balance;
-                    lap.totalWork = lapMesg->total_work;
-                    lap.totalCalories = lapMesg->total_calories;
-                    lap.normalizedPower = lapMesg->normalized_power;
+                    if( lapMesg->avg_power          < 65535 ) lap.avgPower = lapMesg->avg_power;
+                    if( lapMesg->max_power          < 65535 ) lap.maxPower = lapMesg->max_power;
+                    if( lapMesg->left_right_balance < 65535 ) lap.leftRightBalance = lapMesg->left_right_balance;
+                    if( lapMesg->total_work         < 65535 ) lap.totalWork = lapMesg->total_work;
+                    if( lapMesg->total_calories     < 65535 ) lap.totalCalories = lapMesg->total_calories;
+                    if( lapMesg->normalized_power   < 65535 ) lap.normalizedPower = lapMesg->normalized_power;
                     m_sections.append( lap );
                     break;
                 }
@@ -172,31 +175,97 @@ bool FitParser::loadFit(QString fileName)
                 case FIT_MESG_NUM_RECORD:
                 {
                     const FIT_RECORD_MESG *record = (FIT_RECORD_MESG *) mesg;
+
+                    if( record->distance >= 4294967295 ) break;
+
                     m_tourTimeStamp.append( record->timestamp );
                     m_tourPosLat.append( record->position_lat );
                     m_tourPosLong.append( record->position_long );
-                    m_tourDistance.append( record->distance );
+                    m_tourDistance.append( record->distance / 100000.0 );
                     //m_tourBatterySoc.append(  );
                     m_tourSpeed.append( record->speed * 0.0036 );
                     m_tourCadence.append( record->cadence );
-                    m_tourAltitude.append( record->altitude / 5 - 500 );
+                    m_tourAltitude.append( record->altitude / 5.0 - 500 );
                     m_tourGpsAccuracy.append( record->gps_accuracy );
                     m_tourTemperature.append( record->temperature );
                     m_tourGrade.append( record->grade / 100.0 );
                     m_tourHeartRate.append( record->heart_rate );
                     m_tourCalories.append( record->calories );
-                    m_tourPower.append( record->power );
+                    if( record->power < 65535 ) m_tourPower.append( record->power );
                     m_tourLRBalance.append( record->left_right_balance );
 
-                    /*if( !m_firstPosRead && record->position_lat != 2147483647 && record->position_long != 2147483647 )
+                    if( !m_firstPosRead && record->position_lat < 2147483647 && record->position_long < 2147483647 )
                     {
                         m_firstPosRead = true;
+                        m_posRead = true;
                         for( int i = 0; i < m_tourPosLat.count(); i++ )
                         {
                             m_tourPosLat[i] = record->position_lat;
                             m_tourPosLong[i] = record->position_long;
                         }
-                    }*/
+                    }
+                    if( record->speed == 65535 )
+                    {
+                        int pos = m_tourSpeed.count();
+                        if( pos > 2 )
+                        {
+                            m_tourSpeed[pos-1] = m_tourSpeed[pos-2];
+                        }
+                    }
+                    if( record->cadence == 255 )
+                    {
+                        m_tourCadence[m_tourCadence.count()-1] = 0;
+                    }
+                    if( m_firstPosRead && ( record->position_lat == 2147483647 || record->position_long == 2147483647 ) )
+                    {
+                        int pos = m_tourPosLat.count();
+                        if( pos > 2 )
+                        {
+                            m_tourPosLat[pos-1] = m_tourPosLat[pos-2];
+                            m_tourPosLong[pos-1] = m_tourPosLong[pos-2];
+                        }
+                    }
+                    if( !m_altCorrectionDone && record->altitude < 65535 )
+                    {
+                        m_altCorrectionDone = true;
+                        for( int i = 0; i < m_tourAltitude.count(); i++ )
+                        {
+                            m_tourAltitude[i] = record->altitude / 5.0 - 500;
+                        }
+                    }
+                    if( !m_gradeCorrectionDone && record->grade < 32767 )
+                    {
+                        m_gradeCorrectionDone = true;
+                        for( int i = 0; i < m_tourGrade.count(); i++ )
+                        {
+                            m_tourGrade[i] = record->grade / 100.0;
+                        }
+                    }
+                    if( !m_tempCorrectionDone && record->temperature < 127 )
+                    {
+                        m_tempCorrectionDone = true;
+                        for( int i = 0; i < m_tourTemperature.count(); i++ )
+                        {
+                            m_tourTemperature[i] = record->temperature;
+                        }
+                    }
+                    if( !m_caloriesCorrectionDone && record->calories < 65535 )
+                    {
+                        m_caloriesCorrectionDone = true;
+                        for( int i = 0; i < m_tourCalories.count(); i++ )
+                        {
+                            m_tourCalories[i] = record->calories;
+                        }
+                    }
+                    if( !m_heartRateCorrectionDone && record->heart_rate < 255 )
+                    {
+                        m_heartRateCorrectionDone = true;
+                        for( int i = 0; i < m_tourHeartRate.count(); i++ )
+                        {
+                            m_tourHeartRate[i] = record->heart_rate;
+                        }
+                    }
+                    if( minTemp > record->temperature ) minTemp = record->temperature;
 
                     break;
                 }
@@ -211,7 +280,44 @@ bool FitParser::loadFit(QString fileName)
                 case FIT_MESG_NUM_DEVICE_INFO:
                 {
                     const FIT_DEVICE_INFO_MESG *device_info = (FIT_DEVICE_INFO_MESG *) mesg;
-                    //printf("Device Info: timestamp=%u\n", device_info->timestamp);
+
+                    deviceInfo_t info;
+                    info.name = device_info->product_name;
+                    info.deviceId = device_info->device_index;
+                    switch( device_info->battery_status )
+                    {
+                    case 1: info.battery = "Battery new";
+                        break;
+                    case 2: info.battery = "Battery good";
+                        break;
+                    case 3: info.battery = "Battery ok";
+                        break;
+                    case 4: info.battery = "Battery low";
+                        break;
+                    case 5: info.battery = "Battery critical";
+                        break;
+                    default:
+                        break;
+                    }
+                    if( device_info->software_version < 65535 ) info.software = "Firmware v" + QString::number(device_info->software_version);
+
+                    if( !deviceIdIsIncluded( info ) )
+                    {
+                        m_deviceInfo.append( info );
+                        std::sort(m_deviceInfo.begin(), m_deviceInfo.end(), [](const deviceInfo_t& a, const deviceInfo_t& b) { return a.deviceId < b.deviceId; });
+                    }
+                    else
+                    {
+                        m_deviceInfo.replace( deviceIdInVectorAt( info ), info );
+                    }
+
+                    break;
+                }
+
+                case FIT_MESG_NUM_HR_ZONE:
+                {
+                    const FIT_HR_ZONE_MESG *hr_zone = (FIT_HR_ZONE_MESG *) mesg;
+                    m_hrZoneHigh[hr_zone->message_index] = hr_zone->high_bpm;
                     break;
                 }
 
@@ -260,6 +366,8 @@ bool FitParser::loadFit(QString fileName)
     //    printf("File converted successfully.\n");
 
     fclose(file);
+
+    if( minTemp < m_session.minTemperature ) m_session.minTemperature = minTemp;
 
     return true;
 }

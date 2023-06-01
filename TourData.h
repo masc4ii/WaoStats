@@ -97,6 +97,9 @@ protected:
     bool m_posRead;
     bool m_tempCorrectionDone;
     bool m_battCorrectionDone;
+    bool m_gradeCorrectionDone;
+    bool m_caloriesCorrectionDone;
+    bool m_heartRateCorrectionDone;
     bool m_gearInfoRear;
     bool m_gearInfoFront;
     uint8_t m_gearCountFront;

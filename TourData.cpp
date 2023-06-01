@@ -26,6 +26,9 @@ void TourData::reset()
     m_posCorrectionDone = false;
     m_tempCorrectionDone = false;
     m_battCorrectionDone = false;
+    m_gradeCorrectionDone = false;
+    m_caloriesCorrectionDone = false;
+    m_heartRateCorrectionDone = false;
     m_firstPosRead = false;
     m_posRead = false;
 

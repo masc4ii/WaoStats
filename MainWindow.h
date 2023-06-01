@@ -19,7 +19,11 @@
 #include <qwt_plot_marker.h>
 
 //fit listener
+#ifndef FITC
 #include "FitListener.h"
+#else
+#include "FitParser.h"
+#endif
 #include "GpxParser.h"
 #include "TourData.h"
 
@@ -58,6 +62,7 @@ private slots:
     void on_actionService_triggered();
     void on_actionStatistics_triggered();
     void on_actionSyncAdb_triggered();
+    void on_actionDistanceSearch_triggered();
     void on_treeWidgetTours_itemActivated( QTreeWidgetItem *item, int column );
     void on_treeWidgetTours_itemsDropped( QList<QTreeWidgetItem *> pSource, QTreeWidgetItem* pTarget );
     void on_treeWidgetTours_itemDoubleClicked( QTreeWidgetItem *item, int column );
@@ -67,8 +72,6 @@ private slots:
     void calcBikeTotalDistances();
     void showServiceInTree();
     void setupArchive( void );
-
-    void on_actionDistanceTest_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -93,7 +96,11 @@ private:
     QString workingPath( void );
 
     TourData *m_pTourData;
+ #ifndef FITC
     FitListener m_fitListener;
+#else
+    FitParser m_fitParser;
+#endif
     GpxParser m_gpxParser;
 
     /// The main map control.
@@ -114,6 +121,9 @@ private:
 
     QPixmap m_iconCrossHairs;
     QString m_workingPath;
+
+    QMutex m_threadCntMutex;
+    uint32_t m_threadCnt;
 
     bool m_timePlot;
 };

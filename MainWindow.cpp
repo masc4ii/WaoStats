@@ -9,6 +9,8 @@
 #include "AdbSelectDeviceDialog.h"
 #include "AdbWrapper.h"
 #include "HelperFunctions.h"
+#include "ThreadTrack2Point.h"
+#include "ProgressDialog.h"
 
 #include <QDebug>
 #include <QWidget>
@@ -134,13 +136,18 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     //UI setup
+#ifndef FITC
     m_pTourData = &m_fitListener;
+#else
+    m_pTourData = &m_fitParser;
+#endif
     m_timePlot = false;
     m_currentActiveTreeWidgetItem = nullptr;
     configureActionGroups();
     ui->qwtPlot->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->widgetOsm->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->dockWidgetBikeData->setVisible( false );
+    ui->labelHrZone->setVisible( false );
     configurePlots();
     configureMap();
     readSettings();
@@ -227,9 +234,10 @@ void MainWindow::scanTours()
 
 void MainWindow::scanFit(QString fileName)
 {
+#ifndef FITC
     fit::Decode decode;
     fit::MesgBroadcaster mesgBroadcaster;
-    //FitListener listener;
+    FitListener listener;
     std::fstream file;
 
     file.open( fileName.toStdString().data(), std::ios::in | std::ios::binary);
@@ -248,8 +256,11 @@ void MainWindow::scanFit(QString fileName)
     {
        printf("Exception decoding file: %s\n", e.what());
     }
-
     file.close();
+#else
+    m_pTourData = &m_fitParser;
+    m_fitParser.loadFit( fileName );
+#endif
 }
 
 void MainWindow::scanGpx(QString fileName)
@@ -297,7 +308,7 @@ void MainWindow::statistics( void )
     ui->actionLRBalance->setEnabled( (int)m_pTourData->getSession().maxPower != 0 );
     ui->actionGearInfo->setEnabled( m_pTourData->containsGearInfoFront() || m_pTourData->containsGearInfoRear() );
     ui->actionTemperature->setEnabled( (int)m_pTourData->getSession().minTemperature != 9999 );
-    ui->actionDeviceBattery->setEnabled( (int)m_pTourData->getTourBatterySoc().first() >= 0 );
+    ui->actionDeviceBattery->setEnabled( (int)m_pTourData->getTourBatterySoc().first() > 0 );
     ui->actionGpsAccuracy->setEnabled( !m_pTourData->getTourGpsAccuracy().empty() );
 
     if( ( ui->actionCadence->isChecked()        && !ui->actionCadence->isEnabled() )
@@ -1553,6 +1564,16 @@ void MainWindow::markActiveTour(QTreeWidgetItem *item)
 
 void MainWindow::drawHrPlot(TourData::fitSection_t section)
 {
+    if( !m_pTourData->getHrZoneHigh()[0]
+     || !m_pTourData->getHrZoneHigh()[1]
+     || !m_pTourData->getHrZoneHigh()[2]
+     || !m_pTourData->getHrZoneHigh()[3] )
+    {
+        ui->labelHrZone->setVisible( false );
+        return;
+    }
+    else ui->labelHrZone->setVisible( true );
+
     int b = 8 * devicePixelRatio(); //boarder
     int h = ( ui->labelHrZone->height() * devicePixelRatio() ) - 1;
     int w = 164 * devicePixelRatio();//ui->labelHrZone->width();
@@ -1762,18 +1783,58 @@ void MainWindow::on_actionSyncAdb_triggered()
     scanTours();
 }
 
-void MainWindow::on_actionDistanceTest_triggered()
+void MainWindow::on_actionDistanceSearch_triggered()
 {
-    HelperFunctions hF;
-    double minDist = 99999999;
-    for( int i = 0; i < m_pTourData->getTourPosLat().size(); i++ )
+    QThreadPool::globalInstance()->clear();
+    m_threadCnt = 0;
+
+    //Count jobs
+    for( int i = 0; i < ui->treeWidgetTours->topLevelItemCount(); i++ )
     {
-        double dist =  hF.getDistanceFromLatLonInKm( m_map_control->mapFocusPointCoord().latitude(),
-                                                     m_map_control->mapFocusPointCoord().longitude(),
-                                                     m_pTourData->getTourPosLat().at(i) * ( 180 / pow(2,31) ),
-                                                     m_pTourData->getTourPosLong().at(i) * ( 180 / pow(2,31) ) );
-        if( dist < minDist ) minDist = dist;
+        QTreeWidgetItem *topLevel = ui->treeWidgetTours->topLevelItem( i );
+        for( int j = 0; j < topLevel->childCount(); j++ )
+        {
+            m_threadCnt++;
+        }
     }
-    qDebug() << "Minimum distance is" << minDist << "km";
+    int jobs = m_threadCnt;
+    //qDebug() << "Threads todo:" << m_threadCnt;
+#ifdef FITC
+    QThreadPool::globalInstance()->setMaxThreadCount(1);
+#endif
+    //Start threads
+    for( int i = 0; i < ui->treeWidgetTours->topLevelItemCount(); i++ )
+    {
+        QTreeWidgetItem *topLevel = ui->treeWidgetTours->topLevelItem( i );
+        for( int j = 0; j < topLevel->childCount(); j++ )
+        {
+            ThreadTrack2Point *thread = new ThreadTrack2Point( m_map_control->mapFocusPointCoord().latitude(),
+                                                               m_map_control->mapFocusPointCoord().longitude(),
+                                                               &m_threadCntMutex,
+                                                               &m_threadCnt,
+                                                               topLevel->child( j ) );
+            // QThreadPool takes ownership and deletes 'thread' automatically
+            QThreadPool::globalInstance()->start(thread);
+        }
+    }
+    //Wait for threads done
+    ProgressDialog *prD = new ProgressDialog( this, jobs, &m_threadCntMutex, &m_threadCnt );
+    if( prD->exec() == QDialog::Rejected )
+    {
+        //Aborted -> clean partial result
+        QThreadPool::globalInstance()->clear();
+        for( int i = 0; i < ui->treeWidgetTours->topLevelItemCount(); i++ )
+        {
+            QTreeWidgetItem *topLevel = ui->treeWidgetTours->topLevelItem( i );
+            for( int j = 0; j < topLevel->childCount(); j++ )
+            {
+                topLevel->child( j )->setText( 7, QString( "" ) );
+            }
+        }
+        return;
+    }
+
+    if( "radius" == ui->lineEditFilter->text() ) ui->treeWidgetTours->setFilter( ui->lineEditFilter->text() );
+    else ui->lineEditFilter->setText( "radius" );
 }
 

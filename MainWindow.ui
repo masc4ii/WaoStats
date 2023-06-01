@@ -313,6 +313,8 @@
      <addaction name="separator"/>
      <addaction name="actionMapCaching"/>
      <addaction name="actionClearMapCache"/>
+     <addaction name="separator"/>
+     <addaction name="actionDistanceSearch"/>
     </widget>
     <widget class="QMenu" name="menuPlot">
      <property name="title">
@@ -352,8 +354,6 @@
     <addaction name="separator"/>
     <addaction name="actionService"/>
     <addaction name="actionStatistics"/>
-    <addaction name="separator"/>
-    <addaction name="actionDistanceTest"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -433,6 +433,9 @@
        </property>
        <property name="placeholderText">
         <string>Filter</string>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -1501,9 +1504,12 @@
     <string>Sync with ADB</string>
    </property>
   </action>
-  <action name="actionDistanceTest">
+  <action name="actionDistanceSearch">
    <property name="text">
-    <string>DistanceTest</string>
+    <string>Search Tracks Near Focus</string>
+   </property>
+   <property name="toolTip">
+    <string>Search Tracks Near Focus</string>
    </property>
   </action>
  </widget>

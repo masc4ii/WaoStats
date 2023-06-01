@@ -138,9 +138,9 @@ public:
                         int entryNum = entry1.toInt();
                         this->topLevelItem(i)->child(j)->setHidden( filterNum >= entryNum );
                     }
-                    else if( filter.startsWith( 'r1' ) )
+                    else if( filter.startsWith( "radius" ) )
                     {
-                        this->topLevelItem(i)->child(j)->setHidden( this->topLevelItem(i)->child(j)->text( 7 ).toDouble() < 1 );
+                        this->topLevelItem(i)->child(j)->setHidden( this->topLevelItem(i)->child(j)->text( 7 ).toDouble() > 1 );
                     }
                     else //Name contains
                     {

@@ -215,6 +215,7 @@ void MainWindow::scanTours()
 
                 fitItem->setText( 0, startQTime.toString( "yyyy-MM-dd - hh:mm:ss" ) );
                 fitItem->setText( 1, subdir+"/"+fitFile );
+                fitItem->setToolTip( 0, QFileInfo(subdir+"/"+fitFile).fileName() );
                 fitItem->setText( 2, QString( "%1 km" ).arg( (int)( m_pTourData->getSession().totalDistance / 1000.0 + 0.5 ) ) );
                 fitItem->setText( 3, QString( "%1" ).arg( m_pTourData->getSession().totalDistance / 1000.0, 0, 'f', 10 ) );
                 fitItem->setText( 4, QString( "%1" ).arg( (int)( m_pTourData->getSession().totalTimerTime ) ) );
@@ -319,7 +320,8 @@ void MainWindow::statistics( void )
      || ( ui->actionLRBalance->isChecked()      && !ui->actionLRBalance->isEnabled() )
      || ( ui->actionGearInfo->isChecked()       && !ui->actionGearInfo->isEnabled() )
      || ( ui->actionDeviceBattery->isChecked()  && !ui->actionDeviceBattery->isEnabled() )
-     || ( ui->actionGpsAccuracy->isChecked()    && !ui->actionGpsAccuracy->isEnabled() ) )
+     || ( ui->actionGpsAccuracy->isChecked()    && !ui->actionGpsAccuracy->isEnabled() )
+     || ( ui->actionTemperature->isChecked()    && !ui->actionTemperature->isEnabled() ) )
     {
         ui->actionSpeed->setChecked( true );
         plotSelected();
@@ -1288,6 +1290,8 @@ void MainWindow::on_actionSetArchivePath_triggered()
 
 void MainWindow::on_qwtPlot_customContextMenuRequested(const QPoint &pos)
 {
+    m_layer_symb->setVisible( false );
+
     // Handle global position
     QPoint globalPos = ui->qwtPlot->mapToGlobal( pos );
 
@@ -1537,6 +1541,7 @@ bool MainWindow::loadTrackFromJson( QString fitFile, QTreeWidgetItem *fitItem )
 
     QJsonObject track = doc.object().value( archiveFile ).toObject();
     fitItem->setText( 0, track.value( "name" ).toString() );
+    fitItem->setToolTip( 0, QFileInfo(fitFile).fileName() );
     fitItem->setText( 1, fitFile );
     fitItem->setText( 2, track.value( "distanceInt" ).toString() );
     fitItem->setText( 3, track.value( "distanceDouble" ).toString() );
@@ -1834,7 +1839,7 @@ void MainWindow::on_actionDistanceSearch_triggered()
         return;
     }
 
-    if( "radius" == ui->lineEditFilter->text() ) ui->treeWidgetTours->setFilter( ui->lineEditFilter->text() );
-    else ui->lineEditFilter->setText( "radius" );
+    if( "radius1.0km" == ui->lineEditFilter->text() ) ui->treeWidgetTours->setFilter( ui->lineEditFilter->text() );
+    else ui->lineEditFilter->setText( "radius1.0km" );
 }
 

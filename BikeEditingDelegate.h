@@ -140,7 +140,12 @@ public:
                     }
                     else if( filter.startsWith( "radius" ) )
                     {
-                        this->topLevelItem(i)->child(j)->setHidden( this->topLevelItem(i)->child(j)->text( 7 ).toDouble() > 1 );
+                        QString filterEdit = filter;
+                        filterEdit.remove( " " );
+                        filterEdit.remove( "radius" );
+                        filterEdit.remove( "km" );
+                        double radius = filterEdit.toDouble();
+                        this->topLevelItem(i)->child(j)->setHidden( this->topLevelItem(i)->child(j)->text( 7 ).toDouble() > radius );
                     }
                     else //Name contains
                     {

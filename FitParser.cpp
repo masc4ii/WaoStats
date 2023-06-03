@@ -17,7 +17,7 @@ bool FitParser::loadFit(QString fileName)
     FIT_UINT32 buf_size;
     FIT_UINT32 mesg_index = 0;
 
-    int minTemp = 999;
+    int minTemp = 9999;
 
     FitConvert_Init(FIT_TRUE);
 
@@ -106,12 +106,12 @@ bool FitParser::loadFit(QString fileName)
                     m_session.descent = session->total_descent;
                     m_session.altitudeMax = session->max_altitude / 5 - 500;
                     m_session.altitudeMin = session->min_altitude / 5 - 500;
-                    m_session.minGrade = session->max_neg_grade / 100.0; //wrong!
-                    m_session.maxGrade = session->max_pos_grade / 100.0; //wrong!
+                    if( session->max_neg_grade < 32767 ) m_session.minGrade = session->max_neg_grade / 100.0; //wrong!
+                    if( session->max_pos_grade < 32767 ) m_session.maxGrade = session->max_pos_grade / 100.0; //wrong!
 
-                    m_session.avgTemperature = session->avg_temperature;
-                    m_session.minTemperature = session->min_temperature;
-                    m_session.maxTemperature = session->max_temperature; //wrong!
+                    if( session->avg_temperature < 127 ) m_session.avgTemperature = session->avg_temperature;
+                    if( session->min_temperature < 127 ) m_session.minTemperature = session->min_temperature;
+                    if( session->max_temperature < 127 ) m_session.maxTemperature = session->max_temperature; //wrong!
 
                     if( session->min_heart_rate < 255 ) m_session.minHeartRate = session->min_heart_rate;
                     if( session->avg_heart_rate < 255 ) m_session.avgHeartRate = session->avg_heart_rate;
@@ -150,12 +150,12 @@ bool FitParser::loadFit(QString fileName)
                     lap.descent = lapMesg->total_descent;
                     lap.altitudeMax = lapMesg->max_altitude / 5.0 - 500;
                     lap.altitudeMin = lapMesg->min_altitude / 5.0 - 500;
-                    lap.minGrade = lapMesg->max_neg_grade / 100.0; //wrong!
-                    lap.maxGrade = lapMesg->max_pos_grade / 100.0; //wrong!
+                    if( lapMesg->max_neg_grade < 32767 ) lap.minGrade = lapMesg->max_neg_grade / 100.0; //wrong!
+                    if( lapMesg->max_pos_grade < 32767 ) lap.maxGrade = lapMesg->max_pos_grade / 100.0; //wrong!
 
-                    lap.avgTemperature = lapMesg->avg_temperature;
-                    lap.minTemperature = lapMesg->min_temperature;
-                    lap.maxTemperature = lapMesg->max_temperature; //wrong!
+                    if( lapMesg->avg_temperature < 127 ) lap.avgTemperature = lapMesg->avg_temperature;
+                    if( lapMesg->min_temperature < 127 ) lap.minTemperature = lapMesg->min_temperature;
+                    if( lapMesg->max_temperature < 127 ) lap.maxTemperature = lapMesg->max_temperature; //wrong!
 
                     if( lapMesg->min_heart_rate < 255 ) lap.minHeartRate = lapMesg->min_heart_rate;
                     if( lapMesg->avg_heart_rate < 255 ) lap.avgHeartRate = lapMesg->avg_heart_rate;
@@ -249,6 +249,10 @@ bool FitParser::loadFit(QString fileName)
                             m_tourTemperature[i] = record->temperature;
                         }
                     }
+                    if( record->temperature == 127 )
+                    {
+                        m_tourTemperature[m_tourTemperature.count()-1] = m_tourTemperature[m_tourTemperature.count()-2];
+                    }
                     if( !m_caloriesCorrectionDone && record->calories < 65535 )
                     {
                         m_caloriesCorrectionDone = true;
@@ -265,7 +269,7 @@ bool FitParser::loadFit(QString fileName)
                             m_tourHeartRate[i] = record->heart_rate;
                         }
                     }
-                    if( minTemp > record->temperature ) minTemp = record->temperature;
+                    if( minTemp > record->temperature && record->temperature < 127 ) minTemp = record->temperature;
 
                     break;
                 }
@@ -273,7 +277,37 @@ bool FitParser::loadFit(QString fileName)
                 case FIT_MESG_NUM_EVENT:
                 {
                     const FIT_EVENT_MESG *event = (FIT_EVENT_MESG *) mesg;
-                    //printf("Event: timestamp=%u\n", event->timestamp);
+
+                    int gearNumFront = ((event->data & 0x00FF0000)>>16);
+                    int gearToothFront = ((event->data & 0xFF000000)>>24);
+                    int gearNumRear = (event->data & 0x000000FF);
+                    int gearToothRear = ((event->data & 0x0000FF00)>>8);
+
+                    if( gearToothFront > 0 && gearToothRear > 0 && gearToothFront < 255 && gearToothRear < 255 )
+                    {
+                        m_gearInfoRear = true;
+                        m_gearInfoFront = true;
+                        m_gearTimeStamp.append( event->timestamp );
+                        m_gearNumFront.append( gearNumFront );
+                        m_gearToothFront.append( gearToothFront );
+                        m_gearNumRear.append( gearNumRear );
+                        m_gearToothRear.append( gearToothRear );
+                        //Calc ratio only, if tooth info existing
+                        if( (int)gearToothFront > 1 && (int)gearToothRear > 1 ) m_gearRatio.append( (double)gearToothFront / (double)gearToothRear );
+                        else m_gearRatio.append( 0.0 );
+                        //Steel the distance
+                        if( m_tourDistance.count() > 0 ) m_gearDistance.append( m_tourDistance.last() );
+                        else m_gearDistance.append( 0.0 );
+                        if( gearNumFront > m_gearCountFront ) m_gearCountFront = gearNumFront;
+                        if( gearNumRear > m_gearCountRear ) m_gearCountRear = gearNumRear;
+                    }
+
+                    /*qDebug() << "Gear Event:"
+                             << (event->data & 0x000000FF)
+                             << ((event->data & 0x0000FF00)>>8)
+                             << ((event->data & 0x00FF0000)>>16)
+                             << ((event->data & 0xFF000000)>>24);*/
+
                     break;
                 }
 
@@ -299,7 +333,7 @@ bool FitParser::loadFit(QString fileName)
                     default:
                         break;
                     }
-                    if( device_info->software_version < 65535 ) info.software = "Firmware v" + QString::number(device_info->software_version);
+                    if( device_info->software_version < 65535 ) info.software = "Firmware v" + QString::number(device_info->software_version/100.0);
 
                     if( !deviceIdIsIncluded( info ) )
                     {
@@ -321,8 +355,40 @@ bool FitParser::loadFit(QString fileName)
                     break;
                 }
 
+                case FIT_MESG_NUM_POWER_ZONE:
+                {
+                    const FIT_POWER_ZONE_MESG *pwr_zone = (FIT_POWER_ZONE_MESG *) mesg;
+
+                    break;
+                }
+
+                case FIT_MESG_NUM_DEVELOPER_DATA_ID:
+                {
+                    const FIT_DEVELOPER_DATA_ID_MESG *dev = (FIT_DEVELOPER_DATA_ID_MESG *) mesg;
+                    //qDebug() << dev->application_version;
+                    break;
+                }
+
+                case FIT_MESG_NUM_FIELD_DESCRIPTION:
+                {
+                    const FIT_FIELD_DESCRIPTION_MESG *field = (FIT_FIELD_DESCRIPTION_MESG *) mesg;
+                    //qDebug() << field->field_name << field->developer_data_index << field->field_definition_number;
+                    break;
+                }
+
+                case FIT_MESG_NUM_SEGMENT_LAP:
+                {
+                    break;
+                }
+
+                case FIT_MESG_NUM_MFG_RANGE_MIN:
+                {
+                    break;
+                }
+
                 default:
                     //printf("Unknown\n");
+                    //qDebug() << "Unknown msg:" << mesg_num;
                     break;
                 }
                 break;

@@ -1325,7 +1325,10 @@
      <normaloff>:/Icons/Icons/Actions-view-refresh-icon.png</normaloff>:/Icons/Icons/Actions-view-refresh-icon.png</iconset>
    </property>
    <property name="text">
-    <string>Scan Tour Folder</string>
+    <string>Scan Archive</string>
+   </property>
+   <property name="toolTip">
+    <string>Scan Archive</string>
    </property>
   </action>
   <action name="actionNewBike">

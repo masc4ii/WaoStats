@@ -18,6 +18,8 @@ bool FitParser::loadFit(QString fileName)
     FIT_UINT32 mesg_index = 0;
 
     int minTemp = 9999;
+    int lapMinTemp = 9999;
+    double lastLapStartDistance = 0;
 
     FitConvert_Init(FIT_TRUE);
 
@@ -139,6 +141,7 @@ bool FitParser::loadFit(QString fileName)
                     lap.totalTimerTime = lapMesg->total_timer_time / 1000.0;
                     lap.totalDistance = lapMesg->total_distance / 100.0;
                     lap.startTime = lapMesg->start_time;
+                    lap.startDistance = lastLapStartDistance;
 
                     lap.avgSpeed = lapMesg->avg_speed / 1000.0;
                     lap.maxSpeed = lapMesg->max_speed / 1000.0;
@@ -155,6 +158,7 @@ bool FitParser::loadFit(QString fileName)
 
                     if( lapMesg->avg_temperature < 127 ) lap.avgTemperature = lapMesg->avg_temperature;
                     if( lapMesg->min_temperature < 127 ) lap.minTemperature = lapMesg->min_temperature;
+                    else lap.minTemperature = lapMinTemp;
                     if( lapMesg->max_temperature < 127 ) lap.maxTemperature = lapMesg->max_temperature; //wrong!
 
                     if( lapMesg->min_heart_rate < 255 ) lap.minHeartRate = lapMesg->min_heart_rate;
@@ -168,7 +172,10 @@ bool FitParser::loadFit(QString fileName)
                     if( lapMesg->total_work         < 65535 ) lap.totalWork = lapMesg->total_work;
                     if( lapMesg->total_calories     < 65535 ) lap.totalCalories = lapMesg->total_calories;
                     if( lapMesg->normalized_power   < 65535 ) lap.normalizedPower = lapMesg->normalized_power;
+
                     m_sections.append( lap );
+                    lastLapStartDistance = m_tourDistance.last();
+                    lapMinTemp = 9999;
                     break;
                 }
 
@@ -270,6 +277,7 @@ bool FitParser::loadFit(QString fileName)
                         }
                     }
                     if( minTemp > record->temperature && record->temperature < 127 ) minTemp = record->temperature;
+                    if( lapMinTemp > record->temperature && record->temperature < 127 ) lapMinTemp = record->temperature;
 
                     break;
                 }

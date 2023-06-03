@@ -15,7 +15,7 @@ ProgressDialog::ProgressDialog(QWidget *parent, int jobs, QMutex *pMutex, uint32
         reject();
         return;
     }
-    m_timerId = startTimer( 500 );
+    m_timerId = startTimer( 100 );
     ui->progressBar->setValue( 0 );
 }
 

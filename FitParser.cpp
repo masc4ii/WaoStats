@@ -165,7 +165,8 @@ bool FitParser::loadFit(QString fileName)
                     if( lapMesg->avg_heart_rate < 255 ) lap.avgHeartRate = lapMesg->avg_heart_rate;
                     if( lapMesg->max_heart_rate < 255 ) lap.maxHeartRate = lapMesg->max_heart_rate;
 
-                    //lap.hrTimeInZone[5];
+                    for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_HR_ZONE_COUNT; i++) lap.hrTimeInZone[i] = lapMesg->time_in_hr_zone[i] / 1000.0;
+
                     if( lapMesg->avg_power          < 65535 ) lap.avgPower = lapMesg->avg_power;
                     if( lapMesg->max_power          < 65535 ) lap.maxPower = lapMesg->max_power;
                     if( lapMesg->left_right_balance < 65535 ) lap.leftRightBalance = lapMesg->left_right_balance;

@@ -135,6 +135,7 @@ bool GpxParser::loadGpx( QString fileName )
     m_session.totalDistance = m_tourDistance.last() * 1000;
     m_session.totalElapsedTime = m_tourTimeStamp.last() - m_tourTimeStamp.first();
     m_session.totalTimerTime = m_tourTimeStamp.last() - m_tourTimeStamp.first() - breakSecs;
+    if( m_session.totalTimerTime < 0 ) m_session.totalTimerTime = 0.0;
 
     double alt = m_tourAltitude.first();
     double lastAlt = alt;
@@ -165,7 +166,8 @@ bool GpxParser::loadGpx( QString fileName )
     m_session.altitudeMin = minAlt;
     m_session.ascent = gradePos;
     m_session.descent = gradeNeg;
-    m_session.avgSpeed = m_session.totalDistance / m_session.totalTimerTime;
+    if( m_session.totalTimerTime > 0 ) m_session.avgSpeed = m_session.totalDistance / m_session.totalTimerTime;
+    else m_session.avgSpeed = 0;
 
     return true;
 }

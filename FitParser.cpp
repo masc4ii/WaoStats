@@ -19,6 +19,8 @@ bool FitParser::loadFit(QString fileName)
 
     int minTemp = 9999;
     int lapMinTemp = 9999;
+    double lapPosGrade = 0;
+    double lapNegGrade = 0;
     double lastLapStartDistance = 0;
     double batterySoc = 0;
 
@@ -109,12 +111,12 @@ bool FitParser::loadFit(QString fileName)
                     m_session.descent = session->total_descent;
                     m_session.altitudeMax = session->max_altitude / 5 - 500;
                     m_session.altitudeMin = session->min_altitude / 5 - 500;
-                    if( session->max_neg_grade < 32767 ) m_session.minGrade = session->max_neg_grade / 100.0; //wrong!
-                    if( session->max_pos_grade < 32767 ) m_session.maxGrade = session->max_pos_grade / 100.0; //wrong!
+                    //if( session->max_neg_grade < 32767 ) m_session.minGrade = session->max_neg_grade / 100.0; //wrong!
+                    //if( session->max_pos_grade < 32767 ) m_session.maxGrade = session->max_pos_grade / 100.0; //wrong!
 
                     if( session->avg_temperature < 127 ) m_session.avgTemperature = session->avg_temperature;
                     if( session->min_temperature < 127 ) m_session.minTemperature = session->min_temperature;
-                    if( session->max_temperature < 127 ) m_session.maxTemperature = session->max_temperature; //wrong!
+                    if( session->max_temperature < 127 ) m_session.maxTemperature = session->max_temperature;
 
                     if( session->min_heart_rate < 255 ) m_session.minHeartRate = session->min_heart_rate;
                     if( session->avg_heart_rate < 255 ) m_session.avgHeartRate = session->avg_heart_rate;
@@ -154,13 +156,15 @@ bool FitParser::loadFit(QString fileName)
                     lap.descent = lapMesg->total_descent;
                     lap.altitudeMax = lapMesg->max_altitude / 5.0 - 500;
                     lap.altitudeMin = lapMesg->min_altitude / 5.0 - 500;
-                    if( lapMesg->max_neg_grade < 32767 ) lap.minGrade = lapMesg->max_neg_grade / 100.0; //wrong!
-                    if( lapMesg->max_pos_grade < 32767 ) lap.maxGrade = lapMesg->max_pos_grade / 100.0; //wrong!
+                    //if( lapMesg->max_neg_grade < 32767 ) lap.minGrade = lapMesg->max_neg_grade / 100.0; //wrong!
+                    //if( lapMesg->max_pos_grade < 32767 ) lap.maxGrade = lapMesg->max_pos_grade / 100.0; //wrong!
+                    lap.maxGrade = lapPosGrade;
+                    lap.minGrade = lapNegGrade;
 
                     if( lapMesg->avg_temperature < 127 ) lap.avgTemperature = lapMesg->avg_temperature;
                     if( lapMesg->min_temperature < 127 ) lap.minTemperature = lapMesg->min_temperature;
                     else lap.minTemperature = lapMinTemp;
-                    if( lapMesg->max_temperature < 127 ) lap.maxTemperature = lapMesg->max_temperature; //wrong!
+                    if( lapMesg->max_temperature < 127 ) lap.maxTemperature = lapMesg->max_temperature;
 
                     if( lapMesg->min_heart_rate < 255 ) lap.minHeartRate = lapMesg->min_heart_rate;
                     if( lapMesg->avg_heart_rate < 255 ) lap.avgHeartRate = lapMesg->avg_heart_rate;
@@ -178,6 +182,8 @@ bool FitParser::loadFit(QString fileName)
                     m_sections.append( lap );
                     lastLapStartDistance = m_tourDistance.last();
                     lapMinTemp = 9999;
+                    lapPosGrade = 0;
+                    lapNegGrade = 0;
                     break;
                 }
 
@@ -262,6 +268,14 @@ bool FitParser::loadFit(QString fileName)
                         {
                             m_tourGrade[i] = record->grade / 100.0;
                         }
+                    }
+                    if( record->grade < 32767 )
+                    {
+                        double grade = record->grade / 100.0;
+                        if( grade > m_session.maxGrade ) m_session.maxGrade = grade;
+                        if( grade < m_session.minGrade ) m_session.minGrade = grade;
+                        if( grade > lapPosGrade ) lapPosGrade = grade;
+                        if( grade < lapNegGrade ) lapNegGrade = grade;
                     }
                     if( !m_tempCorrectionDone && record->temperature < 127 )
                     {

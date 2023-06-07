@@ -39,9 +39,9 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tabWayTime">
+     <widget class="QWidget" name="tabDistanceTime">
       <attribute name="title">
-       <string>Way over Time</string>
+       <string>Distance over Time</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>

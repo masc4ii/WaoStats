@@ -191,6 +191,18 @@ bool FitParser::loadFit(QString fileName)
                 {
                     const FIT_RECORD_MESG *record = (FIT_RECORD_MESG *) mesg;
 
+                    if( record->battery_soc < 255 )
+                    {
+                        if( !batterySoc )
+                        {
+                            for( int i = 0; i < m_tourBatterySoc.count(); i++ )
+                            {
+                                m_tourBatterySoc[i] = record->battery_soc / 2.0;
+                            }
+                        }
+                        batterySoc = record->battery_soc / 2.0;
+                    }
+
                     if( record->distance >= 4294967295 ) break;
 
                     m_tourTimeStamp.append( record->timestamp );
@@ -208,18 +220,6 @@ bool FitParser::loadFit(QString fileName)
                     m_tourCalories.append( record->calories );
                     if( record->power < 65535 ) m_tourPower.append( record->power );
                     m_tourLRBalance.append( record->left_right_balance );
-
-                    if( record->battery_soc < 255 )
-                    {
-                        if( !batterySoc )
-                        {
-                            for( int i = 0; i < m_tourBatterySoc.count(); i++ )
-                            {
-                                m_tourBatterySoc[i] = record->battery_soc / 2.0;
-                            }
-                        }
-                        batterySoc = record->battery_soc / 2.0;
-                    }
                     m_tourBatterySoc.append( batterySoc );
 
                     if( !m_firstPosRead && record->position_lat < 2147483647 && record->position_long < 2147483647 )

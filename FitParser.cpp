@@ -20,6 +20,7 @@ bool FitParser::loadFit(QString fileName)
     int minTemp = 9999;
     int lapMinTemp = 9999;
     double lastLapStartDistance = 0;
+    double batterySoc = 0;
 
     FitConvert_Init(FIT_TRUE);
 
@@ -190,7 +191,7 @@ bool FitParser::loadFit(QString fileName)
                     m_tourPosLat.append( record->position_lat );
                     m_tourPosLong.append( record->position_long );
                     m_tourDistance.append( record->distance / 100000.0 );
-                    //m_tourBatterySoc.append(  );
+
                     m_tourSpeed.append( record->speed * 0.0036 );
                     m_tourCadence.append( record->cadence );
                     m_tourAltitude.append( record->altitude / 5.0 - 500 );
@@ -201,6 +202,19 @@ bool FitParser::loadFit(QString fileName)
                     m_tourCalories.append( record->calories );
                     if( record->power < 65535 ) m_tourPower.append( record->power );
                     m_tourLRBalance.append( record->left_right_balance );
+
+                    if( record->battery_soc < 255 )
+                    {
+                        if( !batterySoc )
+                        {
+                            for( int i = 0; i < m_tourBatterySoc.count(); i++ )
+                            {
+                                m_tourBatterySoc[i] = record->battery_soc / 2.0;
+                            }
+                        }
+                        batterySoc = record->battery_soc / 2.0;
+                    }
+                    m_tourBatterySoc.append( batterySoc );
 
                     if( !m_firstPosRead && record->position_lat < 2147483647 && record->position_long < 2147483647 )
                     {

@@ -12,7 +12,6 @@ void FitListener::PrintValues(const fit::FieldBase& field)
 {
     for (FIT_UINT8 j=0; j< (FIT_UINT8)field.GetNumValues(); j++)
     {
-#ifdef LOGOUT
         std::wcout << L"       Val" << j << L": ";
 
         switch (field.GetType())
@@ -44,7 +43,6 @@ void FitListener::PrintValues(const fit::FieldBase& field)
             break;
         }
         std::wcout << L" " << field.GetUnits().c_str() << L"\n";;
-#endif
     }
 }
 

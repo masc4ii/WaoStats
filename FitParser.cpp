@@ -24,7 +24,8 @@ bool FitParser::loadFit(QString fileName)
     double lastLapStartDistance = 0;
     double batterySoc = 0;
 
-    FitConvert_Init(FIT_TRUE);
+    FIT_CONVERT_STATE state;
+    FitConvert_Init(&state, FIT_TRUE);
 
     if((file = fopen(fileName.toLatin1().data(), "rb")) == NULL)
     {
@@ -64,8 +65,15 @@ bool FitParser::loadFit(QString fileName)
                 {
                 case FIT_MESG_NUM_FILE_ID:
                 {
-                    const FIT_FILE_ID_MESG *id = (FIT_FILE_ID_MESG *) mesg;
-                    //printf("File ID: type=%u, number=%u\n", id->type, id->number);
+                    const FIT_FILE_ID_MESG *fileId = (FIT_FILE_ID_MESG *) mesg;
+                    deviceInfo_t deviceInfo;
+                    deviceInfo.battery = "";
+                    deviceInfo.deviceId = -1;
+                    deviceInfo.name = fileId->product_name;
+                    if( deviceInfo.name.count() && !deviceIdIsIncluded( deviceInfo ) )
+                    {
+                        m_deviceInfo.append( deviceInfo );
+                    }
                     break;
                 }
 
@@ -201,27 +209,65 @@ bool FitParser::loadFit(QString fileName)
                             }
                         }
                         batterySoc = record->battery_soc / 2.0;
+                        //Bring to device_info!
+                        deviceInfo_t deviceInfo = m_deviceInfo.first();
+                        deviceInfo.battery = QString( "Battery %1\%" ).arg( batterySoc );
+                        m_deviceInfo.replace( 0, deviceInfo );
                     }
 
                     if( record->distance >= 4294967295 ) break;
 
                     m_tourTimeStamp.append( record->timestamp );
-                    m_tourPosLat.append( record->position_lat );
-                    m_tourPosLong.append( record->position_long );
                     m_tourDistance.append( record->distance / 100000.0 );
 
-                    m_tourSpeed.append( record->speed * 0.0036 );
-                    m_tourCadence.append( record->cadence );
-                    m_tourAltitude.append( record->altitude / 5.0 - 500 );
-                    m_tourGpsAccuracy.append( record->gps_accuracy );
-                    m_tourTemperature.append( record->temperature );
-                    m_tourGrade.append( record->grade / 100.0 );
-                    m_tourHeartRate.append( record->heart_rate );
-                    m_tourCalories.append( record->calories );
+                    if( record->temperature < 127 ) m_tourTemperature.append( record->temperature );
+                    else if( m_tourTemperature.count() > 0 ) m_tourTemperature.append( m_tourTemperature.last() );
+                    else m_tourTemperature.append( 0 );
+
+                    if( record->position_lat < 2147483647 ) m_tourPosLat.append( record->position_lat );
+                    else if( m_tourPosLat.count() > 0 ) m_tourPosLat.append( m_tourPosLat.last() );
+                    else m_tourPosLat.append( 0 );
+
+                    if( record->position_long < 2147483647 ) m_tourPosLong.append( record->position_long );
+                    else if( m_tourPosLong.count() > 0 ) m_tourPosLong.append( m_tourPosLong.last() );
+                    else m_tourPosLong.append( 0 );
+
+                    if( record->speed < 65535 ) m_tourSpeed.append( record->speed * 0.0036 );
+                    else if( m_tourSpeed.count() > 0 ) m_tourSpeed.append( m_tourSpeed.last() );
+                    else m_tourSpeed.append( 0 );
+
+                    if( record->altitude < 65535 ) m_tourAltitude.append( record->altitude / 5.0 - 500 );
+                    else if( m_tourAltitude.count() > 0 ) m_tourAltitude.append( m_tourAltitude.last() );
+                    else m_tourAltitude.append( 0 );
+
+                    if( record->cadence < 255 ) m_tourCadence.append( record->cadence );
+                    else if( m_tourCadence.count() > 0 ) m_tourCadence.append( m_tourCadence.last() );
+                    else m_tourCadence.append( 0 );
+
+                    if( record->gps_accuracy < 255 ) m_tourGpsAccuracy.append( record->gps_accuracy );
+                    else if( m_tourGpsAccuracy.count() > 0 ) m_tourGpsAccuracy.append( m_tourGpsAccuracy.last() );
+                    else m_tourGpsAccuracy.append( 0 );
+
+                    if( record->grade < 32767 ) m_tourGrade.append( record->grade / 100.0 );
+                    else if( m_tourGrade.count() > 0 ) m_tourGrade.append( m_tourGrade.last() );
+                    else m_tourGrade.append( 0 );
+
+                    if( record->heart_rate < 255 ) m_tourHeartRate.append( record->heart_rate );
+                    else if( m_tourHeartRate.count() > 0 ) m_tourHeartRate.append( m_tourHeartRate.last() );
+                    else m_tourHeartRate.append( 0 );
+
                     if( record->power < 65535 ) m_tourPower.append( record->power );
-                    m_tourLRBalance.append( record->left_right_balance );
+                    else if( m_tourPower.count() > 0 ) m_tourPower.append( m_tourPower.last() );
+                    else m_tourPower.append( 0 );
+
+                    if( record->left_right_balance < 255 ) m_tourLRBalance.append( record->left_right_balance );
+                    else if( m_tourLRBalance.count() > 0 ) m_tourLRBalance.append( m_tourLRBalance.last() );
+                    else m_tourLRBalance.append( 0 );
+
+                    m_tourCalories.append( record->calories );
                     m_tourBatterySoc.append( batterySoc );
 
+                    //Correction for start of track
                     if( !m_firstPosRead && record->position_lat < 2147483647 && record->position_long < 2147483647 )
                     {
                         m_firstPosRead = true;
@@ -230,27 +276,6 @@ bool FitParser::loadFit(QString fileName)
                         {
                             m_tourPosLat[i] = record->position_lat;
                             m_tourPosLong[i] = record->position_long;
-                        }
-                    }
-                    if( record->speed == 65535 )
-                    {
-                        int pos = m_tourSpeed.count();
-                        if( pos > 2 )
-                        {
-                            m_tourSpeed[pos-1] = m_tourSpeed[pos-2];
-                        }
-                    }
-                    if( record->cadence == 255 )
-                    {
-                        m_tourCadence[m_tourCadence.count()-1] = 0;
-                    }
-                    if( m_firstPosRead && ( record->position_lat == 2147483647 || record->position_long == 2147483647 ) )
-                    {
-                        int pos = m_tourPosLat.count();
-                        if( pos > 2 )
-                        {
-                            m_tourPosLat[pos-1] = m_tourPosLat[pos-2];
-                            m_tourPosLong[pos-1] = m_tourPosLong[pos-2];
                         }
                     }
                     if( !m_altCorrectionDone && record->altitude < 65535 )
@@ -284,10 +309,6 @@ bool FitParser::loadFit(QString fileName)
                         {
                             m_tourTemperature[i] = record->temperature;
                         }
-                    }
-                    if( record->temperature == 127 )
-                    {
-                        m_tourTemperature[m_tourTemperature.count()-1] = m_tourTemperature[m_tourTemperature.count()-2];
                     }
                     if( !m_caloriesCorrectionDone && record->calories < 65535 )
                     {
@@ -353,6 +374,7 @@ bool FitParser::loadFit(QString fileName)
                     const FIT_DEVICE_INFO_MESG *device_info = (FIT_DEVICE_INFO_MESG *) mesg;
 
                     deviceInfo_t info;
+                    if( device_info->device_index == 255 ) break;
                     info.name = device_info->product_name;
                     info.deviceId = device_info->device_index;
                     switch( device_info->battery_status )
@@ -379,7 +401,9 @@ bool FitParser::loadFit(QString fileName)
                     }
                     else
                     {
+                        if( !deviceIdInVectorAt( info ) && !info.battery.count() ) info.battery = m_deviceInfo.at( deviceIdInVectorAt( info ) ).battery; //save battery info for main device
                         m_deviceInfo.replace( deviceIdInVectorAt( info ), info );
+
                     }
 
                     break;
@@ -388,7 +412,7 @@ bool FitParser::loadFit(QString fileName)
                 case FIT_MESG_NUM_HR_ZONE:
                 {
                     const FIT_HR_ZONE_MESG *hr_zone = (FIT_HR_ZONE_MESG *) mesg;
-                    m_hrZoneHigh[hr_zone->message_index] = hr_zone->high_bpm;
+                    if( hr_zone->message_index < 5 ) m_hrZoneHigh[hr_zone->message_index] = hr_zone->high_bpm;
                     break;
                 }
 
@@ -402,14 +426,17 @@ bool FitParser::loadFit(QString fileName)
                 case FIT_MESG_NUM_DEVELOPER_DATA_ID:
                 {
                     const FIT_DEVELOPER_DATA_ID_MESG *dev = (FIT_DEVELOPER_DATA_ID_MESG *) mesg;
-                    //qDebug() << dev->application_version;
+                    //qDebug() << dev->application_version << dev->developer_data_index << dev->application_id << dev->developer_id << dev->manufacturer_id;
                     break;
                 }
 
                 case FIT_MESG_NUM_FIELD_DESCRIPTION:
                 {
                     const FIT_FIELD_DESCRIPTION_MESG *field = (FIT_FIELD_DESCRIPTION_MESG *) mesg;
-                    //qDebug() << field->field_name << field->developer_data_index << field->field_definition_number;
+                    /*qDebug() << field->field_name
+                             << field->developer_data_index
+                             << field->field_definition_number
+                             << field->fit_base_type_id;*/
                     break;
                 }
 

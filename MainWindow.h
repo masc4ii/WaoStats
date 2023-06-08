@@ -63,6 +63,7 @@ private slots:
     void on_actionStatistics_triggered();
     void on_actionSyncAdb_triggered();
     void on_actionDistanceSearch_triggered();
+    void on_actionAverageMarker_triggered( bool checked );
     void on_treeWidgetTours_itemActivated( QTreeWidgetItem *item, int column );
     void on_treeWidgetTours_itemsDropped( QList<QTreeWidgetItem *> pSource, QTreeWidgetItem* pTarget );
     void on_treeWidgetTours_itemDoubleClicked( QTreeWidgetItem *item, int column );
@@ -117,6 +118,7 @@ private:
     QwtPlotPanner *m_pPanner;
     QwtPlotPicker* m_picker;
     QVector<QwtPlotMarker*> m_lapMarker;
+    QwtPlotMarker* m_avgMarker;
     QTreeWidgetItem *m_currentActiveTreeWidgetItem;
 
     QPixmap m_iconCrossHairs;

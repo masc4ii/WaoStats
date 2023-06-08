@@ -530,6 +530,7 @@ void MainWindow::unconfigurePlots()
     delete m_curve[1];
     if( m_curve[2] != Q_NULLPTR ) delete m_curve[2];
     if( m_curve[3] != Q_NULLPTR ) delete m_curve[3];
+    delete m_avgMarker;
 }
 
 void MainWindow::configurePlots( void )
@@ -651,6 +652,15 @@ void MainWindow::configurePlots( void )
     p.setColor( QColor( 0, 180, 0 ) );
     m_curve[1]->setPen( p );
 
+    //AVG Marker
+    m_avgMarker = new QwtPlotMarker();
+    m_avgMarker->setValue( 0.0, m_pTourData->getSession().avgSpeed * 3.6 );
+    m_avgMarker->setYAxis( QwtPlot::yRight );
+    m_avgMarker->setLineStyle( QwtPlotMarker::HLine );
+    m_avgMarker->setLabelAlignment( Qt::AlignRight | Qt::AlignBottom );
+    m_avgMarker->setLinePen( Qt::darkGray, 1, Qt::DashDotLine );
+    m_avgMarker->setVisible( ui->actionAverageMarker->isChecked() );
+
     //Zoomer init
     m_pZoomer[0] = new Zoomer( QwtPlot::xBottom, QwtPlot::yLeft, ui->qwtPlot );
     m_pZoomer[0]->setRubberBand( QwtPicker::RectRubberBand );
@@ -699,6 +709,9 @@ void MainWindow::drawPlots( void )
         if( !m_timePlot ) m_curve[1]->setSamples( pTourData->getTourDistance().data(), pTourData->getTourSpeed().data(), pTourData->getTourDistance().count() );
         else              m_curve[1]->setSamples( pTourData->getTourTimeStamp().data(), pTourData->getTourSpeed().data(), pTourData->getTourDistance().count() );
         m_curve[1]->setTitle( QString( "Speed" ) );
+
+        m_avgMarker->setValue( 0.0, m_pTourData->getSession().avgSpeed * 3.6 );
+        m_avgMarker->attach( ui->qwtPlot );
     }
     else if( ui->actionDeviceBattery->isChecked() )
     {
@@ -714,6 +727,9 @@ void MainWindow::drawPlots( void )
         m_curve[1]->setStyle( QwtPlotCurve::CurveStyle::NoCurve );
         m_curve[1]->setSymbol( new QwtSymbol( QwtSymbol::Ellipse, QBrush(), QPen( QColor( 0, 128, 255 ) ), QSize() ) );
         m_curve[1]->setPen( QPen( QColor( 225, 180, 0 ) ) );
+
+        m_avgMarker->setValue( 0.0, m_pTourData->getSession().avgCadence );
+        m_avgMarker->attach( ui->qwtPlot );
     }
     else if( ui->actionTemperature->isChecked() )
     {
@@ -733,6 +749,9 @@ void MainWindow::drawPlots( void )
         if( !m_timePlot ) m_curve[1]->setSamples( pTourData->getTourDistance().data(), pTourData->getTourHeartRate().data(), pTourData->getTourDistance().count() );
         else              m_curve[1]->setSamples( pTourData->getTourTimeStamp().data(), pTourData->getTourHeartRate().data(), pTourData->getTourDistance().count() );
         m_curve[1]->setTitle( QString( "Heart Rate" ) );
+
+        m_avgMarker->setValue( 0.0, m_pTourData->getSession().avgHeartRate );
+        m_avgMarker->attach( ui->qwtPlot );
     }
     else if( ui->actionCalories->isChecked() )
     {
@@ -1805,7 +1824,7 @@ void MainWindow::on_actionDistanceSearch_triggered()
     int jobs = m_threadCnt;
     //qDebug() << "Threads todo:" << m_threadCnt;
 #ifdef FITC
-    QThreadPool::globalInstance()->setMaxThreadCount(1);
+    //QThreadPool::globalInstance()->setMaxThreadCount(1); //Otherwise some results get lost, or change FIT_CONVERT_MULTI_THREAD in fit_config.h
 #endif
     //Start threads
     for( int i = 0; i < ui->treeWidgetTours->topLevelItemCount(); i++ )
@@ -1841,5 +1860,11 @@ void MainWindow::on_actionDistanceSearch_triggered()
 
     if( "radius1.0km" == ui->lineEditFilter->text() ) ui->treeWidgetTours->setFilter( ui->lineEditFilter->text() );
     else ui->lineEditFilter->setText( "radius1.0km" );
+}
+
+void MainWindow::on_actionAverageMarker_triggered(bool checked)
+{
+    m_avgMarker->setVisible( checked );
+    ui->qwtPlot->replot();
 }
 

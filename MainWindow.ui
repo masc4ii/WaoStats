@@ -336,6 +336,8 @@
      <addaction name="actionTemperature"/>
      <addaction name="actionGearInfo"/>
      <addaction name="actionGpsAccuracy"/>
+     <addaction name="separator"/>
+     <addaction name="actionAverageMarker"/>
     </widget>
     <addaction name="menu_map"/>
     <addaction name="menuPlot"/>
@@ -1513,6 +1515,17 @@
    </property>
    <property name="toolTip">
     <string>Search Tracks Near Focus</string>
+   </property>
+  </action>
+  <action name="actionAverageMarker">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Average Marker</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Average Marker</string>
    </property>
   </action>
  </widget>

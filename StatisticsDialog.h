@@ -15,7 +15,7 @@ class StatisticsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit StatisticsDialog(QWidget *parent = nullptr, QTreeWidget *tree = nullptr);
+    explicit StatisticsDialog(QWidget *parent = nullptr, QTreeWidget *tree = nullptr, bool filterActive = false);
     ~StatisticsDialog();
 
 private slots:
@@ -23,10 +23,11 @@ private slots:
     void on_comboBox_currentTextChanged(const QString &arg1);
     void on_dateEditFrom_dateTimeChanged(const QDateTime &dateTime);
     void on_dateEditTo_dateTimeChanged(const QDateTime &dateTime);
+    void on_checkBoxFilter_toggled(bool checked);
 
 private:
     Ui::StatisticsDialog *ui;
-    QTreeWidget *m_tourTree;
+    QTreeWidget *m_pTourTree;
     QwtPlotMultiBarChart *m_pBarChartItem;
     QList<QwtText> m_bikeTitles;
 

@@ -1744,7 +1744,7 @@ void MainWindow::on_actionService_triggered()
 
 void MainWindow::on_actionStatistics_triggered()
 {
-    StatisticsDialog *statisticsDialog = new StatisticsDialog( this, ui->treeWidgetTours );
+    StatisticsDialog *statisticsDialog = new StatisticsDialog( this, ui->treeWidgetTours, (bool)ui->lineEditFilter->text().count() );
     statisticsDialog->exec();
     delete statisticsDialog;
 }

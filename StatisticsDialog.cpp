@@ -80,12 +80,14 @@ private:
     int m_yearMin;
 };
 
-StatisticsDialog::StatisticsDialog(QWidget *parent, QTreeWidget *tree) :
+StatisticsDialog::StatisticsDialog(QWidget *parent, QTreeWidget *tree, bool filterActive) :
     QDialog(parent),
     ui(new Ui::StatisticsDialog),
-    m_tourTree( tree )
+    m_pTourTree( tree )
 {
     ui->setupUi(this);
+
+    ui->checkBoxFilter->setVisible( filterActive );
 
     //Background
     QwtPlotCanvas *canvas = (QwtPlotCanvas *)ui->qwtPlot->canvas();
@@ -118,11 +120,11 @@ StatisticsDialog::StatisticsDialog(QWidget *parent, QTreeWidget *tree) :
 
     m_pBarChartItem->setLegendIconSize( QSize( 10, 14 ) );
     m_bikeTitles.clear();
-    for( int i = 0; i < m_tourTree->topLevelItemCount(); i++ )
+    for( int i = 0; i < m_pTourTree->topLevelItemCount(); i++ )
     {
-        if( "New" == m_tourTree->topLevelItem( i )->text( 0 ) ) continue;
-        if( "Planned" == m_tourTree->topLevelItem( i )->text( 0 ) ) continue;
-        m_bikeTitles.append( QwtText( m_tourTree->topLevelItem( i )->text( 0 ) ) );
+        if( "New" == m_pTourTree->topLevelItem( i )->text( 0 ) ) continue;
+        if( "Planned" == m_pTourTree->topLevelItem( i )->text( 0 ) ) continue;
+        m_bikeTitles.append( QwtText( m_pTourTree->topLevelItem( i )->text( 0 ) ) );
     }
     m_pBarChartItem->setBarTitles( m_bikeTitles );
 
@@ -155,19 +157,21 @@ void StatisticsDialog::plotDaysOfWeek()
     {
         QVector<double> values( m_bikeTitles.count() );
         int bike = 0;
-        for( int j = 0; j < m_tourTree->topLevelItemCount(); j++ )
+        for( int j = 0; j < m_pTourTree->topLevelItemCount(); j++ )
         {
-            if( "New" == m_tourTree->topLevelItem( j )->text( 0 ) ) continue;
-            if( "Planned" == m_tourTree->topLevelItem( j )->text( 0 ) ) continue;
+            if( "New" == m_pTourTree->topLevelItem( j )->text( 0 ) ) continue;
+            if( "Planned" == m_pTourTree->topLevelItem( j )->text( 0 ) ) continue;
 
             values[bike] = 0;
-            for( int i = 0; i < m_tourTree->topLevelItem(j)->childCount(); i++ )
+            for( int i = 0; i < m_pTourTree->topLevelItem(j)->childCount(); i++ )
             {
-                if( QDateTime().fromString( m_tourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ).date().dayOfWeek() == day+1
-                 && QDateTime().fromString( m_tourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ) >= ui->dateEditFrom->dateTime()
-                 && QDateTime().fromString( m_tourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ) <= ui->dateEditTo->dateTime() )
+                if( ui->checkBoxFilter->isChecked() && m_pTourTree->topLevelItem(j)->child(i)->isHidden() ) continue;
+
+                if( QDateTime().fromString( m_pTourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ).date().dayOfWeek() == day+1
+                 && QDateTime().fromString( m_pTourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ) >= ui->dateEditFrom->dateTime()
+                 && QDateTime().fromString( m_pTourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ) <= ui->dateEditTo->dateTime() )
                 {
-                    values[bike] += m_tourTree->topLevelItem(j)->child(i)->text(3).toDouble();
+                    values[bike] += m_pTourTree->topLevelItem(j)->child(i)->text(3).toDouble();
                 }
             }
             bike++;
@@ -188,19 +192,21 @@ void StatisticsDialog::plotMonths()
     {
         QVector<double> values( m_bikeTitles.count() );
         int bike = 0;
-        for( int j = 0; j < m_tourTree->topLevelItemCount(); j++ )
+        for( int j = 0; j < m_pTourTree->topLevelItemCount(); j++ )
         {
-            if( "New" == m_tourTree->topLevelItem( j )->text( 0 ) ) continue;
-            if( "Planned" == m_tourTree->topLevelItem( j )->text( 0 ) ) continue;
+            if( "New" == m_pTourTree->topLevelItem( j )->text( 0 ) ) continue;
+            if( "Planned" == m_pTourTree->topLevelItem( j )->text( 0 ) ) continue;
 
             values[bike] = 0;
-            for( int i = 0; i < m_tourTree->topLevelItem(j)->childCount(); i++ )
+            for( int i = 0; i < m_pTourTree->topLevelItem(j)->childCount(); i++ )
             {
-                if( QDateTime().fromString( m_tourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ).date().month() == month+1
-                 && QDateTime().fromString( m_tourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ) >= ui->dateEditFrom->dateTime()
-                 && QDateTime().fromString( m_tourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ) <= ui->dateEditTo->dateTime() )
+                if( ui->checkBoxFilter->isChecked() && m_pTourTree->topLevelItem(j)->child(i)->isHidden() ) continue;
+
+                if( QDateTime().fromString( m_pTourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ).date().month() == month+1
+                 && QDateTime().fromString( m_pTourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ) >= ui->dateEditFrom->dateTime()
+                 && QDateTime().fromString( m_pTourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ) <= ui->dateEditTo->dateTime() )
                 {
-                    values[bike] += m_tourTree->topLevelItem(j)->child(i)->text(3).toDouble();
+                    values[bike] += m_pTourTree->topLevelItem(j)->child(i)->text(3).toDouble();
                 }
             }
             bike++;
@@ -218,14 +224,16 @@ void StatisticsDialog::plotYears()
     int yearMin = 5000;
     int yearMax = 0;
     QVector< QVector<double> > years;
-    for( int j = 0; j < m_tourTree->topLevelItemCount(); j++ )
+    for( int j = 0; j < m_pTourTree->topLevelItemCount(); j++ )
     {
-        if( "New" == m_tourTree->topLevelItem( j )->text( 0 ) ) continue;
-        if( "Planned" == m_tourTree->topLevelItem( j )->text( 0 ) ) continue;
+        if( "New" == m_pTourTree->topLevelItem( j )->text( 0 ) ) continue;
+        if( "Planned" == m_pTourTree->topLevelItem( j )->text( 0 ) ) continue;
 
-        for( int i = 0; i < m_tourTree->topLevelItem(j)->childCount(); i++ )
+        for( int i = 0; i < m_pTourTree->topLevelItem(j)->childCount(); i++ )
         {
-            int year = QDateTime().fromString( m_tourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ).date().year();
+            if( ui->checkBoxFilter->isChecked() && m_pTourTree->topLevelItem(j)->child(i)->isHidden() ) continue;
+
+            int year = QDateTime().fromString( m_pTourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ).date().year();
             if( year > yearMax )
             {
                 yearMax = year;
@@ -242,17 +250,19 @@ void StatisticsDialog::plotYears()
     {
         QVector<double> values( m_bikeTitles.count() );
         int bike = 0;
-        for( int j = 0; j < m_tourTree->topLevelItemCount(); j++ )
+        for( int j = 0; j < m_pTourTree->topLevelItemCount(); j++ )
         {
-            if( "New" == m_tourTree->topLevelItem( j )->text( 0 ) ) continue;
-            if( "Planned" == m_tourTree->topLevelItem( j )->text( 0 ) ) continue;
+            if( "New" == m_pTourTree->topLevelItem( j )->text( 0 ) ) continue;
+            if( "Planned" == m_pTourTree->topLevelItem( j )->text( 0 ) ) continue;
 
             values[bike] = 0;
-            for( int i = 0; i < m_tourTree->topLevelItem(j)->childCount(); i++ )
+            for( int i = 0; i < m_pTourTree->topLevelItem(j)->childCount(); i++ )
             {
-                if( QDateTime().fromString( m_tourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ).date().year() == year )
+                if( ui->checkBoxFilter->isChecked() && m_pTourTree->topLevelItem(j)->child(i)->isHidden() ) continue;
+
+                if( QDateTime().fromString( m_pTourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ).date().year() == year )
                 {
-                    values[bike] += m_tourTree->topLevelItem(j)->child(i)->text(3).toDouble();
+                    values[bike] += m_pTourTree->topLevelItem(j)->child(i)->text(3).toDouble();
                 }
             }
             bike++;
@@ -297,6 +307,12 @@ void StatisticsDialog::on_dateEditFrom_dateTimeChanged(const QDateTime &dateTime
 void StatisticsDialog::on_dateEditTo_dateTimeChanged(const QDateTime &dateTime)
 {
     Q_UNUSED( dateTime );
+    plotCreate();
+}
+
+void StatisticsDialog::on_checkBoxFilter_toggled(bool checked)
+{
+    Q_UNUSED( checked );
     plotCreate();
 }
 

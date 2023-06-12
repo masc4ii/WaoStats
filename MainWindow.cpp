@@ -126,6 +126,8 @@ MainWindow::MainWindow(QWidget *parent)
     Splash splash( QPixmap( ":/Icons/Splash.png" ).scaled( 300, 300, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
     splash.show();
 
+    qRegisterMetaType<QVector<int> >("QVector<int>");
+
     auto editDelegate = new BikeEditingDelegate(this);
     ui->treeWidgetTours->setItemDelegate(editDelegate);
     connect(editDelegate,

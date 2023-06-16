@@ -115,8 +115,8 @@ bool FitParser::loadFit(QString fileName)
                     if( session->avg_cadence < 255 ) m_session.avgCadence = session->avg_cadence;
                     if( session->max_cadence < 255 ) m_session.maxCadence = session->max_cadence;
 
-                    m_session.ascent = session->total_ascent;
-                    m_session.descent = session->total_descent;
+                    if( session->total_ascent < 65535 ) m_session.ascent = session->total_ascent;
+                    if( session->total_descent < 65535 ) m_session.descent = session->total_descent;
                     m_session.altitudeMax = session->max_altitude / 5 - 500;
                     m_session.altitudeMin = session->min_altitude / 5 - 500;
                     //if( session->max_neg_grade < 32767 ) m_session.minGrade = session->max_neg_grade / 100.0; //wrong!
@@ -130,7 +130,8 @@ bool FitParser::loadFit(QString fileName)
                     if( session->avg_heart_rate < 255 ) m_session.avgHeartRate = session->avg_heart_rate;
                     if( session->max_heart_rate < 255 ) m_session.maxHeartRate = session->max_heart_rate;
 
-                    for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_HR_ZONE_COUNT; i++) m_session.hrTimeInZone[i] = session->time_in_hr_zone[i] / 1000.0;
+                    for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_HR_ZONE_COUNT; i++)    m_session.hrTimeInZone[i]  = session->time_in_hr_zone[i] / 1000.0;
+                    for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_POWER_ZONE_COUNT; i++) m_session.pwrTimeInZone[i] = session->time_in_power_zone[i] / 1000.0;
 
                     if( session->avg_power             < 65535 ) m_session.avgPower = session->avg_power;
                     if( session->max_power             < 65535 ) m_session.maxPower = session->max_power;
@@ -160,8 +161,8 @@ bool FitParser::loadFit(QString fileName)
                     if( lapMesg->avg_cadence < 255 ) lap.avgCadence = lapMesg->avg_cadence;
                     if( lapMesg->max_cadence < 255 ) lap.maxCadence = lapMesg->max_cadence;
 
-                    lap.ascent = lapMesg->total_ascent;
-                    lap.descent = lapMesg->total_descent;
+                    if( lapMesg->total_ascent < 65535 ) lap.ascent = lapMesg->total_ascent;
+                    if( lapMesg->total_descent < 65535 ) lap.descent = lapMesg->total_descent;
                     lap.altitudeMax = lapMesg->max_altitude / 5.0 - 500;
                     lap.altitudeMin = lapMesg->min_altitude / 5.0 - 500;
                     //if( lapMesg->max_neg_grade < 32767 ) lap.minGrade = lapMesg->max_neg_grade / 100.0; //wrong!
@@ -178,7 +179,8 @@ bool FitParser::loadFit(QString fileName)
                     if( lapMesg->avg_heart_rate < 255 ) lap.avgHeartRate = lapMesg->avg_heart_rate;
                     if( lapMesg->max_heart_rate < 255 ) lap.maxHeartRate = lapMesg->max_heart_rate;
 
-                    for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_HR_ZONE_COUNT; i++) lap.hrTimeInZone[i] = lapMesg->time_in_hr_zone[i] / 1000.0;
+                    for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_HR_ZONE_COUNT; i++)    lap.hrTimeInZone[i]  = lapMesg->time_in_hr_zone[i] / 1000.0;
+                    for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_POWER_ZONE_COUNT; i++) lap.pwrTimeInZone[i] = lapMesg->time_in_power_zone[i] / 1000.0;
 
                     if( lapMesg->avg_power          < 65535 ) lap.avgPower = lapMesg->avg_power;
                     if( lapMesg->max_power          < 65535 ) lap.maxPower = lapMesg->max_power;
@@ -419,7 +421,7 @@ bool FitParser::loadFit(QString fileName)
                 case FIT_MESG_NUM_POWER_ZONE:
                 {
                     const FIT_POWER_ZONE_MESG *pwr_zone = (FIT_POWER_ZONE_MESG *) mesg;
-
+                    if( pwr_zone->message_index < 8 ) m_pwrZoneHigh[pwr_zone->message_index] = pwr_zone->high_value;
                     break;
                 }
 

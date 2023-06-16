@@ -65,11 +65,8 @@ void TourData::reset()
     m_session.minHeartRate = 0;
     m_session.avgHeartRate = 0;
     m_session.maxHeartRate = 0;
-    m_session.hrTimeInZone[0] = 0.0;
-    m_session.hrTimeInZone[1] = 0.0;
-    m_session.hrTimeInZone[2] = 0.0;
-    m_session.hrTimeInZone[3] = 0.0;
-    m_session.hrTimeInZone[4] = 0.0;
+    for( int i = 0; i < 5; i++ ) m_session.hrTimeInZone[i] = 0.0;
+    for( int i = 0; i < 8; i++ ) m_session.pwrTimeInZone[i] = 0.0;
     m_session.avgPower = 0;
     m_session.maxPower = 0;
     m_session.leftRightBalance = 0;
@@ -81,11 +78,8 @@ void TourData::reset()
     m_session.itensityFactor = 0;
     m_altCorrectionDone = false;
 
-    m_hrZoneHigh[0] = 0.0;
-    m_hrZoneHigh[1] = 0.0;
-    m_hrZoneHigh[2] = 0.0;
-    m_hrZoneHigh[3] = 0.0;
-    m_hrZoneHigh[4] = 0.0;
+    for( int i = 0; i < 5; i++ ) m_hrZoneHigh[i] = 0.0;
+    for( int i = 0; i < 8; i++ ) m_pwrZoneHigh[i] = 0.0;
 
     m_deviceInfo.clear();
 

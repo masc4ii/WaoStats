@@ -42,6 +42,7 @@ public:
         double avgHeartRate;
         double maxHeartRate;
         double hrTimeInZone[5];
+        double pwrTimeInZone[8];
         double avgPower;
         double maxPower;
         double leftRightBalance;
@@ -87,6 +88,7 @@ public:
     uint8_t gearCountRear( void ){return m_gearCountRear;}
 
     quint16* getHrZoneHigh( void ){return m_hrZoneHigh;}
+    quint16* getPwrZoneHigh( void ){return m_pwrZoneHigh;}
 
 protected:
     fitSection_t m_session;
@@ -132,6 +134,7 @@ protected:
     QVector<deviceInfo_t>m_deviceInfo;
 
     quint16 m_hrZoneHigh[5];
+    quint16 m_pwrZoneHigh[8];
 };
 
 #endif // TOURDATA_H

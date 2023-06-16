@@ -95,6 +95,8 @@ void FitListener::OnMesg(fit::Mesg& mesg)
     bool gearRead = false;
     quint8 hrIndex = 0;
     quint16 hrHighValue = 0;
+    quint8 pwrIndex = 0;
+    quint16 pwrHighValue = 0;
 
     for (FIT_UINT16 i = 0; i < (FIT_UINT16)mesg.GetNumFields(); i++)
     {
@@ -124,6 +126,7 @@ void FitListener::OnMesg(fit::Mesg& mesg)
             else if( QString( field->GetName().c_str() ) == QString( "avg_heart_rate" ) ) m_session.avgHeartRate = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "max_heart_rate" ) ) m_session.maxHeartRate = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "time_in_hr_zone" ) ) for(int i = 0; i < 5; i++) m_session.hrTimeInZone[i] = field->GetFLOAT64Value(i);
+            else if( QString( field->GetName().c_str() ) == QString( "time_in_power_zone" ) ) for(int i = 0; i < 8; i++) m_session.pwrTimeInZone[i] = field->GetFLOAT64Value(i);
             else if( QString( field->GetName().c_str() ) == QString( "avg_power" ) ) m_session.avgPower = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "max_power" ) ) m_session.maxPower = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "left_right_balance" ) ) m_session.leftRightBalance = field->GetFLOAT64Value(0);
@@ -156,6 +159,7 @@ void FitListener::OnMesg(fit::Mesg& mesg)
             else if( QString( field->GetName().c_str() ) == QString( "avg_heart_rate" ) ) lap.avgHeartRate = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "max_heart_rate" ) ) lap.maxHeartRate = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "time_in_hr_zone" ) ) for(int i = 0; i < 5; i++) lap.hrTimeInZone[i] = field->GetFLOAT64Value(i);
+            else if( QString( field->GetName().c_str() ) == QString( "time_in_power_zone" ) ) for(int i = 0; i < 8; i++) lap.pwrTimeInZone[i] = field->GetFLOAT64Value(i);
             else if( QString( field->GetName().c_str() ) == QString( "avg_power" ) ) lap.avgPower = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "max_power" ) ) lap.maxPower = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "left_right_balance" ) ) lap.leftRightBalance = field->GetFLOAT64Value(0);
@@ -271,6 +275,11 @@ void FitListener::OnMesg(fit::Mesg& mesg)
             if(      QString( field->GetName().c_str() ) == QString( "message_index" ) ) hrIndex = field->GetFLOAT64Value(0);
             else if( QString( field->GetName().c_str() ) == QString( "high_bpm" ) ) hrHighValue = field->GetFLOAT64Value(0);
         }
+        else if( QString( mesg.GetName().c_str() ) == QString( "power_zone" ) )
+        {
+            if(      QString( field->GetName().c_str() ) == QString( "message_index" ) ) pwrIndex = field->GetFLOAT64Value(0);
+            else if( QString( field->GetName().c_str() ) == QString( "high_value" ) ) pwrHighValue = field->GetFLOAT64Value(0);
+        }
     }
 
     for (auto devField : mesg.GetDeveloperFields())
@@ -383,6 +392,10 @@ void FitListener::OnMesg(fit::Mesg& mesg)
     else if( QString( mesg.GetName().c_str() ) == QString( "hr_zone" ) )
     {
         m_hrZoneHigh[hrIndex] = hrHighValue;
+    }
+    else if( QString( mesg.GetName().c_str() ) == QString( "power_zone" ) )
+    {
+        m_pwrZoneHigh[pwrIndex] = pwrHighValue;
     }
 }
 

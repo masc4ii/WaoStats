@@ -5469,12 +5469,12 @@ typedef struct
 
 // session message
 
-#define FIT_SESSION_MESG_SIZE                                                   226
+#define FIT_SESSION_MESG_SIZE                                                   254
 #define FIT_SESSION_MESG_DEF_SIZE                                               281
 #define FIT_SESSION_MESG_TIME_IN_HR_ZONE_COUNT                                  5
 #define FIT_SESSION_MESG_TIME_IN_SPEED_ZONE_COUNT                               1
 #define FIT_SESSION_MESG_TIME_IN_CADENCE_ZONE_COUNT                             1
-#define FIT_SESSION_MESG_TIME_IN_POWER_ZONE_COUNT                               1
+#define FIT_SESSION_MESG_TIME_IN_POWER_ZONE_COUNT                               8
 #define FIT_SESSION_MESG_STROKE_COUNT_COUNT                                     1
 #define FIT_SESSION_MESG_ZONE_COUNT_COUNT                                       1
 #define FIT_SESSION_MESG_OPPONENT_NAME_COUNT                                    1
@@ -5778,12 +5778,12 @@ typedef struct
 
 // lap message
 
-#define FIT_LAP_MESG_SIZE                                                       206
+#define FIT_LAP_MESG_SIZE                                                       234
 #define FIT_LAP_MESG_DEF_SIZE                                                   257
 #define FIT_LAP_MESG_TIME_IN_HR_ZONE_COUNT                                      5
 #define FIT_LAP_MESG_TIME_IN_SPEED_ZONE_COUNT                                   1
 #define FIT_LAP_MESG_TIME_IN_CADENCE_ZONE_COUNT                                 1
-#define FIT_LAP_MESG_TIME_IN_POWER_ZONE_COUNT                                   1
+#define FIT_LAP_MESG_TIME_IN_POWER_ZONE_COUNT                                   8
 #define FIT_LAP_MESG_STROKE_COUNT_COUNT                                         1
 #define FIT_LAP_MESG_ZONE_COUNT_COUNT                                           1
 #define FIT_LAP_MESG_AVG_TOTAL_HEMOGLOBIN_CONC_COUNT                            1

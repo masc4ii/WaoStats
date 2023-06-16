@@ -150,6 +150,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->widgetOsm->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->dockWidgetBikeData->setVisible( false );
     ui->labelHrZone->setVisible( false );
+    ui->labelPwrZone->setVisible( false );
     configurePlots();
     configureMap();
     readSettings();
@@ -388,6 +389,7 @@ void MainWindow::statistics( void )
         ui->labelTempMin->setText( QString( "%1 °C" ).arg( m_pTourData->getSession().minTemperature ) );
 
         drawHrPlot( m_pTourData->getSession() );
+        drawPwrPlot( m_pTourData->getSession() );
     }
     else
     {
@@ -431,6 +433,7 @@ void MainWindow::statistics( void )
         ui->labelTempMin->setText( QString( "%1 °C" ).arg( m_pTourData->getSections().at(ind).minTemperature ) );
 
         drawHrPlot( m_pTourData->getSections().at(ind) );
+        drawPwrPlot( m_pTourData->getSections().at(ind) );
     }
 }
 
@@ -1626,6 +1629,49 @@ void MainWindow::drawHrPlot(TourData::fitSection_t section)
                         .arg( m_pTourData->getHrZoneHigh()[2] + 1 ).arg( m_pTourData->getHrZoneHigh()[3] ).arg( (int)( section.hrTimeInZone[3] / section.totalTimerTime * 100 + 0.5 ) ).arg( QTime(0,0).addSecs( section.hrTimeInZone[3] ).toString( "hh:mm:ss" ) )
                         .arg( m_pTourData->getHrZoneHigh()[3] + 1 ).arg( (int)( section.hrTimeInZone[4] / section.totalTimerTime * 100 + 0.5 ) ).arg( QTime(0,0).addSecs( section.hrTimeInZone[4] ).toString( "hh:mm:ss" ) );
     ui->labelHrZone->setToolTip( toolTip );
+}
+
+void MainWindow::drawPwrPlot(TourData::fitSection_t section)
+{
+    if( !m_pTourData->getPwrZoneHigh()[0]
+     || !m_pTourData->getPwrZoneHigh()[1]
+     || !m_pTourData->getPwrZoneHigh()[2]
+     || !m_pTourData->getPwrZoneHigh()[3]
+     || !m_pTourData->getPwrZoneHigh()[4] )
+    {
+        ui->labelPwrZone->setVisible( false );
+        return;
+    }
+    else ui->labelPwrZone->setVisible( true );
+
+    int cnt = 1;
+    for( int i = 0; i < 8; i++ ) if( m_pTourData->getPwrZoneHigh()[i] > 20000 ) cnt = i + 1;
+
+    int b = 8 * devicePixelRatio(); //boarder
+    int h = ( ui->labelPwrZone->height() * devicePixelRatio() ) - 1;
+    int w = 164 * devicePixelRatio();//ui->labelPwrZone->width();
+    int wCnt = ( w - b ) / cnt;
+    int max = 0;
+    QPixmap pix( w, h );
+    QPainter paint( &pix );
+    pix.fill( ui->groupBoxPower->palette().window().color() );
+    QVector<QBrush> brushes = { QBrush( "white" ), QBrush( "darkblue" ), QBrush( "dodgerblue" ), QBrush( "limegreen" ), QBrush( "gold" ), QBrush( "darkorange" ), QBrush( "orangered" ), QBrush( "pink" ) };
+    for( int i = 0; i < cnt; i++ )
+    {
+        if( section.pwrTimeInZone[i] > max ) max = section.pwrTimeInZone[i];
+    }
+    for( int i = 0; i < cnt; i++ )
+    {
+        paint.fillRect( QRect( ( wCnt * i ) + b, h - b, wCnt - b, (int)( -( h - b - b ) * ( section.pwrTimeInZone[i] / max ) ) - 1 ), brushes[i] );
+    }
+    pix.setDevicePixelRatio( devicePixelRatio() );
+    ui->labelPwrZone->setPixmap( pix );
+
+    QString toolTip = QString( "0..%1: %2\%, %3" ).arg( m_pTourData->getPwrZoneHigh()[0] ).arg( (int)( section.pwrTimeInZone[0] / section.totalTimerTime * 100 + 0.5 ) ).arg( QTime(0,0).addSecs( section.pwrTimeInZone[0] ).toString( "hh:mm:ss" ) );
+    for( int i = 1; i < cnt-1; i++ ) toolTip.append( QString( "\n%1..%2: %3\%, %4" ).arg( m_pTourData->getPwrZoneHigh()[i-1] + 1 ).arg( m_pTourData->getPwrZoneHigh()[i] ).arg( (int)( section.pwrTimeInZone[i] / section.totalTimerTime * 100 + 0.5 ) ).arg( QTime(0,0).addSecs( section.pwrTimeInZone[i] ).toString( "hh:mm:ss" ) ) );
+    toolTip.append( QString( "\n%1..∞: %2\%, %3" ).arg( m_pTourData->getPwrZoneHigh()[cnt-2] + 1 ).arg( (int)( section.pwrTimeInZone[cnt-1] / section.totalTimerTime * 100 + 0.5 ) ).arg( QTime(0,0).addSecs( section.pwrTimeInZone[cnt-1] ).toString( "hh:mm:ss" ) ) );
+
+    ui->labelPwrZone->setToolTip( toolTip );
 }
 
 double MainWindow::odoInitKm(int bikeIndex)

@@ -115,7 +115,7 @@ bool GpxParser::loadGpx( QString fileName )
             if( time-lastTime != 0 ) speedCalc = distSinceLast / (time-lastTime) * 3600;
             static double lastSpeedCalc = 0;
             m_tourSpeed.append( ( lastSpeedCalc + speedCalc ) / 2.0 );
-            if( time - lastTime > 30
+            if( ( time - lastTime > 30 && distSinceLast < 0.05 ) //if time >30s and distance < 50m, or speed < 1km/h, it must be a break...
              || ( ( lastSpeedCalc + speedCalc ) / 2.0 ) < 1.0 ) breakSecs += time - lastTime;
             lastSpeedCalc = speedCalc;
             m_tourTemperature.append( 0 );

@@ -160,6 +160,14 @@ MainWindow::MainWindow(QWidget *parent)
     QTimer::singleShot( 1, this, SLOT( adjustMap() ) );
     QTimer::singleShot( 1000, this, SLOT( setupArchive() ) );
 
+    ui->lineEditFilter->setToolTip( QString( "Filter your archive (examples):\n"
+                                             "-\">10\": show all tracks longer than 10km\n"
+                                             "-\"<=50\": show all tracks shorter than or equal 50km\n"
+                                             "-\"2023-\": show all 2023 tracks\n"
+                                             "-\"-10-\": show all Octobre tracks\n"
+                                             "-\"2023-10-\": show all Octobre 2023 tracks\n"
+                                             "-\"radius0.5km\": show all tracks passing in 0.5km radius from reference marker (after processing a search)" ) );
+
     splash.finish( this );
 }
 
@@ -277,6 +285,7 @@ void MainWindow::adjustGui()
 {
     ui->comboBoxSection->clear();
     ui->comboBoxSection->addItem( tr( "Track / Session" ) );
+    if( m_pTourData->getSections().count() <= 1 ) return;
     for( int i = 0; i < m_pTourData->getSections().count(); i++ )
     {
         ui->comboBoxSection->addItem( tr( "Lap / Section " ) + QString::number( i + 1 ) );

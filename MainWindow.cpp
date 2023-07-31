@@ -515,6 +515,7 @@ void MainWindow::configureMap()
     ui->action_sigmasport_topo->setCheckable( true );
     ui->action_sigmasport_cycle->setCheckable( true );
     ui->action_komoot->setCheckable( true );
+    ui->action_komoot->setVisible( false );
     // Default to OTM map.
     ui->action_otm->setChecked( true );
     // Connect signal/slot to set the map provider.

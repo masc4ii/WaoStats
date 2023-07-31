@@ -33,6 +33,9 @@ private:
     double odoAtDateTime(QDateTime dateTime , int index);
     double odoInUse( int row, int index );
     void updateOdoInUseColumn( int index );
+    double secsAtDateTime(QDateTime dateTime , int index);
+    int secsInUse( int row, int index );
+    void updateSecsInUseColumn( int index );
     void updateCellColor( void );
     void writeToJson( int index );
     void loadFromJson( int index );

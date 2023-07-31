@@ -19,13 +19,15 @@ public:
                                 QString description = "",
                                 QString actionText = "",
                                 QDateTime dateTime = QDateTime::currentDateTime(),
-                                int interval = 0 );
+                                int intervalDistance = 0,
+                                int intervalTime = 0);
     ~ServiceEntryDialog();
     QString part( void );
     QString description( void );
     QString actionText( void );
     QDateTime dateTime( void );
-    int interval( void );
+    int intervalDistance( void );
+    int intervalHours( void );
 
 private slots:
     void on_pushButtonNow_clicked();

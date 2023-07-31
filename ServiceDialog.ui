@@ -66,7 +66,22 @@
      </column>
      <column>
       <property name="text">
-       <string>Proposed Interval</string>
+       <string>ODO Interval</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Time Total</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Time In Use</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Time Interval</string>
       </property>
      </column>
      <column>
@@ -104,17 +119,22 @@
        <string>2km</string>
       </property>
      </item>
-     <item row="0" column="4">
+     <item row="0" column="5">
+      <property name="text">
+       <string/>
+      </property>
+     </item>
+     <item row="0" column="7">
       <property name="text">
        <string>Chain</string>
       </property>
      </item>
-     <item row="0" column="5">
+     <item row="0" column="8">
       <property name="text">
        <string>Replaced</string>
       </property>
      </item>
-     <item row="0" column="6">
+     <item row="0" column="9">
       <property name="text">
        <string>Shimano</string>
       </property>
@@ -139,17 +159,22 @@
        <string>5km</string>
       </property>
      </item>
-     <item row="1" column="4">
+     <item row="1" column="5">
+      <property name="text">
+       <string/>
+      </property>
+     </item>
+     <item row="1" column="7">
       <property name="text">
        <string>Chain</string>
       </property>
      </item>
-     <item row="1" column="5">
+     <item row="1" column="8">
       <property name="text">
        <string>Replaced</string>
       </property>
      </item>
-     <item row="1" column="6">
+     <item row="1" column="9">
       <property name="text">
        <string>NoName</string>
       </property>

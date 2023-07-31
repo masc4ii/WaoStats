@@ -8,6 +8,17 @@
 #include <QFile>
 #include <QListView>
 
+#define DATETIME  0
+#define ODOTOTAL  1
+#define ODOINUSE  2
+#define ODOINTER  3
+#define TIMETOTAL 4
+#define TIMEINUSE 5
+#define TIMEINTER 6
+#define PARTNAME  7
+#define ACTION    8
+#define DESCRIPT  9
+
 ServiceDialog::ServiceDialog(QWidget *parent, QTreeWidget *tree) :
     QDialog(parent),
     ui(new Ui::ServiceDialog),
@@ -30,7 +41,15 @@ ServiceDialog::ServiceDialog(QWidget *parent, QTreeWidget *tree) :
         }
     }
 
-    ui->tableWidget->setColumnHidden( 5, true );
+    ui->tableWidget->setColumnHidden( ACTION, true );
+
+    ui->tableWidget->setColumnWidth( DATETIME , 120 );
+    ui->tableWidget->setColumnWidth( ODOTOTAL , 80 );
+    ui->tableWidget->setColumnWidth( ODOINUSE , 80 );
+    ui->tableWidget->setColumnWidth( ODOINTER , 80 );
+    ui->tableWidget->setColumnWidth( TIMETOTAL, 80 );
+    ui->tableWidget->setColumnWidth( TIMEINUSE, 80 );
+    ui->tableWidget->setColumnWidth( TIMEINTER, 80 );
 
     loadFromJson( 0 );
 }
@@ -45,10 +64,15 @@ bool ServiceDialog::bikeNeedsService( int index )
     loadFromJson( index );
     for( int i = 0; i < ui->tableWidget->rowCount(); i++ )
     {
-        if( ui->tableWidget->item( i, 3 )->text().chopped( 3 ).toInt()
-          + ui->tableWidget->item( i, 1 )->text().chopped( 3 ).toInt()
-          < m_tourTree->topLevelItem( index )->text(3).toDouble()
-          && ui->tableWidget->item( i, 3 )->text().chopped( 3 ).toInt() != 0 )
+        if( ui->tableWidget->item( i, ODOINTER )->text().chopped( 3 ).toInt()
+          < ui->tableWidget->item( i, ODOINUSE )->text().chopped( 3 ).toInt()
+         && ui->tableWidget->item( i, ODOINTER )->text().chopped( 3 ).toInt() != 0 )
+        {
+            return true;
+        }
+        if( ui->tableWidget->item( i, TIMEINTER )->text().chopped( 2 ).toInt()
+          < ui->tableWidget->item( i, TIMEINUSE )->text().leftRef( ui->tableWidget->item( i, TIMEINUSE )->text().indexOf( ":" ) ).toInt()
+         && ui->tableWidget->item( i, TIMEINTER )->text().chopped( 2 ).toInt() != 0 )
         {
             return true;
         }
@@ -76,6 +100,7 @@ void ServiceDialog::on_pushButtonAdd_clicked()
 
         fillTableRow( entryDialog, ui->tableWidget->rowCount() - 1, ui->comboBoxBike->currentIndex() );
         updateOdoInUseColumn( ui->comboBoxBike->currentIndex() );
+        updateSecsInUseColumn( ui->comboBoxBike->currentIndex() );
         updateCellColor();
         writeToJson( ui->comboBoxBike->currentIndex() );
     }
@@ -86,6 +111,10 @@ void ServiceDialog::on_pushButtonDelete_clicked()
 {
     if( ui->tableWidget->selectedItems().empty() || ui->tableWidget->selectedItems().first()->row() < 0 ) return;
     ui->tableWidget->removeRow( ui->tableWidget->selectedItems().first()->row() );
+
+    updateOdoInUseColumn( ui->comboBoxBike->currentIndex() );
+    updateSecsInUseColumn( ui->comboBoxBike->currentIndex() );
+    updateCellColor();
     writeToJson( ui->comboBoxBike->currentIndex() );
 }
 
@@ -94,16 +123,18 @@ void ServiceDialog::on_tableWidget_cellDoubleClicked(int row, int column)
     Q_UNUSED( column );
     ServiceEntryDialog *entryDialog = new ServiceEntryDialog( this,
                                                               partList(),
-                                                              ui->tableWidget->item( row, 4 )->text(),
-                                                              ui->tableWidget->item( row, 6 )->text(),
-                                                              ui->tableWidget->item( row, 5 )->text(),
-                                                              QDateTime::fromString( ui->tableWidget->item( row, 0 )->text(),
+                                                              ui->tableWidget->item( row, PARTNAME )->text(),
+                                                              ui->tableWidget->item( row, DESCRIPT )->text(),
+                                                              ui->tableWidget->item( row, ACTION )->text(),
+                                                              QDateTime::fromString( ui->tableWidget->item( row, DATETIME )->text(),
                                                                                      QString( "yyyy-MM-dd - hh:mm" ) ),
-                                                              ui->tableWidget->item( row, 3 )->text().chopped( 3 ).toInt() );
+                                                              ui->tableWidget->item( row, ODOINTER )->text().chopped( 3 ).toInt(),
+                                                              ui->tableWidget->item( row, TIMEINTER )->text().chopped( 2 ).toInt() );
     if( QDialog::Accepted == entryDialog->exec() )
     {
         fillTableRow( entryDialog, row, ui->comboBoxBike->currentIndex() );
         updateOdoInUseColumn( ui->comboBoxBike->currentIndex() );
+        updateSecsInUseColumn( ui->comboBoxBike->currentIndex() );
         updateCellColor();
         writeToJson( ui->comboBoxBike->currentIndex() );
     }
@@ -112,13 +143,16 @@ void ServiceDialog::on_tableWidget_cellDoubleClicked(int row, int column)
 
 void ServiceDialog::fillTableRow(ServiceEntryDialog *entryDialog, int row, int index)
 {
-    ui->tableWidget->item( row, 0 )->setText( entryDialog->dateTime().toString( "yyyy-MM-dd - hh:mm" ) );
-    ui->tableWidget->item( row, 1 )->setText( QString( "%1 km" ).arg( odoAtDateTime( entryDialog->dateTime(), index ), 0, 'f', 0 ) );
-    ui->tableWidget->item( row, 2 )->setText( QString::number( 0 ) + " km" );
-    ui->tableWidget->item( row, 3 )->setText( QString::number( entryDialog->interval() ) + " km" );
-    ui->tableWidget->item( row, 4 )->setText( entryDialog->part() );
-    ui->tableWidget->item( row, 5 )->setText( entryDialog->actionText() );
-    ui->tableWidget->item( row, 6 )->setText( entryDialog->description() );
+    ui->tableWidget->item( row, DATETIME )->setText( entryDialog->dateTime().toString( "yyyy-MM-dd - hh:mm" ) );
+    ui->tableWidget->item( row, ODOTOTAL )->setText( QString( "%1 km" ).arg( odoAtDateTime( entryDialog->dateTime(), index ), 0, 'f', 0 ) );
+    ui->tableWidget->item( row, ODOINUSE )->setText( QString::number( 0 ) + " km" );
+    ui->tableWidget->item( row, ODOINTER )->setText( QString::number( entryDialog->intervalDistance() ) + " km" );
+    ui->tableWidget->item( row, TIMETOTAL )->setText( QString( "%1:%2" ).arg( (int)(secsAtDateTime( entryDialog->dateTime(), index )/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( secsAtDateTime( entryDialog->dateTime(), index ) ).toString( "mm:ss" ) ) );
+    ui->tableWidget->item( row, TIMEINUSE )->setText( QString( "00:00:00" ) );
+    ui->tableWidget->item( row, TIMEINTER )->setText( QString::number( entryDialog->intervalHours() ) + " h" );
+    ui->tableWidget->item( row, PARTNAME )->setText( entryDialog->part() );
+    //ui->tableWidget->item( row, ACTION )->setText( entryDialog->actionText() );
+    ui->tableWidget->item( row, DESCRIPT )->setText( entryDialog->description() );
     ui->tableWidget->sortByColumn( 0, Qt::DescendingOrder );
 }
 
@@ -134,31 +168,33 @@ double ServiceDialog::odoAtDateTime(QDateTime dateTime, int index)
         }
         else
         {
+            if( odoTotal < 0 ) odoTotal = 0;
             return odoTotal;
         }
     }
+    if( odoTotal < 0 ) odoTotal = 0;
     return odoTotal;
 }
 
 double ServiceDialog::odoInUse(int row, int index)
 {
-    double odoTotal1 = m_tourTree->topLevelItem(index)->text(3).toDouble();
-    double odoTotal2 = m_tourTree->topLevelItem(index)->text(3).toDouble();
+    double odoTotal1 = m_tourTree->topLevelItem(index)->text(TIMETOTAL).toDouble();
+    double odoTotal2 = m_tourTree->topLevelItem(index)->text(TIMETOTAL).toDouble();
 
-    QDateTime dateTime1 = QDateTime().fromString( ui->tableWidget->item( row, 0 )->text(), "yyyy-MM-dd - hh:mm" );
-    QString part = ui->tableWidget->item( row, 4 )->text();
+    QDateTime dateTime1 = QDateTime().fromString( ui->tableWidget->item( row, DATETIME )->text(), "yyyy-MM-dd - hh:mm" );
+    QString part = ui->tableWidget->item( row, PARTNAME )->text();
     int row2 = -1;
 
     //2nd entry availlable?
     for( int i = 0; i < row; i++ )
     {
-        if( part == ui->tableWidget->item( i, 4 )->text() ) row2 = i;
+        if( part == ui->tableWidget->item( i, PARTNAME )->text() ) row2 = i;
     }
 
     //Original distance
     for( int i = 0; i < m_tourTree->topLevelItem(index)->childCount(); i++ )
     {
-        if( QDateTime().fromString( m_tourTree->topLevelItem(index)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ) > dateTime1 )
+        if( QDateTime().fromString( m_tourTree->topLevelItem(index)->child(i)->text(DATETIME), "yyyy-MM-dd - hh:mm:ss" ) > dateTime1 )
         {
             odoTotal1 -= m_tourTree->topLevelItem(index)->child(i)->text(3).toDouble();
         }
@@ -171,10 +207,10 @@ double ServiceDialog::odoInUse(int row, int index)
     //2nd distance
     if( row2 > -1 )
     {
-        QDateTime dateTime2 = QDateTime().fromString( ui->tableWidget->item( row2, 0 )->text(), "yyyy-MM-dd - hh:mm" );
+        QDateTime dateTime2 = QDateTime().fromString( ui->tableWidget->item( row2, DATETIME )->text(), "yyyy-MM-dd - hh:mm" );
         for( int i = 0; i < m_tourTree->topLevelItem(index)->childCount(); i++ )
         {
-            if( QDateTime().fromString( m_tourTree->topLevelItem(index)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ) > dateTime2 )
+            if( QDateTime().fromString( m_tourTree->topLevelItem(index)->child(i)->text(DATETIME), "yyyy-MM-dd - hh:mm:ss" ) > dateTime2 )
             {
                 odoTotal2 -= m_tourTree->topLevelItem(index)->child(i)->text(3).toDouble();
             }
@@ -193,7 +229,82 @@ void ServiceDialog::updateOdoInUseColumn( int index )
 {
     for( int i = 0; i < ui->tableWidget->rowCount(); i++ )
     {
-        ui->tableWidget->item( i, 2 )->setText( QString( "%1 km" ).arg( (int)( odoInUse( i, index ) + 0.5f ) ) );
+        ui->tableWidget->item( i, ODOINUSE )->setText( QString( "%1 km" ).arg( (int)( odoInUse( i, index ) + 0.5f ) ) );
+    }
+}
+
+double ServiceDialog::secsAtDateTime(QDateTime dateTime, int index)
+{
+    double secsTotal = m_tourTree->topLevelItem(index)->text(4).toDouble();
+
+    for( int i = 0; i < m_tourTree->topLevelItem(index)->childCount(); i++ )
+    {
+        if( QDateTime().fromString( m_tourTree->topLevelItem(index)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ) > dateTime )
+        {
+            secsTotal -= m_tourTree->topLevelItem(index)->child(i)->text(4).toDouble();
+        }
+        else
+        {
+            return secsTotal;
+        }
+    }
+    return secsTotal;
+}
+
+int ServiceDialog::secsInUse(int row, int index)
+{
+    double timeTotal1 = m_tourTree->topLevelItem(index)->text(TIMETOTAL).toDouble();
+    double timeTotal2 = m_tourTree->topLevelItem(index)->text(TIMETOTAL).toDouble();
+
+    QDateTime dateTime1 = QDateTime().fromString( ui->tableWidget->item( row, DATETIME )->text(), "yyyy-MM-dd - hh:mm" );
+    QString part = ui->tableWidget->item( row, PARTNAME )->text();
+    int row2 = -1;
+
+    //2nd entry availlable?
+    for( int i = 0; i < row; i++ )
+    {
+        if( part == ui->tableWidget->item( i, PARTNAME )->text() ) row2 = i;
+    }
+
+    //Original Time
+    for( int i = 0; i < m_tourTree->topLevelItem(index)->childCount(); i++ )
+    {
+        if( QDateTime().fromString( m_tourTree->topLevelItem(index)->child(i)->text(DATETIME), "yyyy-MM-dd - hh:mm:ss" ) > dateTime1 )
+        {
+            timeTotal1 -= m_tourTree->topLevelItem(index)->child(i)->text(4).toDouble();
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    //2nd Time
+    if( row2 > -1 )
+    {
+        QDateTime dateTime2 = QDateTime().fromString( ui->tableWidget->item( row2, DATETIME )->text(), "yyyy-MM-dd - hh:mm" );
+        for( int i = 0; i < m_tourTree->topLevelItem(index)->childCount(); i++ )
+        {
+            if( QDateTime().fromString( m_tourTree->topLevelItem(index)->child(i)->text(DATETIME), "yyyy-MM-dd - hh:mm:ss" ) > dateTime2 )
+            {
+                timeTotal2 -= m_tourTree->topLevelItem(index)->child(i)->text(4).toDouble();
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
+    //Difference
+    return timeTotal2 - timeTotal1;
+}
+
+void ServiceDialog::updateSecsInUseColumn(int index)
+{
+    for( int i = 0; i < ui->tableWidget->rowCount(); i++ )
+    {
+        ui->tableWidget->item( i, TIMEINUSE )->setText( QString( "%1:%2" ).arg( (int)(secsInUse( i, index )/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( secsInUse( i, index ) ).toString( "mm:ss" ) ) );
     }
 }
 
@@ -201,20 +312,33 @@ void ServiceDialog::updateCellColor()
 {
     for( int i = 0; i < ui->tableWidget->rowCount(); i++ )
     {
-        if( ui->tableWidget->item( i, 3 )->text().chopped( 3 ).toInt()
-          + ui->tableWidget->item( i, 1 )->text().chopped( 3 ).toInt()
-          < m_tourTree->topLevelItem( ui->comboBoxBike->currentIndex() )->text(3).toDouble()
-          && ui->tableWidget->item( i, 3 )->text().chopped( 3 ).toInt() != 0 )
+        for( int j = 0; j < ui->tableWidget->columnCount(); j++ ) ui->tableWidget->item( i, j )->setBackgroundColor( QColor( 255, 0, 0, 0 ) );
+
+        bool limitOdo = false;
+        bool limitTime = false;
+
+        if( ui->tableWidget->item( i, ODOINTER )->text().chopped( 3 ).toInt()
+          < ui->tableWidget->item( i, ODOINUSE )->text().chopped( 3 ).toInt()
+         && ui->tableWidget->item( i, ODOINTER )->text().chopped( 3 ).toInt() != 0 )
+        {
+            limitOdo = true;
+        }
+
+        if( ui->tableWidget->item( i, TIMEINTER )->text().chopped( 2 ).toInt()
+          < ui->tableWidget->item( i, TIMEINUSE )->text().leftRef( ui->tableWidget->item( i, TIMEINUSE )->text().indexOf( ":" ) ).toInt()
+         && ui->tableWidget->item( i, TIMEINTER )->text().chopped( 2 ).toInt() != 0 )
+        {
+            limitTime = true;
+        }
+
+        if( limitOdo || limitTime )
         {
             for( int j = 0; j < ui->tableWidget->columnCount(); j++ )
             {
-                if( j == 3 ) ui->tableWidget->item( i, j )->setBackgroundColor( QColor( 255, 0, 0, 128 ) );
-                else  ui->tableWidget->item( i, j )->setBackgroundColor( QColor( 255, 0, 0, 64 ) );
+                ui->tableWidget->item( i, j )->setBackgroundColor( QColor( 255, 0, 0, 64 ) );
             }
-        }
-        else
-        {
-            for( int j = 0; j < ui->tableWidget->columnCount(); j++ ) ui->tableWidget->item( i, j )->setBackgroundColor( QColor( 255, 0, 0, 0 ) );
+            if( limitOdo )  ui->tableWidget->item( i, ODOINTER  )->setBackgroundColor( QColor( 255, 0, 0, 128 ) );
+            if( limitTime ) ui->tableWidget->item( i, TIMEINTER )->setBackgroundColor( QColor( 255, 0, 0, 128 ) );
         }
     }
 }
@@ -225,11 +349,12 @@ void ServiceDialog::writeToJson( int index )
     QJsonObject info;
     for( int row = 0; row < ui->tableWidget->rowCount(); row++ )
     {
-        info.insert( "dateTime",     ui->tableWidget->item( row, 0 )->text() );
-        info.insert( "propInterval", ui->tableWidget->item( row, 3 )->text().chopped( 3 ).toInt() );
-        info.insert( "part",         ui->tableWidget->item( row, 4 )->text() );
-        info.insert( "action",       ui->tableWidget->item( row, 5 )->text() );
-        info.insert( "description",  ui->tableWidget->item( row, 6 )->text() );
+        info.insert( "dateTime",         ui->tableWidget->item( row, DATETIME )->text() );
+        info.insert( "propInterval",     ui->tableWidget->item( row, ODOINTER )->text().chopped( 3 ).toInt() );
+        info.insert( "propIntervalTime", ui->tableWidget->item( row, TIMEINTER )->text().chopped( 2 ).toInt() );
+        info.insert( "part",             ui->tableWidget->item( row, PARTNAME )->text() );
+        //info.insert( "action",           ui->tableWidget->item( row, ACTION )->text() );
+        info.insert( "description",      ui->tableWidget->item( row, DESCRIPT )->text() );
         services.insert( QString::number( row ), info );
     }
     QJsonDocument doc( services );
@@ -279,7 +404,8 @@ void ServiceDialog::loadFromJson( int index )
                                                                   info.value( "action" ).toString(),
                                                                   QDateTime::fromString( info.value( "dateTime" ).toString(),
                                                                                          QString( "yyyy-MM-dd - hh:mm" ) ),
-                                                                  info.value( "propInterval" ).toInt() );
+                                                                  info.value( "propInterval" ).toInt(),
+                                                                  info.value( "propIntervalTime" ).toInt() );
         ui->tableWidget->insertRow( i );
         for( int j = 0; j < ui->tableWidget->columnCount(); j++ )
         {
@@ -292,6 +418,7 @@ void ServiceDialog::loadFromJson( int index )
         delete entryDialog;
     }
     updateOdoInUseColumn( index );
+    updateSecsInUseColumn( index );
     updateCellColor();
 }
 
@@ -301,7 +428,7 @@ QStringList ServiceDialog::partList()
     parts.clear();
     for( int i = 0; i < ui->tableWidget->rowCount(); i++ )
     {
-        if( !parts.contains( ui->tableWidget->item( i, 4 )->text() ) ) parts.append( ui->tableWidget->item( i, 4 )->text() );
+        if( !parts.contains( ui->tableWidget->item( i, PARTNAME )->text() ) ) parts.append( ui->tableWidget->item( i, PARTNAME )->text() );
     }
     return parts;
 }

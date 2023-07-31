@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QCompleter>
 
-ServiceEntryDialog::ServiceEntryDialog(QWidget *parent, QStringList partList, QString part, QString description, QString actionText, QDateTime dateTime, int interval):
+ServiceEntryDialog::ServiceEntryDialog(QWidget *parent, QStringList partList, QString part, QString description, QString actionText, QDateTime dateTime, int intervalDistance, int intervalTime):
     QDialog(parent),
     ui(new Ui::ServiceEntryDialog)
 {
@@ -26,7 +26,8 @@ ServiceEntryDialog::ServiceEntryDialog(QWidget *parent, QStringList partList, QS
     ui->calendarWidget->setSelectedDate( dateTime.date() );
     ui->timeEdit->setTime( dateTime.time() );
     ui->comboBoxAction->setCurrentText( actionText );
-    ui->spinBoxInterval->setValue( interval );
+    ui->spinBoxIntervalDist->setValue( intervalDistance );
+    ui->spinBoxIntervalTime->setValue( intervalTime );
 
     ui->labelAction->setHidden( true );
     ui->comboBoxAction->setHidden( true );
@@ -58,9 +59,14 @@ QDateTime ServiceEntryDialog::dateTime()
     return QDateTime( ui->calendarWidget->selectedDate(), ui->timeEdit->time() );
 }
 
-int ServiceEntryDialog::interval()
+int ServiceEntryDialog::intervalDistance()
 {
-    return ui->spinBoxInterval->value();
+    return ui->spinBoxIntervalDist->value();
+}
+
+int ServiceEntryDialog::intervalHours()
+{
+    return ui->spinBoxIntervalTime->value();
 }
 
 void ServiceEntryDialog::on_pushButtonNow_clicked()

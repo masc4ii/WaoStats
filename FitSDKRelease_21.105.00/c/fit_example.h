@@ -6393,9 +6393,9 @@ typedef struct
 
 // device_info message
 
-#define FIT_DEVICE_INFO_MESG_SIZE                                               51
+#define FIT_DEVICE_INFO_MESG_SIZE                                               71
 #define FIT_DEVICE_INFO_MESG_DEF_SIZE                                           59
-#define FIT_DEVICE_INFO_MESG_PRODUCT_NAME_COUNT                                 20
+#define FIT_DEVICE_INFO_MESG_PRODUCT_NAME_COUNT                                 40
 #define FIT_DEVICE_INFO_MESG_DESCRIPTOR_COUNT                                   1
 
 typedef struct

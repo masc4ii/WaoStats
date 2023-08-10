@@ -19,11 +19,11 @@ macx{
 }
 
 #Define for FIT C SDK
-#DEFINES += FIT_USE_STDINT_H
-#DEFINES += FITC
-#include( fitc.pri )
+DEFINES += FIT_USE_STDINT_H
+DEFINES += FITC
+include( fitc.pri )
 #Define for FIT CPP SDK
-include( fitcpp.pri )
+#include( fitcpp.pri )
 
 CONFIG += qwt
 include( $${PWD}/qwt-6.2.0/qwtconfig.pri )

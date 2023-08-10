@@ -65,13 +65,13 @@ bool ServiceDialog::bikeNeedsService( int index )
     for( int i = 0; i < ui->tableWidget->rowCount(); i++ )
     {
         if( ui->tableWidget->item( i, ODOINTER )->text().chopped( 3 ).toInt()
-          < ui->tableWidget->item( i, ODOINUSE )->text().chopped( 3 ).toInt()
+         <= ui->tableWidget->item( i, ODOINUSE )->text().chopped( 3 ).toInt()
          && ui->tableWidget->item( i, ODOINTER )->text().chopped( 3 ).toInt() != 0 )
         {
             return true;
         }
         if( ui->tableWidget->item( i, TIMEINTER )->text().chopped( 2 ).toInt()
-          < ui->tableWidget->item( i, TIMEINUSE )->text().leftRef( ui->tableWidget->item( i, TIMEINUSE )->text().indexOf( ":" ) ).toInt()
+         <= ui->tableWidget->item( i, TIMEINUSE )->text().leftRef( ui->tableWidget->item( i, TIMEINUSE )->text().indexOf( ":" ) ).toInt()
          && ui->tableWidget->item( i, TIMEINTER )->text().chopped( 2 ).toInt() != 0 )
         {
             return true;
@@ -318,14 +318,14 @@ void ServiceDialog::updateCellColor()
         bool limitTime = false;
 
         if( ui->tableWidget->item( i, ODOINTER )->text().chopped( 3 ).toInt()
-          < ui->tableWidget->item( i, ODOINUSE )->text().chopped( 3 ).toInt()
+         <= ui->tableWidget->item( i, ODOINUSE )->text().chopped( 3 ).toInt()
          && ui->tableWidget->item( i, ODOINTER )->text().chopped( 3 ).toInt() != 0 )
         {
             limitOdo = true;
         }
 
         if( ui->tableWidget->item( i, TIMEINTER )->text().chopped( 2 ).toInt()
-          < ui->tableWidget->item( i, TIMEINUSE )->text().leftRef( ui->tableWidget->item( i, TIMEINUSE )->text().indexOf( ":" ) ).toInt()
+         <= ui->tableWidget->item( i, TIMEINUSE )->text().leftRef( ui->tableWidget->item( i, TIMEINUSE )->text().indexOf( ":" ) ).toInt()
          && ui->tableWidget->item( i, TIMEINTER )->text().chopped( 2 ).toInt() != 0 )
         {
             limitTime = true;

@@ -39,6 +39,16 @@ ServiceDialog::ServiceDialog(QWidget *parent, QTreeWidget *tree) :
         {
             qobject_cast<QListView *>(ui->comboBoxBike->view())->setRowHidden(i, true);
         }
+
+        //Select the bike which was selected in main frame
+        if( m_tourTree->topLevelItem( i )->isSelected() ) ui->comboBoxBike->setCurrentIndex( i );
+        else
+        {
+            for( int j = 0; j < m_tourTree->topLevelItem( i )->childCount(); j++ )
+            {
+                if( m_tourTree->topLevelItem( i )->child( j )->isSelected() ) ui->comboBoxBike->setCurrentIndex( i );
+            }
+        }
     }
 
     ui->tableWidget->setColumnHidden( ACTION, true );
@@ -51,7 +61,7 @@ ServiceDialog::ServiceDialog(QWidget *parent, QTreeWidget *tree) :
     ui->tableWidget->setColumnWidth( TIMEINUSE, 80 );
     ui->tableWidget->setColumnWidth( TIMEINTER, 80 );
 
-    loadFromJson( 0 );
+    loadFromJson( ui->comboBoxBike->currentIndex() );
 }
 
 ServiceDialog::~ServiceDialog()

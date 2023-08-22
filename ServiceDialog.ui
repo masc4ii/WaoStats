@@ -56,7 +56,7 @@
      </column>
      <column>
       <property name="text">
-       <string>ODO Total</string>
+       <string>@ ODO Total</string>
       </property>
      </column>
      <column>
@@ -71,7 +71,7 @@
      </column>
      <column>
       <property name="text">
-       <string>Time Total</string>
+       <string>@ Time Total</string>
       </property>
      </column>
      <column>

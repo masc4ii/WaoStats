@@ -90,6 +90,8 @@ public:
     quint16* getHrZoneHigh( void ){return m_hrZoneHigh;}
     quint16* getPwrZoneHigh( void ){return m_pwrZoneHigh;}
 
+    QString getWorkoutName( void ){return m_workoutName;}
+
 protected:
     fitSection_t m_session;
     QVector<fitSection_t> m_sections;
@@ -132,6 +134,8 @@ protected:
     QVector<double>m_tourLRBalance;
 
     QVector<deviceInfo_t>m_deviceInfo;
+
+    QString m_workoutName;
 
     quint16 m_hrZoneHigh[5];
     quint16 m_pwrZoneHigh[8];

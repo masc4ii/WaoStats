@@ -411,6 +411,13 @@ bool FitParser::loadFit(QString fileName)
                     break;
                 }
 
+                case FIT_MESG_NUM_WORKOUT:
+                {
+                    const FIT_WORKOUT_MESG *workout = (FIT_WORKOUT_MESG *) mesg;
+                    m_workoutName = workout->wkt_name;
+                    break;
+                }
+
                 case FIT_MESG_NUM_HR_ZONE:
                 {
                     const FIT_HR_ZONE_MESG *hr_zone = (FIT_HR_ZONE_MESG *) mesg;

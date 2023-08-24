@@ -7225,13 +7225,13 @@ typedef struct
 
 // segment_lap message
 
-#define FIT_SEGMENT_LAP_MESG_SIZE                                               210
+#define FIT_SEGMENT_LAP_MESG_SIZE                                               254
 #define FIT_SEGMENT_LAP_MESG_DEF_SIZE                                           224
 #define FIT_SEGMENT_LAP_MESG_NAME_COUNT                                         16
-#define FIT_SEGMENT_LAP_MESG_TIME_IN_HR_ZONE_COUNT                              1
+#define FIT_SEGMENT_LAP_MESG_TIME_IN_HR_ZONE_COUNT                              5
 #define FIT_SEGMENT_LAP_MESG_TIME_IN_SPEED_ZONE_COUNT                           1
 #define FIT_SEGMENT_LAP_MESG_TIME_IN_CADENCE_ZONE_COUNT                         1
-#define FIT_SEGMENT_LAP_MESG_TIME_IN_POWER_ZONE_COUNT                           1
+#define FIT_SEGMENT_LAP_MESG_TIME_IN_POWER_ZONE_COUNT                           8
 #define FIT_SEGMENT_LAP_MESG_UUID_COUNT                                         33
 
 typedef struct
@@ -7527,9 +7527,9 @@ typedef struct
 
 // workout message
 
-#define FIT_WORKOUT_MESG_SIZE                                                   27
+#define FIT_WORKOUT_MESG_SIZE                                                   75
 #define FIT_WORKOUT_MESG_DEF_SIZE                                               26
-#define FIT_WORKOUT_MESG_WKT_NAME_COUNT                                         16
+#define FIT_WORKOUT_MESG_WKT_NAME_COUNT                                         64
 
 typedef struct
 {

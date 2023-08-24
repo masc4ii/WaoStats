@@ -49,6 +49,11 @@ bool GpxParser::loadGpx( QString fileName )
                 }
             }
         }
+        //Track Name
+        if( Rxml.isStartElement() && ( Rxml.name() == QString( "name" ) ) )
+        {
+            m_workoutName = Rxml.readElementText();
+        }
         //GPS Position
         if( Rxml.isStartElement() && ( Rxml.name() == QString( "trkpt" ) ) )
         {

@@ -84,6 +84,8 @@ void TourData::reset()
     m_deviceInfo.clear();
 
     m_sections.clear();
+
+    m_workoutName.clear();
 }
 
 bool TourData::deviceIdIsIncluded(deviceInfo_t a)

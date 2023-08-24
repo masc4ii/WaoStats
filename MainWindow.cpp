@@ -283,6 +283,11 @@ void MainWindow::scanGpx(QString fileName)
 
 void MainWindow::adjustGui()
 {
+    //Window Title
+    if( !m_pTourData->getWorkoutName().isEmpty() && m_pTourData->getWorkoutName() != QString( "Radfahren" ) ) setWindowTitle( QString( "WaoStats - %1" ).arg( m_pTourData->getWorkoutName() ) );
+    else setWindowTitle( QString( "WaoStats" ) );
+
+    //Laps
     ui->comboBoxSection->clear();
     ui->comboBoxSection->addItem( tr( "Track / Session" ) );
     if( m_pTourData->getSections().count() <= 1 ) return;

@@ -422,6 +422,14 @@ bool FitParser::loadFit(QString fileName)
                 {
                     const FIT_HR_ZONE_MESG *hr_zone = (FIT_HR_ZONE_MESG *) mesg;
                     if( hr_zone->message_index < 5 ) m_hrZoneHigh[hr_zone->message_index] = hr_zone->high_bpm;
+                    else if( hr_zone->message_index == 65535 ) //support for index-less format
+                    {
+                        if( !m_hrZoneHigh[0] ) m_hrZoneHigh[0] = hr_zone->high_bpm;
+                        else if( !m_hrZoneHigh[1] ) m_hrZoneHigh[1] = hr_zone->high_bpm;
+                        else if( !m_hrZoneHigh[2] ) m_hrZoneHigh[2] = hr_zone->high_bpm;
+                        else if( !m_hrZoneHigh[3] ) m_hrZoneHigh[3] = hr_zone->high_bpm;
+                        else if( !m_hrZoneHigh[4] ) m_hrZoneHigh[4] = hr_zone->high_bpm;
+                    }
                     break;
                 }
 
@@ -429,6 +437,17 @@ bool FitParser::loadFit(QString fileName)
                 {
                     const FIT_POWER_ZONE_MESG *pwr_zone = (FIT_POWER_ZONE_MESG *) mesg;
                     if( pwr_zone->message_index < 8 ) m_pwrZoneHigh[pwr_zone->message_index] = pwr_zone->high_value;
+                    else if( pwr_zone->message_index == 65535 ) //support for index-less format
+                    {
+                        if( !m_pwrZoneHigh[0] ) m_pwrZoneHigh[0] = pwr_zone->high_value;
+                        else if( !m_pwrZoneHigh[1] ) m_pwrZoneHigh[1] = pwr_zone->high_value;
+                        else if( !m_pwrZoneHigh[2] ) m_pwrZoneHigh[2] = pwr_zone->high_value;
+                        else if( !m_pwrZoneHigh[3] ) m_pwrZoneHigh[3] = pwr_zone->high_value;
+                        else if( !m_pwrZoneHigh[4] ) m_pwrZoneHigh[4] = pwr_zone->high_value;
+                        else if( !m_pwrZoneHigh[5] ) m_pwrZoneHigh[5] = pwr_zone->high_value;
+                        else if( !m_pwrZoneHigh[6] ) m_pwrZoneHigh[6] = pwr_zone->high_value;
+                        else if( !m_pwrZoneHigh[8] ) m_pwrZoneHigh[7] = pwr_zone->high_value;
+                    }
                     break;
                 }
 

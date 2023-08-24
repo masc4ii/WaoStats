@@ -93,9 +93,9 @@ void FitListener::OnMesg(fit::Mesg& mesg)
     double gearNumRear = 0;
     double gearToothRear = 0;
     bool gearRead = false;
-    quint8 hrIndex = 0;
+    quint8 hrIndex = 255;
     quint16 hrHighValue = 0;
-    quint8 pwrIndex = 0;
+    quint8 pwrIndex = 255;
     quint16 pwrHighValue = 0;
 
     for (FIT_UINT16 i = 0; i < (FIT_UINT16)mesg.GetNumFields(); i++)
@@ -391,11 +391,30 @@ void FitListener::OnMesg(fit::Mesg& mesg)
     }
     else if( QString( mesg.GetName().c_str() ) == QString( "hr_zone" ) )
     {
-        m_hrZoneHigh[hrIndex] = hrHighValue;
+        if( hrIndex < 5 ) m_hrZoneHigh[hrIndex] = hrHighValue;
+        else
+        {
+            if( !m_hrZoneHigh[0] ) m_hrZoneHigh[0] = hrHighValue;
+            else if( !m_hrZoneHigh[1] ) m_hrZoneHigh[1] = hrHighValue;
+            else if( !m_hrZoneHigh[2] ) m_hrZoneHigh[2] = hrHighValue;
+            else if( !m_hrZoneHigh[3] ) m_hrZoneHigh[3] = hrHighValue;
+            else if( !m_hrZoneHigh[4] ) m_hrZoneHigh[4] = hrHighValue;
+        }
     }
     else if( QString( mesg.GetName().c_str() ) == QString( "power_zone" ) )
     {
-        m_pwrZoneHigh[pwrIndex] = pwrHighValue;
+        if( pwrIndex < 8 ) m_pwrZoneHigh[pwrIndex] = pwrHighValue;
+        else
+        {
+            if( !m_pwrZoneHigh[0] ) m_pwrZoneHigh[0] = pwrHighValue;
+            else if( !m_pwrZoneHigh[1] ) m_pwrZoneHigh[1] = pwrHighValue;
+            else if( !m_pwrZoneHigh[2] ) m_pwrZoneHigh[2] = pwrHighValue;
+            else if( !m_pwrZoneHigh[3] ) m_pwrZoneHigh[3] = pwrHighValue;
+            else if( !m_pwrZoneHigh[4] ) m_pwrZoneHigh[4] = pwrHighValue;
+            else if( !m_pwrZoneHigh[5] ) m_pwrZoneHigh[5] = pwrHighValue;
+            else if( !m_pwrZoneHigh[6] ) m_pwrZoneHigh[6] = pwrHighValue;
+            else if( !m_pwrZoneHigh[7] ) m_pwrZoneHigh[7] = pwrHighValue;
+        }
     }
 }
 

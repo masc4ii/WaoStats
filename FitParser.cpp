@@ -446,7 +446,7 @@ bool FitParser::loadFit(QString fileName)
                         else if( !m_pwrZoneHigh[4] ) m_pwrZoneHigh[4] = pwr_zone->high_value;
                         else if( !m_pwrZoneHigh[5] ) m_pwrZoneHigh[5] = pwr_zone->high_value;
                         else if( !m_pwrZoneHigh[6] ) m_pwrZoneHigh[6] = pwr_zone->high_value;
-                        else if( !m_pwrZoneHigh[8] ) m_pwrZoneHigh[7] = pwr_zone->high_value;
+                        else if( !m_pwrZoneHigh[7] ) m_pwrZoneHigh[7] = pwr_zone->high_value;
                     }
                     break;
                 }

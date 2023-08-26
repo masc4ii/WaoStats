@@ -62,6 +62,8 @@ Compiling on Ubuntu: [howto](https://github.com/masc4ii/WaoStats/blob/main/docs/
 <img width="450" alt="archive" src="https://user-images.githubusercontent.com/30245296/206466669-40a9026a-cb13-4f36-8610-01840d039c42.png">
 
 ## Dropbox Sync
+### Tutorial video
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/EHSu15v0cd0/0.jpg)](https://www.youtube.com/watch?v=EHSu15v0cd0)
 ### Setup (do this before first sync)
 - Get an API app key by registering with Dropbox: https://dropbox.com/developers/apps
 - Click "Create app", give it reading permission to your "Apps/WahooFitness" folder. (Probably just option "Full Dropbox" can do this.)

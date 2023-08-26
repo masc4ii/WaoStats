@@ -61,9 +61,13 @@ Compiling on Ubuntu: [howto](https://github.com/masc4ii/WaoStats/blob/main/docs/
 - Choose from WaoStats menu: Archive - Scan Tour Folder.
 <img width="450" alt="archive" src="https://user-images.githubusercontent.com/30245296/206466669-40a9026a-cb13-4f36-8610-01840d039c42.png">
 
-## Dropbox Setup
+## Dropbox Sync
+### Setup (do this before first sync)
 - Get an API app key by registering with Dropbox: https://dropbox.com/developers/apps
-- Click "Create app", give it reading permission to your "Apps/WahooFitness" folder.
+- Click "Create app", give it reading permission to your "Apps/WahooFitness" folder. (Probably just option "Full Dropbox" can do this.)
+- On next page ("Permissions"), check "files.content.read" and "profile". Click "Submit".
+- Find your app key and app secret on page "Settings".
+### Sync
 - Enter app key and app secret to WaoStats dropbox menu.
 - Click "Get Token", follow the dropbox pages.
 - Copy the token from dropbox page into WaoStats menu.

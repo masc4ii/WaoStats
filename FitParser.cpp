@@ -130,8 +130,8 @@ bool FitParser::loadFit(QString fileName)
                     if( session->avg_heart_rate < 255 ) m_session.avgHeartRate = session->avg_heart_rate;
                     if( session->max_heart_rate < 255 ) m_session.maxHeartRate = session->max_heart_rate;
 
-                    for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_HR_ZONE_COUNT; i++)    m_session.hrTimeInZone[i]  = session->time_in_hr_zone[i] / 1000.0;
-                    for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_POWER_ZONE_COUNT; i++) m_session.pwrTimeInZone[i] = session->time_in_power_zone[i] / 1000.0;
+                    for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_HR_ZONE_COUNT; i++)    if( session->time_in_hr_zone[i]    < 4294967295 ) m_session.hrTimeInZone[i]  = session->time_in_hr_zone[i] / 1000.0;
+                    for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_POWER_ZONE_COUNT; i++) if( session->time_in_power_zone[i] < 4294967295 ) m_session.pwrTimeInZone[i] = session->time_in_power_zone[i] / 1000.0;
 
                     if( session->avg_power             < 65535 ) m_session.avgPower = session->avg_power;
                     if( session->max_power             < 65535 ) m_session.maxPower = session->max_power;

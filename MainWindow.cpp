@@ -1611,7 +1611,8 @@ void MainWindow::drawHrPlot(TourData::fitSection_t section)
     if( !m_pTourData->getHrZoneHigh()[0]
      || !m_pTourData->getHrZoneHigh()[1]
      || !m_pTourData->getHrZoneHigh()[2]
-     || !m_pTourData->getHrZoneHigh()[3] )
+     || !m_pTourData->getHrZoneHigh()[3]
+     || !section.hrTimeInZone[0] )
     {
         ui->labelHrZone->setVisible( false );
         return;
@@ -1652,7 +1653,8 @@ void MainWindow::drawPwrPlot(TourData::fitSection_t section)
      || !m_pTourData->getPwrZoneHigh()[1]
      || !m_pTourData->getPwrZoneHigh()[2]
      || !m_pTourData->getPwrZoneHigh()[3]
-     || !m_pTourData->getPwrZoneHigh()[4] )
+     || !m_pTourData->getPwrZoneHigh()[4]
+     || !section.pwrTimeInZone[0] )
     {
         ui->labelPwrZone->setVisible( false );
         return;

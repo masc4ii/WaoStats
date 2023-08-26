@@ -76,6 +76,16 @@ Compiling on Ubuntu: [howto](https://github.com/masc4ii/WaoStats/blob/main/docs/
 - WaoStats now is allowed to read your fit files (once). Another reading process needs a new token with same keys.
 - Find downloaded fit tracks in archive folder / WaoStats left list "New"
 
+## ADB Sync
+- Connect Wahoo device to your computer.
+- Open in WaoStats Archive -> ADB Sync, click Scan. The Wahoo device should be shown "unauthorized".
+- Disconnect Wahoo device to your computer.
+- Start debug mode for Wahoo device. (Press Up+Down+Power at the same time. Do this in Wahoos Pan & Zoom mode, because here menu options stay untouched.)
+- Connect Wahoo device to your computer.
+- Open in WaoStats Archive -> ADB Sync, click Scan. The Wahoo device should be shown with its name.
+- Choose your device and click select.
+- Find downloaded fit tracks in archive folder / WaoStats left list "New"
+
 ## Plot
 - Left drag: zoom in
 - Double click: zoom out

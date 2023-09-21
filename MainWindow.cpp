@@ -151,6 +151,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->dockWidgetBikeData->setVisible( false );
     ui->labelHrZone->setVisible( false );
     ui->labelPwrZone->setVisible( false );
+    m_pActionShowInFinder = new QAction( tr( "Show In Finder" ), this );
+    connect( m_pActionShowInFinder, SIGNAL(triggered(bool)), this, SLOT(showInFinder()) );
     configurePlots();
     configureMap();
     readSettings();
@@ -1248,6 +1250,33 @@ void MainWindow::on_treeWidgetTours_itemDoubleClicked(QTreeWidgetItem *item, int
     }
 }
 
+void MainWindow::on_treeWidgetTours_customContextMenuRequested(const QPoint &pos)
+{
+    //Reveal in Explorer
+#ifdef Q_OS_WIN
+    m_pActionShowInFinder->setText( tr( "Reveal in Explorer" ) );
+    m_pActionShowInFinder->setToolTip( tr( "Reveal selected file in Explorer" ) );
+#endif
+#ifdef Q_OS_LINUX
+    m_pActionShowInFinder->setText( tr( "Reveal in Nautilus" ) );
+    m_pActionShowInFinder->setToolTip( tr( "Reveal selected file in Nautilus" ) );
+#endif
+
+    QTreeWidgetItem* item = ui->treeWidgetTours->itemAt( pos );
+    if( item )
+    {
+        // Handle global position
+        QPoint globalPos = ui->treeWidgetTours->mapToGlobal( pos );
+
+        // Create menu and insert some actions
+        QMenu myMenu;
+        myMenu.addAction( m_pActionShowInFinder );
+
+        // Show context menu at handling position
+        myMenu.exec( globalPos );
+    }
+}
+
 //Rename bike and its folder
 void MainWindow::onBikeItemEditingFinished(QTreeWidgetItem *item)
 {
@@ -1931,5 +1960,18 @@ void MainWindow::on_actionAverageMarker_triggered(bool checked)
 {
     m_avgMarker->setVisible( checked );
     ui->qwtPlot->replot();
+}
+
+void MainWindow::showInFinder()
+{
+    QString path = ui->treeWidgetTours->currentItem()->text( 1 );
+#ifdef _WIN32    //Code for Windows
+    QProcess::startDetached("explorer.exe", {"/select,", QDir::toNativeSeparators(path)});
+#elif defined(__APPLE__)    //Code for Mac
+    QProcess::execute("/usr/bin/osascript", {"-e", "tell application \"Finder\" to reveal POSIX file \"" + path + "\""});
+    QProcess::execute("/usr/bin/osascript", {"-e", "tell application \"Finder\" to activate"});
+#elif defined( Q_OS_LINUX )
+    QProcess::startDetached(QString( "/usr/bin/nautilus \"%1\"" ).arg( QDir::toNativeSeparators(path) ) );
+#endif
 }
 

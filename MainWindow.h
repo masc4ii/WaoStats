@@ -67,12 +67,14 @@ private slots:
     void on_treeWidgetTours_itemActivated( QTreeWidgetItem *item, int column );
     void on_treeWidgetTours_itemsDropped( QList<QTreeWidgetItem *> pSource, QTreeWidgetItem* pTarget );
     void on_treeWidgetTours_itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void on_treeWidgetTours_customContextMenuRequested(const QPoint &pos);
     void on_widgetOsm_customContextMenuRequested( const QPoint &pos );
     void on_qwtPlot_customContextMenuRequested( const QPoint &pos );
     void on_lineEditFilter_textChanged( const QString &arg1 );
     void calcBikeTotalDistances();
     void showServiceInTree();
     void setupArchive( void );
+    void showInFinder();
 
 private:
     Ui::MainWindow *ui;
@@ -104,6 +106,8 @@ private:
     FitParser m_fitParser;
 #endif
     GpxParser m_gpxParser;
+
+    QAction *m_pActionShowInFinder;
 
     /// The main map control.
     QMapControl* m_map_control;

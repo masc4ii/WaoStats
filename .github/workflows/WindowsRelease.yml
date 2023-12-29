@@ -1,0 +1,46 @@
+name: Windows Release
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  SOURCE_DIR:   ${{ github.workspace }}
+  ARTIFACT:     ${{ github.workspace }}\build\release\WaoStats.zip
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install OpenSSL
+      run: |
+           choco install openssl
+           dir "C:\Program Files\OpenSSL\"
+           dir "C:\Program Files\OpenSSL\bin"
+              
+    - name: Install Qt
+      run: |
+           choco install qt5-default
+           dir C:\Qt\5.15.2\mingw81_64\bin
+           dir C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin
+
+    - name: Download Qwt
+      uses: suisei-cn/actions-download-file@v1
+      with:
+        url:    https://altushost-swe.dl.sourceforge.net/project/qwt/qwt/6.2.0/qwt-6.2.0.zip
+        target: ${{ runner.temp }}\
+
+    - name: Unzip Qwt
+        working-directory: ${{ runner.temp }}
+        run:  |
+              7z x qwt-6.2.0.zip -o${{ env.SOURCE_DIR }}\qwt-6.2.0
+              dir ${{ env.SOURCE_DIR }}\qwt-6.2.0
+
+    - name: Create build directory
+      run:  mkdir ${{ env.SOURCE_DIR }}\build

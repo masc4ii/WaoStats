@@ -80,7 +80,7 @@ jobs:
       run: |
            # Install lib for linuxdeploy, /usr/local/qwt-6.2.0/lib/libqwt.so.6.2
            linuxdeploy-x86_64.AppImage --desktop-file=image/WaoStats.desktop --executable=WaoStats --appdir=image --plugin=qt --output=appimage --verbosity=3 --icon-file=image/WaoStatsLogoMap.png
-           cp WaoStats-*.AppImage WaoStats.AppImage
+           cp WaoStats-*.AppImage ${{ env.ARTIFACT }}
           
     - name: Save build artifact
       uses: actions/upload-artifact@master

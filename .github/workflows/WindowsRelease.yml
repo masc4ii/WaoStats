@@ -34,10 +34,10 @@ jobs:
       uses: suisei-cn/actions-download-file@v1
       with:
         url:    https://altushost-swe.dl.sourceforge.net/project/qwt/qwt/6.2.0/qwt-6.2.0.zip
-        target: ${{ runner.temp }}\
+        target: -o${{ env.SOURCE_DIR }}\qwt-6.2.0\
 
     - name: Unzip Qwt
-        working-directory: ${{ runner.temp }}
+        working-directory: ${{ env.SOURCE_DIR }}\qwt-6.2.0
         run:  |
               7z x qwt-6.2.0.zip -o${{ env.SOURCE_DIR }}\qwt-6.2.0
               dir ${{ env.SOURCE_DIR }}\qwt-6.2.0

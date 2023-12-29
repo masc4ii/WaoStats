@@ -42,6 +42,7 @@ jobs:
            sudo make install
            cd lib
            ls -al
+           export LD_LIBRARY_PATH=/usr/local/qwt-6.2.0/lib
 
     - name: Build DropboxQt
       working-directory: ${{ env.SOURCE_DIR }}/dropboxQt/prj
@@ -64,7 +65,7 @@ jobs:
            cp ${{ env.SOURCE_DIR }}/WaoStats.desktop .
            unzip ${{ env.SOURCE_DIR }}/adb/Linux/adb.zip
            mkdir usr
-           cp /usr/local/qwt-6.2.0/lib usr/lib
+           cp -R /usr/local/qwt-6.2.0 usr
            ls -al
 
     - name: Install LinuxDeploy

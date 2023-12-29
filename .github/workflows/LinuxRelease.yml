@@ -58,8 +58,10 @@ jobs:
       run: |
            qmake ${{ env.SOURCE_DIR }}/WaoStats.pro
            make -j8
-           cp ${{ env.SOURCE_DIR }}/WaoStatsLogoMap.png .
-           cp ${{ env.SOURCE_DIR }}/WaoStats.desktop .
+           mkdir image
+           cp ${{ env.SOURCE_DIR }}/image/WaoStatsLogoMap.png .
+           cp ${{ env.SOURCE_DIR }}/image/WaoStats.desktop .
+           cd image
            unzip ${{ env.SOURCE_DIR }}/adb/Linux/adb.zip
            ls -al
 
@@ -72,7 +74,7 @@ jobs:
       working-directory: ${{ env.SOURCE_DIR }}/../build
       run: |
            # Install lib for linuxdeploy
-           linuxdeploy-x86_64.AppImage --desktop-file=WaoStats.desktop --executable=WaoStats --plugin=qt --output=appimage --verbosity=3 --icon-file=WaoStatsLogoMap.png
+           linuxdeploy-x86_64.AppImage --desktop-file=WaoStats.desktop --executable=WaoStats --appdir=image --plugin=qt --output=appimage --verbosity=3 --icon-file=WaoStatsLogoMap.png
            cp WaoStats-*.AppImage WaoStats.AppImage
           
     - name: Save build artifact

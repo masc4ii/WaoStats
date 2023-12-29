@@ -39,7 +39,7 @@ jobs:
     - name: Unzip Qwt
       working-directory: ${{ runner.temp }}
       run: |
-           7z x qwt-6.2.0.zip -o${{ env.SOURCE_DIR }}\qwt-6.2.0
+           7z x qwt-6.2.0.zip -o${{ env.SOURCE_DIR }}
            dir ${{ env.SOURCE_DIR }}\qwt-6.2.0
 
     - name: Build Qwt

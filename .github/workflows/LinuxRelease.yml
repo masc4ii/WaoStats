@@ -64,6 +64,12 @@ jobs:
            cp ${{ env.SOURCE_DIR }}/WaoStats.desktop .
            unzip ${{ env.SOURCE_DIR }}/adb/Linux/adb.zip
            ls -al
+           mkdir usr
+           cd usr
+           mkdir lib
+           cd lib
+           cp /usr/local/qwt-6.2.0/lib/libqwt.* .
+           ls -al
 
     - name: Install LinuxDeploy
       uses: miurahr/install-linuxdeploy-action@v1.7.0
@@ -74,7 +80,7 @@ jobs:
       working-directory: ${{ env.SOURCE_DIR }}/../build
       run: |
            # Install lib for linuxdeploy, /usr/local/qwt-6.2.0/lib/libqwt.so.6.2
-           linuxdeploy-x86_64.AppImage --desktop-file=WaoStats.desktop --executable=WaoStats --appdir=image --plugin=qt --output=appimage --verbosity=3 --icon-file=WaoStatsLogoMap.png --library=/usr/local/qwt-6.2.0/lib/libqwt.so.6.2
+           linuxdeploy-x86_64.AppImage --desktop-file=WaoStats.desktop --executable=WaoStats --appdir=image --plugin=qt --output=appimage --verbosity=3 --icon-file=WaoStatsLogoMap.png
            cp WaoStats-*.AppImage WaoStats.AppImage
           
     - name: Save build artifact

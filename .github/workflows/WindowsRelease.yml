@@ -84,6 +84,7 @@ jobs:
            copy "C:\Program Files\OpenSSL\bin\libcrypto-1_1-x64.dll" .
            copy "C:\Program Files\OpenSSL\bin\libssl-1_1-x64.dll" .
            copy "${{ env.SOURCE_DIR }}\qwt-6.2.0\lib\qwt.dll" .
+           copy C:\Qt\5.15.2\mingw81_64\bin\Qt5OpenGL.dll .
            dir
 
     - name: Rename release folder

@@ -19,6 +19,10 @@ jobs:
     - name: Install compiler & Qt
       run: |
            sudo apt-get install --no-install-recommends make g++ qt5-qmake qtbase5-dev libqt5opengl5-dev libqt5designer5 libqt5svg5-dev
+           cd ${{ github.workspace }}
+           ls -al
+           cd Qt
+           ls -al
 
     - name: Download Qwt
       uses: suisei-cn/actions-download-file@master
@@ -39,7 +43,7 @@ jobs:
       run: |
            qmake qwt.pro
            make -j8
-           make install
+           sudo make install
            cd lib
            ls -al
 
@@ -65,8 +69,11 @@ jobs:
       run: |
            wget -O deploy.AppImage https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
            chmod +x deploy.AppImage
-           export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${{ github.workspace }}/Qt/5.15.2/gcc_64/lib/
-           cp ${{ env.SOURCE_DIR }}/linux/* .
+           export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${{ github.workspace }}/Qt/5.15.3/gcc_64/lib/
+           cp ${{ env.SOURCE_DIR }}/WaoStatsLogoMap.png .
+           cp ${{ env.SOURCE_DIR }}/WaoStats.desktop .
+           unzip ${{ env.SOURCE_DIR }}/adb/Linux/adb.zip
+           ls -al
            ./deploy.AppImage WaoStats.desktop -appimage -no-translations -qmldir=${{ env.SOURCE_DIR }} -extra-plugins=renderers
            mv WaoStats*.AppImage ${{ env.ARTIFACT }}  
 

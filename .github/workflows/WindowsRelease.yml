@@ -18,6 +18,17 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Download JOM
+      uses: suisei-cn/actions-download-file@v1
+      with:
+        url:    http://download.qt.io/official_releases/jom/jom.zip
+        target: ${{ runner.temp }}\
+
+    - name: Unzip JOM
+      working-directory: ${{ runner.temp }}
+      run:  |
+            7z x jom.zip -ojom
+
     - name: Install OpenSSL
       run: |
            choco install openssl
@@ -43,12 +54,46 @@ jobs:
            dir ${{ env.SOURCE_DIR }}\qwt-6.2.0
 
     - name: Build Qwt
+      continue-on-error: true
       working-directory: ${{ env.SOURCE_DIR }}\qwt-6.2.0
       run: |
            C:\Qt\5.15.2\mingw81_64\bin\qmake.exe -r qwt.pro
-           make.exe
+           ${{ runner.temp }}\jom\jom -j8
+           make.exe install
            dir
            dir ${{ env.SOURCE_DIR }}\qwt-6.2.0\lib
 
+    - name: Build DropboxQt
+      working-directory: ${{ env.SOURCE_DIR }}\dropboxQt\prj
+      run: |
+           C:\Qt\5.15.2\mingw81_64\bin\qmake.exe -r dropboxQt.pro
+           make.exe
+           dir
+
     - name: Create build directory
       run:  mkdir ${{ env.SOURCE_DIR }}\build
+
+    - name: Build
+      working-directory: ${{ env.SOURCE_DIR }}\build
+      run: |
+           C:\Qt\5.15.2\mingw81_64\bin\qmake.exe -r ${{ env.SOURCE_DIR }}\WaoStats.pro
+           ${{ runner.temp }}\jom\jom -j8
+           dir
+           cd release
+           C:\Qt\5.15.2\mingw81_64\bin\windeployqt WaoStats.exe
+           copy C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin\libgomp-1.dll .
+           copy "C:\Program Files\OpenSSL\bin\libcrypto-1_1-x64.dll" .
+           copy "C:\Program Files\OpenSSL\bin\libssl-1_1-x64.dll" .
+           dir
+
+    - name: Rename release folder
+      working-directory: ${{ env.SOURCE_DIR }}\build
+      run: |
+           ren release WaoStats
+           dir
+
+    - name: Save build artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: WaoStats Windows 64bit
+        path: ${{ env.SOURCE_DIR }}\build\WaoStats

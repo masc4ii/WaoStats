@@ -18,7 +18,7 @@ jobs:
 
     - name: Install compiler & Qt
       run: |
-           sudo apt-get install --no-install-recommends make g++ qt5-qmake qtbase5-dev libqt5opengl5-dev libqt5designer5 libqt5svg5-dev libfuse-dev
+           sudo apt-get install --no-install-recommends make g++ qt5-qmake qtbase5-dev libqt5opengl5-dev libqt5designer5 libqt5svg5-dev
 
     - name: Download Qwt
       uses: suisei-cn/actions-download-file@master
@@ -58,20 +58,24 @@ jobs:
       run: |
            qmake ${{ env.SOURCE_DIR }}/WaoStats.pro
            make -j8
-           ls -al
-
-    - name: AppImage
-      working-directory: ${{ env.SOURCE_DIR }}/../build
-      run: |
-           wget -O deploy.AppImage https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
-           chmod +x deploy.AppImage
            cp ${{ env.SOURCE_DIR }}/WaoStatsLogoMap.png .
            cp ${{ env.SOURCE_DIR }}/WaoStats.desktop .
            unzip ${{ env.SOURCE_DIR }}/adb/Linux/adb.zip
            ls -al
-           ./deploy.AppImage WaoStats.desktop -appimage -no-translations -qmldir=${{ env.SOURCE_DIR }} -extra-plugins=renderers
-           mv WaoStats*.AppImage ${{ env.ARTIFACT }}  
 
+    - name: Install LinuxDeploy
+      uses: miurahr/install-linuxdeploy-action@master
+      with:
+        plugins: qt appimage
+
+    - name: Create Appimage
+      working-directory: ${{ env.SOURCE_DIR }}/../build
+      run: |
+           # Install lib for linuxdeploy
+           sudo apt install --yes libfuse2 libxkbcommon-x11-0
+           linuxdeploy-x86_64.AppImage --desktop-file=WaoStats.desktop --executable=WaoStats --plugin=qt --output=appimage --verbosity=3 --icon-file=WaoStatsLogoMap.png
+           cp WaoStats-*.AppImage WaoStats.AppImage
+          
     - name: Save build artifact
       uses: actions/upload-artifact@master
       with:

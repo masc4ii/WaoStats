@@ -44,12 +44,12 @@ jobs:
       run: |
            /usr/local/Cellar/qt@5/5.15.11/bin/qmake -r qwt.pro
            make -j8
-           make install
+           sudo make install
            cd lib
            ls -al
 
     - name: Build DropboxQt
-      working-directory: ${{ env.SOURCE_DIR }}/dropboxQt\prj
+      working-directory: ${{ env.SOURCE_DIR }}/dropboxQt/prj
       run: |
            /usr/local/Cellar/qt@5/5.15.11/bin/qmake -r dropboxQt.pro
            make -j8

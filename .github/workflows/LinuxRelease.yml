@@ -59,9 +59,9 @@ jobs:
            qmake ${{ env.SOURCE_DIR }}/WaoStats.pro
            make -j8
            mkdir image
-           cp ${{ env.SOURCE_DIR }}/image/WaoStatsLogoMap.png .
-           cp ${{ env.SOURCE_DIR }}/image/WaoStats.desktop .
            cd image
+           cp ${{ env.SOURCE_DIR }}/WaoStatsLogoMap.png .
+           cp ${{ env.SOURCE_DIR }}/WaoStats.desktop .
            unzip ${{ env.SOURCE_DIR }}/adb/Linux/adb.zip
            ls -al
 

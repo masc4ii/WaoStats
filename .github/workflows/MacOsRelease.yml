@@ -10,7 +10,7 @@ on:
 
 env:
   SOURCE_DIR:   ${{ github.workspace }}
-  ARTIFACT:     ${{ github.workspace }}/build/WaoStats.dmg
+  ARTIFACT:     ${{ github.workspace }}/../build/WaoStats.dmg
 
 jobs:
   build:
@@ -56,10 +56,10 @@ jobs:
            ls -al
 
     - name: Create build directory
-      run:  mkdir ${{ env.SOURCE_DIR }}/build
+      run:  mkdir ${{ env.SOURCE_DIR }}/../build
 
     - name: Build
-      working-directory: ${{ env.SOURCE_DIR }}/build
+      working-directory: ${{ env.SOURCE_DIR }}/../build
       run: |
            /usr/local/Cellar/qt@5/5.15.11/bin/qmake ${{ env.SOURCE_DIR }}/WaoStats.pro
            make -j8

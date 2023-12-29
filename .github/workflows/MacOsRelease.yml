@@ -1,0 +1,71 @@
+name: macOS Release
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  SOURCE_DIR:   ${{ github.workspace }}
+  ARTIFACT:     ${{ github.workspace }}/build/WaoStats.dmg
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install llvm & Qt & OpenSSL
+      uses: ConorMacBride/install-package@v1.1.0
+      with:
+        brew: llvm qt5 openssl
+
+    - name: Download Qwt
+      uses: suisei-cn/actions-download-file@master
+      with:
+        url:    https://altushost-swe.dl.sourceforge.net/project/qwt/qwt/6.2.0/qwt-6.2.0.zip
+        target: ${{ runner.temp }}\
+
+    - name: Unzip Qwt
+      working-directory: ${{ runner.temp }}
+      run: |
+           7z x qwt-6.2.0.zip -o${{ env.SOURCE_DIR }}
+           cd ${{ env.SOURCE_DIR }}\qwt-6.2.0
+           ls -al
+
+    - name: Build Qwt
+      continue-on-error: true
+      working-directory: ${{ env.SOURCE_DIR }}/qwt-6.2.0
+      run: |
+           /usr/local/Cellar/qt@5/5.15.11/bin/qmake.exe -r qwt.pro
+           make -j8
+           make install
+           cd lib
+           ls -al
+
+    - name: Build DropboxQt
+      working-directory: ${{ env.SOURCE_DIR }}/dropboxQt\prj
+      run: |
+           /usr/local/Cellar/qt@5/5.15.11/bin/qmake.exe -r dropboxQt.pro
+           make -j8
+           ls -al
+
+    - name: Create build directory
+      run:  mkdir ${{ env.SOURCE_DIR }}/build
+
+    - name: Build
+      working-directory: ${{ env.SOURCE_DIR }}/build
+      run: |
+           /usr/local/Cellar/qt@5/5.15.11/bin/qmake.exe ${{ env.SOURCE_DIR }}/WaoStats.pro
+           make -j8
+           ls -al
+           /usr/local/Cellar/qt@5/5.15.11/bin/macdeployqt WaoStats.app -dmg
+
+    - name: Save build artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: WaoStats
+        path: ${{ env.ARTIFACT }}

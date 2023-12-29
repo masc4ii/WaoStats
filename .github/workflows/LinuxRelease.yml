@@ -42,7 +42,6 @@ jobs:
            sudo make install
            cd lib
            ls -al
-           export LD_LIBRARY_PATH=/usr/local/qwt-6.2.0/lib
 
     - name: Build DropboxQt
       working-directory: ${{ env.SOURCE_DIR }}/dropboxQt/prj
@@ -64,8 +63,6 @@ jobs:
            cp ${{ env.SOURCE_DIR }}/WaoStatsLogoMap.png .
            cp ${{ env.SOURCE_DIR }}/WaoStats.desktop .
            unzip ${{ env.SOURCE_DIR }}/adb/Linux/adb.zip
-           mkdir usr
-           cp -R /usr/local/qwt-6.2.0 usr
            ls -al
 
     - name: Install LinuxDeploy
@@ -77,7 +74,7 @@ jobs:
       working-directory: ${{ env.SOURCE_DIR }}/../build
       run: |
            # Install lib for linuxdeploy, /usr/local/qwt-6.2.0/lib/libqwt.so.6.2
-           linuxdeploy-x86_64.AppImage --desktop-file=WaoStats.desktop --executable=WaoStats --appdir=image --plugin=qt --output=appimage --verbosity=3 --icon-file=WaoStatsLogoMap.png
+           linuxdeploy-x86_64.AppImage --desktop-file=WaoStats.desktop --executable=WaoStats --appdir=image --plugin=qt --output=appimage --verbosity=3 --icon-file=WaoStatsLogoMap.png --library=/usr/local/qwt-6.2.0/lib/libqwt.so.6.2
            cp WaoStats-*.AppImage WaoStats.AppImage
           
     - name: Save build artifact

@@ -66,11 +66,6 @@ jobs:
            ls -al
            mkdir usr
            cd usr
-           mkdir lib
-           cd lib
-           cp /usr/local/qwt-6.2.0/lib/libqwt.* .
-           ls -al
-           cd ..
            mkdir bin
            cd bin
            unzip ${{ env.SOURCE_DIR }}/adb/Linux/adb.zip
@@ -84,7 +79,7 @@ jobs:
       working-directory: ${{ env.SOURCE_DIR }}/../build
       run: |
            # Install lib for linuxdeploy, /usr/local/qwt-6.2.0/lib/libqwt.so.6.2
-           linuxdeploy-x86_64.AppImage --desktop-file=WaoStats.desktop --executable=WaoStats --appdir=${{ env.SOURCE_DIR }}/../build/image --plugin=qt --output=appimage --verbosity=3 --icon-file=WaoStatsLogoMap.png
+           linuxdeploy-x86_64.AppImage --desktop-file=image/WaoStats.desktop --executable=WaoStats --appdir=image --plugin=qt --output=appimage --verbosity=3 --icon-file=image/WaoStatsLogoMap.png
            cp WaoStats-*.AppImage WaoStats.AppImage
           
     - name: Save build artifact

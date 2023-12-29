@@ -63,6 +63,8 @@ jobs:
            cp ${{ env.SOURCE_DIR }}/WaoStatsLogoMap.png .
            cp ${{ env.SOURCE_DIR }}/WaoStats.desktop .
            unzip ${{ env.SOURCE_DIR }}/adb/Linux/adb.zip
+           mkdir usr
+           cp /usr/local/qwt-6.2.0/lib usr/lib
            ls -al
 
     - name: Install LinuxDeploy
@@ -73,7 +75,7 @@ jobs:
     - name: Create Appimage
       working-directory: ${{ env.SOURCE_DIR }}/../build
       run: |
-           # Install lib for linuxdeploy
+           # Install lib for linuxdeploy, /usr/local/qwt-6.2.0/lib/libqwt.so.6.2
            linuxdeploy-x86_64.AppImage --desktop-file=WaoStats.desktop --executable=WaoStats --appdir=image --plugin=qt --output=appimage --verbosity=3 --icon-file=WaoStatsLogoMap.png
            cp WaoStats-*.AppImage WaoStats.AppImage
           

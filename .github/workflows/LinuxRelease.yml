@@ -18,7 +18,7 @@ jobs:
 
     - name: Install compiler & Qt
       run: |
-           sudo apt-get install --no-install-recommends make g++ qt5-qmake qtbase5-dev libqt5opengl5-dev libqt5designer5 libqt5svg5-dev
+           sudo apt-get install --no-install-recommends make g++ qt5-qmake qtbase5-dev libqt5opengl5-dev libqt5designer5 libqt5svg5-dev libfuse2 libxkbcommon-x11-0 appstream
 
     - name: Download Qwt
       uses: suisei-cn/actions-download-file@master
@@ -64,7 +64,7 @@ jobs:
            ls -al
 
     - name: Install LinuxDeploy
-      uses: miurahr/install-linuxdeploy-action@master
+      uses: miurahr/install-linuxdeploy-action@v1.7.0
       with:
         plugins: qt appimage
 
@@ -72,7 +72,6 @@ jobs:
       working-directory: ${{ env.SOURCE_DIR }}/../build
       run: |
            # Install lib for linuxdeploy
-           sudo apt install --yes libfuse2 libxkbcommon-x11-0
            linuxdeploy-x86_64.AppImage --desktop-file=WaoStats.desktop --executable=WaoStats --plugin=qt --output=appimage --verbosity=3 --icon-file=WaoStatsLogoMap.png
            cp WaoStats-*.AppImage WaoStats.AppImage
           

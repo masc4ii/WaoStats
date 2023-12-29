@@ -83,6 +83,7 @@ jobs:
            copy C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin\libgomp-1.dll .
            copy "C:\Program Files\OpenSSL\bin\libcrypto-1_1-x64.dll" .
            copy "C:\Program Files\OpenSSL\bin\libssl-1_1-x64.dll" .
+           copy "${{ env.SOURCE_DIR }}\qwt-6.2.0\lib\qwt.dll" .
            dir
 
     - name: Rename release folder

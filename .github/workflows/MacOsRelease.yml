@@ -47,6 +47,8 @@ jobs:
            sudo make install
            cd lib
            ls -al
+           sudo cp -R /usr/local/qwt-6.2.0/lib/qwt.framework /Library/Frameworks/qwt.framework
+           sudo cp -R /usr/local/qwt-6.2.0/lib/qwt.framework /Library/Frameworks/qwt.framework/Versions/6/qwt.framework
 
     - name: Build DropboxQt
       working-directory: ${{ env.SOURCE_DIR }}/dropboxQt/prj

@@ -1,0 +1,85 @@
+name: Linux Release
+
+on:
+  workflow_dispatch:
+    branches: [ "main" ]
+
+env:
+  SOURCE_DIR:   ${{ github.workspace }}
+  ARTIFACT:     ${{ github.workspace }}/WaoStats.AppImage
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install compiler & Qt
+      working-directory: ${{ env.SOURCE_DIR }}
+      run: |
+           apt-get install --no-install-recommends \
+	         make \
+	         g++ \
+	         qt5-qmake \
+	         qtbase5-dev \
+	         libqt5opengl5-dev \
+	         libqt5designer5 \
+	         libqt5svg5-dev
+
+    - name: Download Qwt
+      uses: suisei-cn/actions-download-file@master
+      with:
+        url:    https://altushost-swe.dl.sourceforge.net/project/qwt/qwt/6.2.0/qwt-6.2.0.zip
+        target: ${{ env.SOURCE_DIR }}/
+
+    - name: Unzip Qwt
+      working-directory: ${{ env.SOURCE_DIR }}
+      run: |
+           unzip qwt-6.2.0.zip
+           cd qwt-6.2.0
+           ls -al
+
+    - name: Build Qwt
+      continue-on-error: true
+      working-directory: ${{ env.SOURCE_DIR }}/qwt-6.2.0
+      run: |
+           qmake qwt.pro
+           make -j8
+           make install
+           cd lib
+           ls -al
+
+    - name: Build DropboxQt
+      working-directory: ${{ env.SOURCE_DIR }}/dropboxQt/prj
+      run: |
+           qmake -r dropboxQt.pro
+           make -j8
+           ls -al
+
+    - name: Create build directory
+      run:  mkdir ${{ env.SOURCE_DIR }}/../build
+
+    - name: Build
+      working-directory: ${{ env.SOURCE_DIR }}/../build
+      run: |
+           qmake ${{ env.SOURCE_DIR }}/WaoStats.pro
+           make -j8
+           ls -al
+
+    - name: AppImage
+      working-directory: ${{ env.SOURCE_DIR }}/../build
+      run: |
+           wget -O deploy.AppImage https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
+           chmod +x deploy.AppImage
+           export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${{ github.workspace }}/Qt/5.15.2/gcc_64/lib/
+           cp ${{ env.SOURCE_DIR }}/linux/* .
+           ./deploy.AppImage WaoStats.desktop -appimage -no-translations -qmldir=${{ env.SOURCE_DIR }} -extra-plugins=renderers
+           mv WaoStats*.AppImage ${{ env.ARTIFACT }}  
+
+    - name: Save build artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: WaoStats
+        path: ${{ env.ARTIFACT }}

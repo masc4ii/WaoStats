@@ -18,7 +18,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Download JOM
-      uses: suisei-cn/actions-download-file@v1
+      uses: suisei-cn/actions-download-file@master
       with:
         url:    http://download.qt.io/official_releases/jom/jom.zip
         target: ${{ runner.temp }}\
@@ -41,7 +41,7 @@ jobs:
            dir C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin
 
     - name: Download Qwt
-      uses: suisei-cn/actions-download-file@v1
+      uses: suisei-cn/actions-download-file@master
       with:
         url:    https://altushost-swe.dl.sourceforge.net/project/qwt/qwt/6.2.0/qwt-6.2.0.zip
         target: ${{ runner.temp }}\
@@ -96,5 +96,5 @@ jobs:
     - name: Save build artifact
       uses: actions/upload-artifact@master
       with:
-        name: WaoStats Windows 64bit
+        name: WaoStats
         path: ${{ env.SOURCE_DIR }}\build\WaoStats

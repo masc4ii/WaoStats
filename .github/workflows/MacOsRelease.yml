@@ -10,7 +10,7 @@ on:
 
 env:
   SOURCE_DIR:   ${{ github.workspace }}
-  ARTIFACT:     ${{ github.workspace }}/../build/WaoStats.dmg
+  ARTIFACT:     ${{ github.workspace }}/WaoStats.dmg
 
 jobs:
   build:
@@ -67,6 +67,8 @@ jobs:
            make -j8
            ls -al
            /usr/local/Cellar/qt@5/5.15.11/bin/macdeployqt WaoStats.app -dmg
+           ls -al
+           mv WaoStats.dmg ${{ env.SOURCE_DIR }}/
 
     - name: Save build artifact
       uses: actions/upload-artifact@master

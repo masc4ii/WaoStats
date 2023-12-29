@@ -42,6 +42,7 @@ jobs:
            sudo make install
            cd lib
            ls -al
+           sudo cp * /usr/lib/
 
     - name: Build DropboxQt
       working-directory: ${{ env.SOURCE_DIR }}/dropboxQt/prj

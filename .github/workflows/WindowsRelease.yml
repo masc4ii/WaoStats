@@ -71,10 +71,10 @@ jobs:
            dir
 
     - name: Create build directory
-      run:  mkdir ${{ env.SOURCE_DIR }}\build
+      run:  mkdir ${{ env.SOURCE_DIR }}\..\build
 
     - name: Build
-      working-directory: ${{ env.SOURCE_DIR }}\build
+      working-directory: ${{ env.SOURCE_DIR }}\..\build
       run: |
            C:\Qt\5.15.2\mingw81_64\bin\qmake.exe -r ${{ env.SOURCE_DIR }}\WaoStats.pro
            ${{ runner.temp }}\jom\jom -j8
@@ -87,7 +87,7 @@ jobs:
            dir
 
     - name: Rename release folder
-      working-directory: ${{ env.SOURCE_DIR }}\build
+      working-directory: ${{ env.SOURCE_DIR }}\..\build
       run: |
            ren release WaoStats
            dir
@@ -96,4 +96,4 @@ jobs:
       uses: actions/upload-artifact@master
       with:
         name: WaoStats Windows 64bit
-        path: ${{ env.SOURCE_DIR }}\build\WaoStats
+        path: ${{ env.SOURCE_DIR }}\..\build\WaoStats

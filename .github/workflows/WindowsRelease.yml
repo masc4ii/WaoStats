@@ -42,5 +42,13 @@ jobs:
             7z x qwt-6.2.0.zip -o${{ env.SOURCE_DIR }}\qwt-6.2.0
             dir ${{ env.SOURCE_DIR }}\qwt-6.2.0
 
+    - name: Build Qwt
+      working-directory: ${{ env.SOURCE_DIR }}\qwt-6.2.0
+      run:  |
+            C:\Qt\5.15.2\mingw81_64\bin\qmake.exe -r qwt.pro
+            make.exe
+            dir
+            dir ${{ env.SOURCE_DIR }}\qwt-6.2.0\lib
+
     - name: Create build directory
       run:  mkdir ${{ env.SOURCE_DIR }}\build

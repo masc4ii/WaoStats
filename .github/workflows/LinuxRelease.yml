@@ -11,7 +11,7 @@ env:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v3
@@ -69,6 +69,8 @@ jobs:
            mkdir bin
            cd bin
            unzip ${{ env.SOURCE_DIR }}/adb/Linux/adb.zip
+           chmod a+x adb
+           ls -al
 
     - name: Install LinuxDeploy
       uses: miurahr/install-linuxdeploy-action@v1.7.0

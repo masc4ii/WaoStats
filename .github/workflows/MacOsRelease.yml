@@ -6,6 +6,7 @@ on:
 
 env:
   SOURCE_DIR:   ${{ github.workspace }}
+  QTDIR:        /usr/local/Cellar/qt@5/5.15.12/bin
   ARTIFACT:     ${{ github.workspace }}/WaoStats.dmg
 
 jobs:
@@ -38,7 +39,7 @@ jobs:
       continue-on-error: true
       working-directory: ${{ env.SOURCE_DIR }}/qwt-6.2.0
       run: |
-           /usr/local/Cellar/qt@5/5.15.11/bin/qmake -r qwt.pro
+           ${{ env.QTDIR }}/qmake -r qwt.pro
            make -j8
            sudo make install
            cd lib
@@ -49,7 +50,7 @@ jobs:
     - name: Build DropboxQt
       working-directory: ${{ env.SOURCE_DIR }}/dropboxQt/prj
       run: |
-           /usr/local/Cellar/qt@5/5.15.11/bin/qmake -r dropboxQt.pro
+           ${{ env.QTDIR }}/qmake -r dropboxQt.pro
            make -j8
            ls -al
 
@@ -59,10 +60,10 @@ jobs:
     - name: Build
       working-directory: ${{ env.SOURCE_DIR }}/../build
       run: |
-           /usr/local/Cellar/qt@5/5.15.11/bin/qmake ${{ env.SOURCE_DIR }}/WaoStats.pro
+           ${{ env.QTDIR }}/qmake ${{ env.SOURCE_DIR }}/WaoStats.pro
            make -j8
            ls -al
-           /usr/local/Cellar/qt@5/5.15.11/bin/macdeployqt WaoStats.app -dmg
+           ${{ env.QTDIR }}/macdeployqt WaoStats.app -dmg
            ls -al
            mv WaoStats.dmg ${{ env.SOURCE_DIR }}/
 

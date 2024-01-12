@@ -381,6 +381,8 @@ void ServiceDialog::writeToJson( int index )
 
 void ServiceDialog::loadFromJson( int index )
 {
+    if( index < 0 ) return;
+
     //ui->tableWidget->clear(); //doesn't work, whyever
     int rowCnt = ui->tableWidget->rowCount();
     for( int i = 0; i < rowCnt; i++ ) ui->tableWidget->removeRow( 0 );

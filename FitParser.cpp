@@ -190,7 +190,7 @@ bool FitParser::loadFit(QString fileName)
                     if( lapMesg->normalized_power   < 65535 ) lap.normalizedPower = lapMesg->normalized_power;
 
                     m_sections.append( lap );
-                    lastLapStartDistance = m_tourDistance.last();
+                    if( !m_tourDistance.empty() ) lastLapStartDistance = m_tourDistance.last();
                     lapMinTemp = 9999;
                     lapPosGrade = 0;
                     lapNegGrade = 0;

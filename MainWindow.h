@@ -40,6 +40,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    bool initSucess();
 
 private slots:
     void adjustMap( void );
@@ -133,5 +134,7 @@ private:
     uint32_t m_threadCnt;
 
     bool m_timePlot;
+
+    bool m_initSuccess{false};
 };
 #endif // MAINWINDOW_H

@@ -156,20 +156,23 @@ MainWindow::MainWindow(QWidget *parent)
     configurePlots();
     configureMap();
     readSettings();
-    scanTours();
-    connect( ui->comboBoxSection, SIGNAL(currentIndexChanged(int)), this, SLOT(statistics()) );
+    if( QDir( m_workingPath ).exists() )
+    {
+        scanTours();
+        connect( ui->comboBoxSection, SIGNAL(currentIndexChanged(int)), this, SLOT(statistics()) );
 
-    QTimer::singleShot( 1, this, SLOT( adjustMap() ) );
-    QTimer::singleShot( 1000, this, SLOT( setupArchive() ) );
+        QTimer::singleShot( 1, this, SLOT( adjustMap() ) );
+        QTimer::singleShot( 1000, this, SLOT( setupArchive() ) );
 
-    ui->lineEditFilter->setToolTip( QString( "Filter your archive (examples):\n"
-                                             "-\">10\": show all tracks longer than 10km\n"
-                                             "-\"<=50\": show all tracks shorter than or equal 50km\n"
-                                             "-\"2023-\": show all 2023 tracks\n"
-                                             "-\"-10-\": show all Octobre tracks\n"
-                                             "-\"2023-10-\": show all Octobre 2023 tracks\n"
-                                             "-\"radius0.5km\": show all tracks passing in 0.5km radius from reference marker (after processing a search)" ) );
-
+        ui->lineEditFilter->setToolTip( QString( "Filter your archive (examples):\n"
+                                                 "-\">10\": show all tracks longer than 10km\n"
+                                                 "-\"<=50\": show all tracks shorter than or equal 50km\n"
+                                                 "-\"2023-\": show all 2023 tracks\n"
+                                                 "-\"-10-\": show all Octobre tracks\n"
+                                                 "-\"2023-10-\": show all Octobre 2023 tracks\n"
+                                                 "-\"radius0.5km\": show all tracks passing in 0.5km radius from reference marker (after processing a search)" ) );
+        m_initSuccess = true;
+    }
     splash.finish( this );
 }
 
@@ -1973,5 +1976,10 @@ void MainWindow::showInFinder()
 #elif defined( Q_OS_LINUX )
     QProcess::startDetached(QString( "/usr/bin/nautilus \"%1\"" ).arg( QDir::toNativeSeparators(path) ) );
 #endif
+}
+
+bool MainWindow::initSucess()
+{
+    return m_initSuccess;
 }
 

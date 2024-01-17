@@ -9,7 +9,7 @@ ProgressDialog::ProgressDialog(QWidget *parent, int jobs, QMutex *pMutex, uint32
     m_pTodo(pTodo)
 {
     ui->setupUi(this);
-    setWindowFlags( Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint );
+    setWindowFlags( Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint );
     if( m_pTodo == nullptr || m_pMutex == nullptr )
     {
         reject();

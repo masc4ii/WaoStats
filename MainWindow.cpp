@@ -1198,7 +1198,7 @@ void MainWindow::on_actionSyncDropbox_triggered()
     ProgressDialog *prD = new ProgressDialog( this, downloadList.size(), &mutex, &todo );
     prD->setTitle( "Sync Dropbox" );
     prD->setActionText( "tracks downloaded" );
-    prD->show();
+    prD->open();
 
     //Download all files
     foreach( QString fitFile, downloadList )

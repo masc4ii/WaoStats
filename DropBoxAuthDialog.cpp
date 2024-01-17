@@ -48,14 +48,14 @@ void DropBoxAuthDialog::on_pushButtonOk_clicked()
         m_token = authInfo.getAccessToken();
         /*if( !authInfo.storeToFile( m_workingPath + "token.info" ) )
         {
-            QMessageBox::critical( this, tr( "DropBox Authentication" ), tr( "Error, failed to store access token to file." ) );
+            QMessageBox::critical( this, tr( "Dropbox Authentication" ), tr( "Error, failed to store access token to file." ) );
             reject();
             return;
         }*/
     }
     catch(DropboxException& e)
     {
-        QMessageBox::critical( this, tr( "DropBox Authentication" ), tr( "Exception: " ) + e.what() );
+        QMessageBox::critical( this, tr( "Dropbox Authentication" ), tr( "Exception: " ) + e.what() );
         reject();
         return;
     }

@@ -1164,7 +1164,7 @@ void MainWindow::on_actionSyncDropbox_triggered()
     /*DropboxAuthInfo authInfo;
     // Read auth info file.
     if(!authInfo.readFromFile( workingPath() + "token.info" )){
-        QMessageBox::critical( this, tr( "DropBox Error" ), tr( "Error reading DropBox <auth-file> !" ) );
+        QMessageBox::critical( this, tr( "Dropbox Error" ), tr( "Error reading Dropbox <auth-file> !" ) );
         return;
     }*/
     //ApiListener lsn;
@@ -1184,7 +1184,7 @@ void MainWindow::on_actionSyncDropbox_triggered()
     //qDebug() << downloadList;
     if( downloadList.isEmpty() )
     {
-        QMessageBox::information( this, tr( "DropBox Error" ), tr( "No new file found!" ) );
+        QMessageBox::information( this, tr( "Dropbox Error" ), tr( "No new file found!" ) );
         return;
     }
 
@@ -1192,12 +1192,22 @@ void MainWindow::on_actionSyncDropbox_triggered()
     if( !QDir( workingPath() + "New/" ).exists() )
         QDir().mkdir( workingPath() + "New/" );
 
+    //Progress dialog
+    QMutex mutex;
+    uint32_t todo = downloadList.size();
+    ProgressDialog *prD = new ProgressDialog( this, downloadList.size(), &mutex, &todo );
+    prD->setTitle( "Sync Dropbox" );
+    prD->setActionText( "tracks downloaded" );
+    prD->show();
+
     //Download all files
     foreach( QString fitFile, downloadList )
     {
         QFile out( QString( workingPath() + "New/" + fitFile ) );
         if(!out.open(QFile::WriteOnly|QIODevice::Truncate)){
-            QMessageBox::critical( this, tr( "DropBox Error opening file" ), tr( "DropBox Error opening file" ) );
+            QMessageBox::critical( this, tr( "Dropbox Error opening file" ), tr( "Dropbox Error opening file" ) );
+            prD->close();
+            delete prD;
             return;
         }
 
@@ -1208,11 +1218,17 @@ void MainWindow::on_actionSyncDropbox_triggered()
         }
         catch(DropboxException& e)
         {
-            QMessageBox::critical( this, tr( "DropBox Exception" ), e.what() );
+            QMessageBox::critical( this, tr( "Dropbox Exception" ), e.what() );
         }
 
         out.close();
+
+        if( prD->wasRejected() ) break;
+        todo--;
+        prD->update();
     }
+    prD->close();
+    delete prD;
 
     scanTours();
 }

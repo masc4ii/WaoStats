@@ -9,7 +9,7 @@ ProgressDialog::ProgressDialog(QWidget *parent, int jobs, QMutex *pMutex, uint32
     m_pTodo(pTodo)
 {
     ui->setupUi(this);
-    setWindowFlags( Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint );
+    setWindowFlags( Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint );
     if( m_pTodo == nullptr || m_pMutex == nullptr )
     {
         reject();
@@ -25,8 +25,24 @@ ProgressDialog::~ProgressDialog()
     delete ui;
 }
 
+void ProgressDialog::setActionText(QString text)
+{
+    m_actionText = text;
+}
+
+void ProgressDialog::setTitle(QString text)
+{
+    setWindowTitle( text );
+}
+
+bool ProgressDialog::wasRejected()
+{
+    return m_wasRejected;
+}
+
 void ProgressDialog::on_pushButtonAbort_clicked()
 {
+    m_wasRejected = true;
     reject();
 }
 
@@ -43,7 +59,7 @@ void ProgressDialog::timerEvent(QTimerEvent *t)
             return;
         }
         ui->progressBar->setValue( 100 * ( (double)m_jobs - (double)todo ) / (double)m_jobs );
-        ui->labelInfo->setText( QString( "%1 / %2 tracks analysed..." ).arg( m_jobs - todo ).arg( m_jobs ) );
+        ui->labelInfo->setText( QString( "%1 / %2 %3..." ).arg( m_jobs - todo ).arg( m_jobs ).arg( m_actionText ) );
     }
 }
 

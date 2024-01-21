@@ -1,6 +1,6 @@
 QT       += core gui network
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 CONFIG += c++17
 
@@ -69,9 +69,11 @@ SOURCES += \
     StatisticsDialog.cpp \
     ThreadTrack2Point.cpp \
     TourData.cpp \
+    TourDataPlot.cpp \
     VScrollArea.cpp \
     main.cpp \
-    MainWindow.cpp
+    MainWindow.cpp \
+    qcustomplot/qcustomplot.cpp
 
 HEADERS += \
     AdbSelectDeviceDialog.h \
@@ -91,7 +93,9 @@ HEADERS += \
     StatisticsDialog.h \
     ThreadTrack2Point.h \
     TourData.h \
-    VScrollArea.h
+    TourDataPlot.h \
+    VScrollArea.h \
+    qcustomplot/qcustomplot.h
 
 FORMS += \
     AdbSelectDeviceDialog.ui \

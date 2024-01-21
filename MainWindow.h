@@ -11,13 +11,6 @@
 #include <QMapControl/Layer.h>
 #include <QMapControl/LayerGeometry.h>
 
-// Plot
-#include <qwt_plot_curve.h>
-#include <qwt_plot_zoomer.h>
-#include <qwt_plot_panner.h>
-#include <qwt_plot_picker.h>
-#include <qwt_plot_marker.h>
-
 //fit listener
 #ifndef FITC
 #include "FitListener.h"
@@ -46,7 +39,7 @@ private slots:
     void adjustMap( void );
     void statistics( void );
     void bikeStatistics( QTreeWidgetItem *item );
-    void pointInfo( QPoint point );
+    void pointInfo( double x );
     void pointInfoHide( bool on );
     void mapProviderSelected( QAction* action );
     void plotSelected( void );
@@ -70,12 +63,13 @@ private slots:
     void on_treeWidgetTours_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void on_treeWidgetTours_customContextMenuRequested(const QPoint &pos);
     void on_widgetOsm_customContextMenuRequested( const QPoint &pos );
-    void on_qwtPlot_customContextMenuRequested( const QPoint &pos );
+    void on_widgetPlot_customContextMenuRequested( const QPoint &pos );
     void on_lineEditFilter_textChanged( const QString &arg1 );
     void calcBikeTotalDistances();
     void showServiceInTree();
     void setupArchive( void );
     void showInFinder();
+    void mouseOverPlot(QMouseEvent *event);
 
 private:
     Ui::MainWindow *ui;
@@ -84,8 +78,6 @@ private:
     void scanGpx( QString fileName );
     void adjustGui();
     void configureMap( void );
-    void unconfigurePlots( void );
-    void configurePlots( void );
     void drawPlots( void );
     void drawTourToMap( TourData *pTourData, bool autoZoom );
     void writeSettings();
@@ -119,12 +111,6 @@ private:
     /// The layer to display/store symbols.
     std::shared_ptr<LayerGeometry> m_layer_symb;
 
-    QwtPlotCurve *m_curve[4];
-    QwtPlotZoomer *m_pZoomer[2];
-    QwtPlotPanner *m_pPanner;
-    QwtPlotPicker* m_picker;
-    QVector<QwtPlotMarker*> m_lapMarker;
-    QwtPlotMarker* m_avgMarker;
     QTreeWidgetItem *m_currentActiveTreeWidgetItem;
 
     QPixmap m_iconCrossHairs;

@@ -22,25 +22,6 @@
     <property name="verticalSpacing">
      <number>12</number>
     </property>
-    <item row="2" column="0">
-     <widget class="QwtPlot" name="qwtPlot">
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>200</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="OsmWidget" name="widgetOsm" native="true">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-     </widget>
-    </item>
     <item row="1" column="0">
      <widget class="QGroupBox" name="groupBoxPicker">
       <property name="sizePolicy">
@@ -273,6 +254,28 @@
         </widget>
        </item>
       </layout>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="TourDataPlot" name="widgetPlot" native="true">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>200</height>
+       </size>
+      </property>
+      <property name="contextMenuPolicy">
+       <enum>Qt::CustomContextMenu</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="OsmWidget" name="widgetOsm" native="true">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
      </widget>
     </item>
    </layout>
@@ -1550,12 +1553,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QwtPlot</class>
-   <extends>QFrame</extends>
-   <header>qwt_plot.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>BikeTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>BikeEditingDelegate.h</header>
@@ -1575,6 +1572,12 @@
    <class>VScrollArea</class>
    <extends>QScrollArea</extends>
    <header>VScrollArea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TourDataPlot</class>
+   <extends>QWidget</extends>
+   <header>TourDataPlot.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

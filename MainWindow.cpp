@@ -30,21 +30,8 @@
 #include <QJsonObject>
 #include <QStyleFactory>
 #include <QProcess>
-#include "qwt.h"
 #include "math.h"
 #include "OsmWidget.h"
-
-#include <qwt_legend.h>
-#include <qwt_plot_layout.h>
-#include <qwt_series_data.h>
-#include <qwt_legend_label.h>
-#include <qwt_plot_grid.h>
-#include <qwt_plot_canvas.h>
-#include <qwt_picker_machine.h>
-#include <qwt_symbol.h>
-#include <qwt_plot_renderer.h>
-#include <qwt_scale_draw.h>
-#include <qwt_symbol.h>
 
 // QMapControl includes.
 #include <QMapControl/GeometryPointImage.h>
@@ -69,53 +56,6 @@
 #include "dropbox/endpoint/DropboxAuthInfo.h"
 
 using namespace dropboxQt;
-
-/**
- * @brief The Zoomer class
- */
-class Zoomer: public QwtPlotZoomer
-{
-public:
-    Zoomer( int xAxis, int yAxis, QwtPlot *plot ):
-        QwtPlotZoomer( xAxis, yAxis, plot->canvas() )
-    {
-        m_pPlot = plot;
-        setTrackerMode( QwtPicker::AlwaysOff );
-        setRubberBand( QwtPicker::NoRubberBand );
-
-        // RightButton: zoom out by 1
-        // Ctrl+RightButton: zoom out to full size
-        setMousePattern( QwtEventPattern::MouseSelect2,
-            Qt::NoButton, Qt::ControlModifier );
-        setMousePattern( QwtEventPattern::MouseSelect3,
-            Qt::NoButton );
-    }
-    virtual void widgetMouseDoubleClickEvent( QMouseEvent *me )
-    {
-        if ( me->button() == Qt::LeftButton )
-        {
-            zoom( 0 );
-        }
-    }
-private:
-    QwtPlot *m_pPlot;
-};
-
-class TimeScaleDraw:public QwtScaleDraw
-{
-public:
-    TimeScaleDraw(void)
-    {
-        baseTime = QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
-    }
-    virtual QwtText label(double v)const
-    {
-        QDateTime upTime = baseTime.addSecs((int)v);
-        return upTime.toString( "hh:mm" );
-    }
-private:
-    QDateTime baseTime;
-};
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -146,14 +86,13 @@ MainWindow::MainWindow(QWidget *parent)
     m_timePlot = false;
     m_currentActiveTreeWidgetItem = nullptr;
     configureActionGroups();
-    ui->qwtPlot->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->widgetOsm->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->dockWidgetBikeData->setVisible( false );
     ui->labelHrZone->setVisible( false );
     ui->labelPwrZone->setVisible( false );
     m_pActionShowInFinder = new QAction( tr( "Show In Finder" ), this );
     connect( m_pActionShowInFinder, SIGNAL(triggered(bool)), this, SLOT(showInFinder()) );
-    configurePlots();
+    connect(ui->widgetPlot, SIGNAL(mouseMove(QMouseEvent*)), this,SLOT(mouseOverPlot(QMouseEvent*)));
     configureMap();
     readSettings();
     if( QDir( m_workingPath ).exists() )
@@ -542,327 +481,41 @@ void MainWindow::configureMap()
     m_iconCrossHairs = QPixmap( ":/Icons/Icons/crossed_circle.svg" ).scaled( 20, 20 );
 }
 
-void MainWindow::unconfigurePlots()
+void MainWindow::mouseOverPlot(QMouseEvent *event)
 {
-    disconnect( m_picker, SIGNAL( appended(QPoint) ), this, SLOT( pointInfo(QPoint) ) );
-    disconnect( m_picker, SIGNAL( moved(QPoint) ), this, SLOT( pointInfo(QPoint) ) );
-    disconnect( m_picker, SIGNAL( activated(bool) ), this, SLOT( pointInfoHide(bool) ) );
-    delete m_picker;
-    delete m_pZoomer[1];
-    delete m_pZoomer[0];
-    delete m_pPanner;
-    delete m_curve[0];
-    delete m_curve[1];
-    if( m_curve[2] != Q_NULLPTR ) delete m_curve[2];
-    if( m_curve[3] != Q_NULLPTR ) delete m_curve[3];
-    delete m_avgMarker;
-}
-
-void MainWindow::configurePlots( void )
-{
-    //Plot setup
-    //ui->qwtPlot->setTitle( "Session" );
-    if( !m_timePlot )
+    if( event->pos().x() > ui->widgetPlot->axisRect(0)->left()
+     && event->pos().x() < ui->widgetPlot->axisRect(0)->right()
+     && event->pos().y() > ui->widgetPlot->axisRect(0)->top()
+     && event->pos().y() < ui->widgetPlot->axisRect(0)->bottom() )
     {
-        ui->qwtPlot->setAxisTitle( QwtPlot::xBottom, QwtText( "Distance [km]" ) );
-        ui->qwtPlot->setAxisScaleDraw( QwtPlot::xBottom, new QwtScaleDraw() );
+        double x = ui->widgetPlot->xAxis->pixelToCoord(event->pos().x());
+        pointInfo( x );
     }
     else
     {
-        ui->qwtPlot->setAxisTitle( QwtPlot::xBottom, QwtText( "Time [hh:mm]" ) );
-        ui->qwtPlot->setAxisScaleDraw( QwtPlot::xBottom, new TimeScaleDraw() );
+        pointInfoHide( false );
     }
-    ui->qwtPlot->setAxisTitle( QwtPlot::yLeft, QwtText( "Altitude [m]" ) );
-    //QwtLegend *legend = new QwtLegend;
-    //legend->setDefaultItemMode( QwtLegendData::Checkable );
-    //connect( legend, SIGNAL(checked(QVariant,bool,int)), SLOT(onLegendChecked(QVariant,bool,int)) );
-    //ui->qwtPlot->insertLegend( legend, QwtPlot::BottomLegend );
-    ui->qwtPlot->setAxisAutoScale( QwtPlot::yLeft );
-    ui->qwtPlot->setAxisAutoScale( QwtPlot::yRight );
-    //ui->qwtPlot->setAxisAutoScale( QwtPlot::xBottom );
-
-    //Background
-    QwtPlotCanvas *canvas = (QwtPlotCanvas *)ui->qwtPlot->canvas();
-    canvas->setBorderRadius( 5 );
-    ui->qwtPlot->setCanvas( canvas );
-    ui->qwtPlot->setCanvasBackground( Qt::white );
-
-    // grid
-    QwtPlotGrid *grid = new QwtPlotGrid;
-    grid->enableXMin( true );
-    grid->enableYMin( true );
-    grid->setMajorPen( Qt::lightGray, 0, Qt::SolidLine );
-    grid->setMinorPen( Qt::lightGray, 0 , Qt::DotLine );
-    grid->attach( ui->qwtPlot );
-
-    m_curve[0] = new QwtPlotCurve( QString( "Altitude" ) );
-    m_curve[0]->setYAxis( QwtPlot::yLeft );
-    m_curve[0]->setRenderHint( QwtPlotItem::RenderAntialiased );
-    m_curve[1] = Q_NULLPTR;
-    m_curve[2] = Q_NULLPTR;
-    m_curve[3] = Q_NULLPTR;
-
-    if( ui->actionSpeed->isChecked() )
-    {
-        m_curve[1] = new QwtPlotCurve( QString( "Speed" ) );
-        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "Speed [km/h]" ) );
-    }
-    else if( ui->actionDeviceBattery->isChecked() )
-    {
-        m_curve[1] = new QwtPlotCurve( QString( "Device Battery" ) );
-        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "Device Battery [%]" ) );
-    }
-    else if( ui->actionCadence->isChecked() )
-    {
-        m_curve[1] = new QwtPlotCurve( QString( "Cadence" ) );
-        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "Cadence [rpm]" ) );
-    }
-    else if( ui->actionTemperature->isChecked() )
-    {
-        m_curve[1] = new QwtPlotCurve( QString( "Temperature" ) );
-        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "Temperature [°C]" ) );
-    }
-    else if( ui->actionGrade->isChecked() )
-    {
-        m_curve[1] = new QwtPlotCurve( QString( "Grade" ) );
-        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "Grade [%]" ) );
-    }
-    else if( ui->actionHeartRate->isChecked() )
-    {
-        m_curve[1] = new QwtPlotCurve( QString( "Heart Rate" ) );
-        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "Heart Rate [bpm]" ) );
-    }
-    else if( ui->actionCalories->isChecked() )
-    {
-        m_curve[1] = new QwtPlotCurve( QString( "Calories" ) );
-        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "Calories [kcal]" ) );
-    }
-    else if( ui->actionPower->isChecked() )
-    {
-        m_curve[1] = new QwtPlotCurve( QString( "Power" ) );
-        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "Power [W]" ) );
-    }
-    else if( ui->actionLRBalance->isChecked() )
-    {
-        m_curve[1] = new QwtPlotCurve( QString( "L/R Balance" ) );
-        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "L/R Balance" ) );
-    }
-    else if( ui->actionGearInfo->isChecked() )
-    {
-        m_curve[1] = new QwtPlotCurve( QString( "Gear Ratio" ) );
-        m_curve[2] = new QwtPlotCurve( QString( "Gear Front" ) );
-        m_curve[3] = new QwtPlotCurve( QString( "Gear Rear" ) );
-        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "Gear Ratio / Gear Number" ) );
-        m_curve[2]->setYAxis( QwtPlot::yRight );
-        m_curve[2]->setRenderHint( QwtPlotItem::RenderAntialiased );
-        m_curve[3]->setYAxis( QwtPlot::yRight );
-        m_curve[3]->setRenderHint( QwtPlotItem::RenderAntialiased );
-        QPen p( QColor( 100, 205, 255 ) );
-        m_curve[2]->setPen( p );
-        p.setColor( QColor( 255, 200, 0 ) );
-        m_curve[3]->setPen( p );
-    }
-    else if( ui->actionGpsAccuracy->isChecked() )
-    {
-        m_curve[1] = new QwtPlotCurve( QString( "GPS Accuracy" ) );
-        ui->qwtPlot->setAxisTitle( QwtPlot::yRight, QwtText( "GPS Accuracy [m]" ) );
-    }
-    m_curve[1]->setYAxis( QwtPlot::yRight );
-    m_curve[1]->setRenderHint( QwtPlotItem::RenderAntialiased );
-    ui->qwtPlot->setAxisVisible( QwtPlot::yRight );
-
-    QPen p( Qt::red );
-    m_curve[0]->setPen( p );
-    m_curve[0]->setBrush( QBrush( QColor( 255, 0, 0, 25 ) ) );
-    p.setColor( QColor( 0, 180, 0 ) );
-    m_curve[1]->setPen( p );
-
-    //AVG Marker
-    m_avgMarker = new QwtPlotMarker();
-    m_avgMarker->setValue( 0.0, m_pTourData->getSession().avgSpeed * 3.6 );
-    m_avgMarker->setYAxis( QwtPlot::yRight );
-    m_avgMarker->setLineStyle( QwtPlotMarker::HLine );
-    m_avgMarker->setLabelAlignment( Qt::AlignRight | Qt::AlignBottom );
-    m_avgMarker->setLinePen( Qt::darkGray, 1, Qt::DashDotLine );
-    m_avgMarker->setVisible( ui->actionAverageMarker->isChecked() );
-
-    //Zoomer init
-    m_pZoomer[0] = new Zoomer( QwtPlot::xBottom, QwtPlot::yLeft, ui->qwtPlot );
-    m_pZoomer[0]->setRubberBand( QwtPicker::RectRubberBand );
-    m_pZoomer[0]->setRubberBandPen( QColor( Qt::gray ) );
-    m_pZoomer[1] = new Zoomer( QwtPlot::xTop, QwtPlot::yRight, ui->qwtPlot );
-
-    m_pPanner = new QwtPlotPanner( ui->qwtPlot->canvas() );
-    m_pPanner->setMouseButton( Qt::LeftButton, Qt::ControlModifier );
-
-    m_picker = new QwtPlotPicker( QwtAxis::XBottom, QwtAxis::YLeft,
-        QwtPlotPicker::VLineRubberBand, QwtPicker::AlwaysOff,
-        ui->qwtPlot->canvas() );
-    m_picker->setStateMachine( new QwtPickerTrackerMachine() );
-    m_picker->setRubberBandPen( QColor( Qt::darkGray ) );
-    m_picker->setRubberBand( QwtPicker::VLineRubberBand );
-
-    connect( m_picker, SIGNAL( appended(QPoint) ), this, SLOT( pointInfo(QPoint) ) );
-    connect( m_picker, SIGNAL( moved(QPoint) ), this, SLOT( pointInfo(QPoint) ) );
-    connect( m_picker, SIGNAL( activated(bool) ), this, SLOT( pointInfoHide(bool) ) );
 }
 
 void MainWindow::drawPlots( void )
 {
     TourData *pTourData = m_pTourData;
-    /*qDebug() << "DebugSizes"
-             << pTourData->getTourTimeStamp().size()
-             << pTourData->getTourDistance().size()
-             << pTourData->getTourSpeed().size()
-             << pTourData->getTourAltitude().size()
-             << pTourData->getTourCadence().size();*/
 
-    if( ui->actionCadence->isChecked() && (int)m_pTourData->getSession().maxCadence == 0 )
-    {
-        unconfigurePlots();
-        configurePlots();
-        ui->actionSpeed->setChecked( true );
-    }
-
-    if( !m_timePlot ) m_curve[0]->setSamples( pTourData->getTourDistance().data(), pTourData->getTourAltitude().data(), pTourData->getTourDistance().count() );
-    else              m_curve[0]->setSamples( pTourData->getTourTimeStamp().data(), pTourData->getTourAltitude().data(), pTourData->getTourDistance().count() );
-    m_curve[0]->attach( ui->qwtPlot );
-    m_curve[0]->setTitle( QString( "Altitude" ) );
-
-    if( ui->actionSpeed->isChecked() )
-    {
-        if( !m_timePlot ) m_curve[1]->setSamples( pTourData->getTourDistance().data(), pTourData->getTourSpeed().data(), pTourData->getTourDistance().count() );
-        else              m_curve[1]->setSamples( pTourData->getTourTimeStamp().data(), pTourData->getTourSpeed().data(), pTourData->getTourDistance().count() );
-        m_curve[1]->setTitle( QString( "Speed" ) );
-
-        m_avgMarker->setValue( 0.0, m_pTourData->getSession().avgSpeed * 3.6 );
-        m_avgMarker->attach( ui->qwtPlot );
-    }
-    else if( ui->actionDeviceBattery->isChecked() )
-    {
-        if( !m_timePlot ) m_curve[1]->setSamples( pTourData->getTourDistance().data(), pTourData->getTourBatterySoc().data(), pTourData->getTourDistance().count() );
-        else              m_curve[1]->setSamples( pTourData->getTourTimeStamp().data(), pTourData->getTourBatterySoc().data(), pTourData->getTourDistance().count() );
-        m_curve[1]->setTitle( QString( "Device Battery" ) );
-    }
-    else if( ui->actionCadence->isChecked() )
-    {
-        if( !m_timePlot ) m_curve[1]->setSamples( pTourData->getTourDistance().data(), pTourData->getTourCadence().data(), pTourData->getTourDistance().count() );
-        else              m_curve[1]->setSamples( pTourData->getTourTimeStamp().data(), pTourData->getTourCadence().data(), pTourData->getTourDistance().count() );
-        m_curve[1]->setTitle( QString( "Cadence" ) );
-        m_curve[1]->setStyle( QwtPlotCurve::CurveStyle::NoCurve );
-        m_curve[1]->setSymbol( new QwtSymbol( QwtSymbol::Ellipse, QBrush(), QPen( QColor( 0, 128, 255 ) ), QSize() ) );
-        m_curve[1]->setPen( QPen( QColor( 225, 180, 0 ) ) );
-
-        m_avgMarker->setValue( 0.0, m_pTourData->getSession().avgCadence );
-        m_avgMarker->attach( ui->qwtPlot );
-    }
-    else if( ui->actionTemperature->isChecked() )
-    {
-        if( !m_timePlot ) m_curve[1]->setSamples( pTourData->getTourDistance().data(), pTourData->getTourTemperature().data(), pTourData->getTourDistance().count() );
-        else              m_curve[1]->setSamples( pTourData->getTourTimeStamp().data(), pTourData->getTourTemperature().data(), pTourData->getTourDistance().count() );
-        m_curve[1]->setTitle( QString( "Temperature" ) );
-    }
-    else if( ui->actionGrade->isChecked() )
-    {
-        if( !m_timePlot ) m_curve[1]->setSamples( pTourData->getTourDistance().data(), pTourData->getTourGrade().data(), pTourData->getTourDistance().count() );
-        else              m_curve[1]->setSamples( pTourData->getTourTimeStamp().data(), pTourData->getTourGrade().data(), pTourData->getTourDistance().count() );
-        m_curve[1]->setTitle( QString( "Grade" ) );
-        m_curve[1]->setBrush( QBrush( QColor( 0, 180, 0, 25 ) ) );
-    }
-    else if( ui->actionHeartRate->isChecked() )
-    {
-        if( !m_timePlot ) m_curve[1]->setSamples( pTourData->getTourDistance().data(), pTourData->getTourHeartRate().data(), pTourData->getTourDistance().count() );
-        else              m_curve[1]->setSamples( pTourData->getTourTimeStamp().data(), pTourData->getTourHeartRate().data(), pTourData->getTourDistance().count() );
-        m_curve[1]->setTitle( QString( "Heart Rate" ) );
-
-        m_avgMarker->setValue( 0.0, m_pTourData->getSession().avgHeartRate );
-        m_avgMarker->attach( ui->qwtPlot );
-    }
-    else if( ui->actionCalories->isChecked() )
-    {
-        if( !m_timePlot ) m_curve[1]->setSamples( pTourData->getTourDistance().data(), pTourData->getTourCalories().data(), pTourData->getTourDistance().count() );
-        else              m_curve[1]->setSamples( pTourData->getTourTimeStamp().data(), pTourData->getTourCalories().data(), pTourData->getTourDistance().count() );
-        m_curve[1]->setTitle( QString( "Calories" ) );
-    }
-    else if( ui->actionPower->isChecked() )
-    {
-        if( !m_timePlot ) m_curve[1]->setSamples( pTourData->getTourDistance().data(), pTourData->getTourPower().data(), pTourData->getTourDistance().count() );
-        else              m_curve[1]->setSamples( pTourData->getTourTimeStamp().data(), pTourData->getTourPower().data(), pTourData->getTourDistance().count() );
-        m_curve[1]->setTitle( QString( "Power" ) );
-    }
-    else if( ui->actionLRBalance->isChecked() )
-    {
-        if( !m_timePlot ) m_curve[1]->setSamples( pTourData->getTourDistance().data(), pTourData->getTourLRBalance().data(), pTourData->getTourDistance().count() );
-        else              m_curve[1]->setSamples( pTourData->getTourTimeStamp().data(), pTourData->getTourLRBalance().data(), pTourData->getTourDistance().count() );
-        m_curve[1]->setTitle( QString( "L/R Balance" ) );
-    }
-    else if( ui->actionGearInfo->isChecked() )
-    {
-        if( !m_timePlot )
-        {
-            m_curve[1]->setSamples( pTourData->getGearDistance().data(), pTourData->getGearRatio().data(), pTourData->getGearDistance().count() );
-            m_curve[2]->setSamples( pTourData->getGearDistance().data(), pTourData->getGearNumFront().data(), pTourData->getGearDistance().count() );
-            m_curve[3]->setSamples( pTourData->getGearDistance().data(), pTourData->getGearNumRear().data(), pTourData->getGearDistance().count() );
-        }
-        else
-        {
-            m_curve[1]->setSamples( pTourData->getGearTimeStamp().data(), pTourData->getGearRatio().data(), pTourData->getGearDistance().count() );
-            m_curve[2]->setSamples( pTourData->getGearTimeStamp().data(), pTourData->getGearNumFront().data(), pTourData->getGearDistance().count() );
-            m_curve[3]->setSamples( pTourData->getGearTimeStamp().data(), pTourData->getGearNumRear().data(), pTourData->getGearDistance().count() );
-        }
-        m_curve[1]->setTitle( QString( "Gear Ratio" ) );
-        m_curve[1]->setStyle( QwtPlotCurve::Steps );
-        m_curve[2]->setTitle( QString( "Gear Front" ) );
-        m_curve[2]->setStyle( QwtPlotCurve::Steps );
-        m_curve[3]->setTitle( QString( "Gear Rear" ) );
-        m_curve[3]->setStyle( QwtPlotCurve::Steps );
-        m_curve[2]->attach( ui->qwtPlot );
-        m_curve[3]->attach( ui->qwtPlot );
-    }
-    else if( ui->actionGpsAccuracy->isChecked() )
-    {
-        if( !m_timePlot ) m_curve[1]->setSamples( pTourData->getTourDistance().data(), pTourData->getTourGpsAccuracy().data(), pTourData->getTourDistance().count() );
-        else              m_curve[1]->setSamples( pTourData->getTourTimeStamp().data(), pTourData->getTourGpsAccuracy().data(), pTourData->getTourDistance().count() );
-        m_curve[1]->setTitle( QString( "GPS Accuracy" ) );
-    }
-    m_curve[1]->attach( ui->qwtPlot );
-
-    if( !m_timePlot ) ui->qwtPlot->setAxisScale( QwtPlot::xBottom, 0, pTourData->getTourDistance().last(), (int)(pTourData->getTourDistance().last() / 5) );
-    else              ui->qwtPlot->setAxisScale( QwtPlot::xBottom, pTourData->getTourTimeStamp().first(), pTourData->getTourTimeStamp().last(), 60*15 );
-
-    ui->qwtPlot->setAxisAutoScale( QwtPlot::yLeft );
-    if( ui->actionDeviceBattery->isChecked() ) ui->qwtPlot->setAxisScale( QwtPlot::yRight, 0, 100, 20 );
-    else if( ui->actionGearInfo->isChecked() ) ui->qwtPlot->setAxisScale( QwtPlot::yRight, 0, m_pTourData->gearCountRear(), 2 );
-    else ui->qwtPlot->setAxisAutoScale( QwtPlot::yRight );
-
-    foreach(QwtPlotMarker *marker, m_lapMarker) delete marker;
-    m_lapMarker.clear();
-    if( pTourData->getSections().count() > 1 )
-    {
-        for( int i = 0; i < pTourData->getSections().count(); i++ )
-        {
-            QwtPlotMarker *marker = new QwtPlotMarker();
-            if(      !m_timePlot && i == 0 ) marker->setValue( 0.0, 0.0 );
-            else if( !m_timePlot && i != 0 ) marker->setValue( pTourData->getSections().at( i ).startDistance, 0.0 );
-            else                             marker->setValue( pTourData->getSections().at( i ).startTime, 0.0 );
-            marker->setLineStyle( QwtPlotMarker::VLine );
-            marker->setLabelAlignment( Qt::AlignRight | Qt::AlignBottom );
-            marker->setLinePen( Qt::darkMagenta, 1, Qt::DashDotLine );
-            QFont font;
-            font.setPointSize( 10 );
-            QwtText text = QwtText( QString::number( i + 1 ) );
-            text.setFont( font );
-            marker->setLabel( text );
-            marker->setLabelAlignment( Qt::AlignTop | Qt::AlignRight );
-            marker->attach( ui->qwtPlot );
-            m_lapMarker.append( marker );
-        }
-    }
-
-    ui->qwtPlot->replot();
-
-    m_pZoomer[0]->setZoomBase( true );
-    m_pZoomer[1]->setZoomBase( true );
+    ePlotXType xType = ePlotXType::Distance;
+    ePlotYType yType = ePlotYType::Speed;
+    if( m_timePlot ) xType = ePlotXType::Time;
+    if(      ui->actionSpeed->isChecked() )         yType = ePlotYType::Speed;
+    else if( ui->actionDeviceBattery->isChecked() ) yType = ePlotYType::DeviceBattery;
+    else if( ui->actionCadence->isChecked() )       yType = ePlotYType::Cadence;
+    else if( ui->actionTemperature->isChecked() )   yType = ePlotYType::Temperature;
+    else if( ui->actionGrade->isChecked() )         yType = ePlotYType::Grade;
+    else if( ui->actionHeartRate->isChecked() )     yType = ePlotYType::HeartRate;
+    else if( ui->actionCalories->isChecked() )      yType = ePlotYType::Calories;
+    else if( ui->actionPower->isChecked() )         yType = ePlotYType::Power;
+    else if( ui->actionLRBalance->isChecked() )     yType = ePlotYType::LRBalance;
+    else if( ui->actionGearInfo->isChecked() )      yType = ePlotYType::GearInfo;
+    else if( ui->actionGpsAccuracy->isChecked() )   yType = ePlotYType::GpsAccuracy;
+    ui->widgetPlot->drawPlots( pTourData, xType, yType );
 }
 
 void MainWindow::drawTourToMap(TourData *pTourData, bool autoZoom = true)
@@ -1027,7 +680,6 @@ void MainWindow::mapProviderSelected(QAction* action)
 
 void MainWindow::plotSelected( void )
 {
-    unconfigurePlots();
     if( ui->actionPlotTime->isChecked() )
     {
         m_timePlot = true;
@@ -1036,7 +688,6 @@ void MainWindow::plotSelected( void )
     {
         m_timePlot = false;
     }
-    configurePlots();
     drawPlots();
 }
 
@@ -1046,15 +697,13 @@ void MainWindow::adjustMap()
     m_map_control->setViewportSize(ui->widgetOsm->size());
 }
 
-void MainWindow::pointInfo( QPoint point )
+void MainWindow::pointInfo(double x)
 {
     if( !m_timePlot )
     {
-        double distance = ui->qwtPlot->invTransform( QwtPlot::xBottom, point.x() );
-
         for( int i = 0; i < m_pTourData->getGearDistance().size(); i++ )
         {
-            if( m_pTourData->getGearDistance().at(i) >= distance )
+            if( m_pTourData->getGearDistance().at(i) >= x )
             {
                 ui->labelPickerGear->setText( QString( "%1;%2;%3" ).arg( (int)m_pTourData->getGearNumFront().at( i ) )
                                                  .arg( (int)m_pTourData->getGearNumRear().at( i ) )
@@ -1064,7 +713,7 @@ void MainWindow::pointInfo( QPoint point )
         }
         for( int i = 0; i < m_pTourData->getTourDistance().size(); i++ )
         {
-            if( m_pTourData->getTourDistance().at(i) >= distance )
+            if( m_pTourData->getTourDistance().at(i) >= x )
             {
                 ui->labelPickerDistance->setText( QString( "%1 km" ).arg( m_pTourData->getTourDistance().at( i ), 0, 'f', 3 ) );
                 ui->labelPickerTime->setText( QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) ).addSecs( (int)m_pTourData->getTourTimeStamp().at( i ) ).toString( "hh:mm:ss" ) );
@@ -1079,8 +728,8 @@ void MainWindow::pointInfo( QPoint point )
 
                 // Create the "cross" and add it to the layer.
                 std::shared_ptr<GeometryPoint> cross(std::make_shared<GeometryPointImage>( PointWorldCoord( m_pTourData->getTourPosLong().at(i) * ( 180 / pow(2,31) ),
-                                                                                                            m_pTourData->getTourPosLat().at(i)  * ( 180 / pow(2,31) ) ),
-                                                                                                            m_iconCrossHairs ) );
+                                                                                                          m_pTourData->getTourPosLat().at(i)  * ( 180 / pow(2,31) ) ),
+                                                                                          m_iconCrossHairs ) );
                 m_layer_symb->clearGeometries();
                 m_layer_symb->addGeometry(cross);
                 m_layer_symb->setVisible( true );
@@ -1090,11 +739,9 @@ void MainWindow::pointInfo( QPoint point )
     }
     else
     {
-        double time = ui->qwtPlot->invTransform( QwtPlot::xBottom, point.x() );
-
         for( int i = 0; i < m_pTourData->getGearTimeStamp().size(); i++ )
         {
-            if( m_pTourData->getGearTimeStamp().at(i) >= time )
+            if( TourDataPlot::tourTimeToPlotTime( m_pTourData->getGearTimeStamp().at(i) ) >= x )
             {
                 ui->labelPickerGear->setText( QString( "%1;%2;%3" ).arg( (int)m_pTourData->getGearNumFront().at( i ) )
                                                  .arg( (int)m_pTourData->getGearNumRear().at( i ) )
@@ -1104,7 +751,7 @@ void MainWindow::pointInfo( QPoint point )
         }
         for( int i = 0; i < m_pTourData->getTourTimeStamp().size(); i++ )
         {
-            if( m_pTourData->getTourTimeStamp().at(i) >= time )
+            if( TourDataPlot::tourTimeToPlotTime( m_pTourData->getTourTimeStamp().at(i) ) >= x )
             {
                 ui->labelPickerDistance->setText( QString( "%1 km" ).arg( m_pTourData->getTourDistance().at( i ), 0, 'f', 3 ) );
                 ui->labelPickerTime->setText( QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) ).addSecs( (int)m_pTourData->getTourTimeStamp().at( i ) ).toString( "hh:mm:ss" ) );
@@ -1117,13 +764,13 @@ void MainWindow::pointInfo( QPoint point )
                 ui->labelPickerPower->setText( QString( "%1 W" ).arg( m_pTourData->getTourPower().at( i ), 0, 'f', 1 ) );
                 ui->labelPickerCalories->setText( QString( "%1 kcal" ).arg( (int)m_pTourData->getTourCalories().at( i ) ) );
                 ui->labelPickerGear->setText( QString( "%1;%2;%3" ).arg( (int)m_pTourData->getGearNumFront().at( i ) )
-                                                                   .arg( (int)m_pTourData->getGearNumRear().at( i ) )
-                                                                   .arg( m_pTourData->getGearRatio().at( i ) ) );
+                                                 .arg( (int)m_pTourData->getGearNumRear().at( i ) )
+                                                 .arg( m_pTourData->getGearRatio().at( i ) ) );
 
                 // Create the "cross" and add it to the layer.
                 std::shared_ptr<GeometryPoint> cross(std::make_shared<GeometryPointImage>( PointWorldCoord( m_pTourData->getTourPosLong().at(i) * ( 180 / pow(2,31) ),
-                                                                                                            m_pTourData->getTourPosLat().at(i)  * ( 180 / pow(2,31) ) ),
-                                                                                                            m_iconCrossHairs ) );
+                                                                                                          m_pTourData->getTourPosLat().at(i)  * ( 180 / pow(2,31) ) ),
+                                                                                          m_iconCrossHairs ) );
                 m_layer_symb->clearGeometries();
                 m_layer_symb->addGeometry(cross);
                 m_layer_symb->setVisible( true );
@@ -1147,7 +794,7 @@ void MainWindow::pointInfoHide( bool on )
     ui->labelPickerPower->setText( QString( "-" ) );
     ui->labelPickerCalories->setText( QString( "-" ) );
     ui->labelPickerGear->setText( QString( "Fr;Re;Rat" ) );
-    m_layer_symb->setVisible( false );
+    if( m_layer_symb->isVisible() ) m_layer_symb->setVisible( false );
 }
 
 void MainWindow::on_actionSyncDropbox_triggered()
@@ -1375,12 +1022,12 @@ void MainWindow::on_actionSetArchivePath_triggered()
     }
 }
 
-void MainWindow::on_qwtPlot_customContextMenuRequested(const QPoint &pos)
+void MainWindow::on_widgetPlot_customContextMenuRequested(const QPoint &pos)
 {
     m_layer_symb->setVisible( false );
 
     // Handle global position
-    QPoint globalPos = ui->qwtPlot->mapToGlobal( pos );
+    QPoint globalPos = ui->widgetPlot->mapToGlobal( pos );
 
     // Create mark menu
     QMenu myMenu;
@@ -1406,7 +1053,7 @@ void MainWindow::on_widgetOsm_customContextMenuRequested(const QPoint &pos)
 void MainWindow::on_actionShowPlot_triggered(bool checked)
 {
     ui->groupBoxPicker->setVisible( checked );
-    ui->qwtPlot->setVisible( checked );
+    ui->widgetPlot->setVisible( checked );
     qApp->processEvents();
     adjustMap();
     pointInfoHide( false );
@@ -1977,8 +1624,7 @@ void MainWindow::on_actionDistanceSearch_triggered()
 
 void MainWindow::on_actionAverageMarker_triggered(bool checked)
 {
-    m_avgMarker->setVisible( checked );
-    ui->qwtPlot->replot();
+    ui->widgetPlot->setAverageLineVisible( checked );
 }
 
 void MainWindow::showInFinder()

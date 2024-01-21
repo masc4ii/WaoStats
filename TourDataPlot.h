@@ -40,7 +40,9 @@ public:
     TourDataPlot( QWidget *parent );
     void drawPlots( TourData *pTourData, ePlotXType xType, ePlotYType yType );
     void setAverageLineVisible( bool on );
-    static double tourTimeToPlotTime( double time );
+    double tourTimeToPlotTime( double time );
+    QVector<double> getTourTimeStamp( void ) const;
+    QVector<double> getGearTimeStamp( void ) const;
 
 private slots:
     void mouseOverPlot( QMouseEvent *event );
@@ -50,6 +52,7 @@ private slots:
 
 private:
     void init( void );
+    void setStartDate( double time );
     ePlotXType m_xType{ Distance };
     ePlotYType m_yType{ Speed };
     bool m_avgOn{ false };
@@ -64,6 +67,9 @@ private:
     bool m_plotted{false};
     const double m_graphWidth{1.0};
     const double m_lineWidth{1.05};
+    QVector<double> m_tourTimeStamp;
+    QVector<double> m_gearTimeStamp;
+    QDateTime m_startDate;
 };
 
 #endif // TOURDATAPLOT_H

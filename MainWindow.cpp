@@ -728,8 +728,8 @@ void MainWindow::pointInfo(double x)
 
                 // Create the "cross" and add it to the layer.
                 std::shared_ptr<GeometryPoint> cross(std::make_shared<GeometryPointImage>( PointWorldCoord( m_pTourData->getTourPosLong().at(i) * ( 180 / pow(2,31) ),
-                                                                                                          m_pTourData->getTourPosLat().at(i)  * ( 180 / pow(2,31) ) ),
-                                                                                          m_iconCrossHairs ) );
+                                                                                                            m_pTourData->getTourPosLat().at(i)  * ( 180 / pow(2,31) ) ),
+                                                                                                            m_iconCrossHairs ) );
                 m_layer_symb->clearGeometries();
                 m_layer_symb->addGeometry(cross);
                 m_layer_symb->setVisible( true );
@@ -741,7 +741,7 @@ void MainWindow::pointInfo(double x)
     {
         for( int i = 0; i < m_pTourData->getGearTimeStamp().size(); i++ )
         {
-            if( TourDataPlot::tourTimeToPlotTime( m_pTourData->getGearTimeStamp().at(i) ) >= x )
+            if( ui->widgetPlot->getGearTimeStamp().at(i) >= x )
             {
                 ui->labelPickerGear->setText( QString( "%1;%2;%3" ).arg( (int)m_pTourData->getGearNumFront().at( i ) )
                                                  .arg( (int)m_pTourData->getGearNumRear().at( i ) )
@@ -751,7 +751,7 @@ void MainWindow::pointInfo(double x)
         }
         for( int i = 0; i < m_pTourData->getTourTimeStamp().size(); i++ )
         {
-            if( TourDataPlot::tourTimeToPlotTime( m_pTourData->getTourTimeStamp().at(i) ) >= x )
+            if( ui->widgetPlot->getTourTimeStamp().at(i) >= x )
             {
                 ui->labelPickerDistance->setText( QString( "%1 km" ).arg( m_pTourData->getTourDistance().at( i ), 0, 'f', 3 ) );
                 ui->labelPickerTime->setText( QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) ).addSecs( (int)m_pTourData->getTourTimeStamp().at( i ) ).toString( "hh:mm:ss" ) );
@@ -763,14 +763,11 @@ void MainWindow::pointInfo(double x)
                 ui->labelPickerHeartRate->setText( QString( "%1 bpm" ).arg( (int)m_pTourData->getTourHeartRate().at( i ) ) );
                 ui->labelPickerPower->setText( QString( "%1 W" ).arg( m_pTourData->getTourPower().at( i ), 0, 'f', 1 ) );
                 ui->labelPickerCalories->setText( QString( "%1 kcal" ).arg( (int)m_pTourData->getTourCalories().at( i ) ) );
-                ui->labelPickerGear->setText( QString( "%1;%2;%3" ).arg( (int)m_pTourData->getGearNumFront().at( i ) )
-                                                 .arg( (int)m_pTourData->getGearNumRear().at( i ) )
-                                                 .arg( m_pTourData->getGearRatio().at( i ) ) );
 
                 // Create the "cross" and add it to the layer.
                 std::shared_ptr<GeometryPoint> cross(std::make_shared<GeometryPointImage>( PointWorldCoord( m_pTourData->getTourPosLong().at(i) * ( 180 / pow(2,31) ),
-                                                                                                          m_pTourData->getTourPosLat().at(i)  * ( 180 / pow(2,31) ) ),
-                                                                                          m_iconCrossHairs ) );
+                                                                                                            m_pTourData->getTourPosLat().at(i)  * ( 180 / pow(2,31) ) ),
+                                                                                                            m_iconCrossHairs ) );
                 m_layer_symb->clearGeometries();
                 m_layer_symb->addGeometry(cross);
                 m_layer_symb->setVisible( true );

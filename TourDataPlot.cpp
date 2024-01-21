@@ -167,32 +167,33 @@ void TourDataPlot::drawPlots( TourData *pTourData, ePlotXType xType, ePlotYType 
     m_lapLabels.clear();
     init();
 
-    QVector<double> tourTimeStamp;
+    setStartDate( pTourData->getTourTimeStamp().first() );
+    m_tourTimeStamp.clear();
     foreach( double time, pTourData->getTourTimeStamp() )
     {
-        tourTimeStamp.append( tourTimeToPlotTime( time ) );
+        m_tourTimeStamp.append( tourTimeToPlotTime( time ) );
     }
-    QVector<double> gearTimeStamp;
+    m_gearTimeStamp.clear();
     foreach( double time, pTourData->getGearTimeStamp() )
     {
-        gearTimeStamp.append( tourTimeToPlotTime( time ) );
+        m_gearTimeStamp.append( tourTimeToPlotTime( time ) );
     }
 
     //Altitude curve, and setup x axis for time if needed
     if( xType == Distance )
     {
         graph( AltitudeCurve )->setData( pTourData->getTourDistance(), pTourData->getTourAltitude() );
-        QSharedPointer<QCPAxisTicker> stdTicker(new QCPAxisTicker);
-        xAxis->setTicker(stdTicker);
+        QSharedPointer<QCPAxisTicker> stdTicker( new QCPAxisTicker );
+        xAxis->setTicker( stdTicker );
         xAxis->setRange( pTourData->getTourDistance().first(), pTourData->getTourDistance().last() );
     }
     else
     {
-        graph( AltitudeCurve )->setData( tourTimeStamp, pTourData->getTourAltitude() );
-        QSharedPointer<QCPAxisTickerTime> timeTicker(new QCPAxisTickerTime);
+        graph( AltitudeCurve )->setData( m_tourTimeStamp, pTourData->getTourAltitude() );
+        QSharedPointer<QCPAxisTickerTime> timeTicker( new QCPAxisTickerTime );
         timeTicker->setTimeFormat("%h:%m");
-        xAxis->setTicker(timeTicker);
-        xAxis->setRange( tourTimeStamp.first(), tourTimeStamp.last() );
+        xAxis->setTicker( timeTicker );
+        xAxis->setRange( m_tourTimeStamp.first(), m_tourTimeStamp.last() );
     }
     //Manual scale for altitude. If no altitude data available, autoscale centers the 0m-line
     if( ( ( (int)pTourData->getSession().ascent != 0 ) && ( (int)pTourData->getSession().descent != 0 ) ) )
@@ -206,25 +207,25 @@ void TourDataPlot::drawPlots( TourData *pTourData, ePlotXType xType, ePlotYType 
     QVector<double> xAvg;
     QVector<double> yAvg = { 0, 0 };
     if( xType == Distance ) xAvg = { pTourData->getTourDistance().first(), pTourData->getTourDistance().last() };
-    else xAvg = { tourTimeStamp.first(), tourTimeStamp.last() };
+    else xAvg = { m_tourTimeStamp.first(), m_tourTimeStamp.last() };
 
     switch( yType )
     {
     case Speed:
         if( xType == Distance ) graph( Free2ndCurve )->setData( pTourData->getTourDistance(), pTourData->getTourSpeed() );
-        else                    graph( Free2ndCurve )->setData( tourTimeStamp, pTourData->getTourSpeed() );
+        else                    graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourSpeed() );
         yAvg = { pTourData->getSession().avgSpeed * 3.6, pTourData->getSession().avgSpeed * 3.6 };
         graph( AverageLine )->setData( xAvg, yAvg );
         yAxis2->setRange( -1, pTourData->getSession().maxSpeed * 3.6 * 1.05 );
         break;
     case DeviceBattery:
         if( xType == Distance ) graph( Free2ndCurve )->setData( pTourData->getTourDistance(), pTourData->getTourBatterySoc() );
-        else                    graph( Free2ndCurve )->setData( tourTimeStamp, pTourData->getTourBatterySoc() );
+        else                    graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourBatterySoc() );
         yAxis2->setRange( 0, 100 );
         break;
     case Cadence:
         if( xType == Distance ) graph( Free2ndCurve )->setData( pTourData->getTourDistance(), pTourData->getTourCadence() );
-        else                    graph( Free2ndCurve )->setData( tourTimeStamp, pTourData->getTourCadence() );
+        else                    graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourCadence() );
         graph( Free2ndCurve )->setLineStyle( QCPGraph::lsNone );
         graph( Free2ndCurve )->setScatterStyle( QCPScatterStyle( QCPScatterStyle::ssCircle, 1 ) );
         graph( Free2ndCurve )->setPen( QColor( 0, 128, 255 ) );
@@ -234,12 +235,12 @@ void TourDataPlot::drawPlots( TourData *pTourData, ePlotXType xType, ePlotYType 
         break;
     case Temperature:
         if( xType == Distance ) graph( Free2ndCurve )->setData( pTourData->getTourDistance(), pTourData->getTourTemperature() );
-        else                    graph( Free2ndCurve )->setData( tourTimeStamp, pTourData->getTourTemperature() );
+        else                    graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourTemperature() );
         yAxis2->setRange( pTourData->getSession().minTemperature - 2, pTourData->getSession().maxTemperature + 2 );
         break;
     case Grade:
         if( xType == Distance ) graph( Free2ndCurve )->setData( pTourData->getTourDistance(), pTourData->getTourGrade() );
-        else                    graph( Free2ndCurve )->setData( tourTimeStamp, pTourData->getTourGrade() );
+        else                    graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourGrade() );
         graph( Free2ndCurve )->setBrush( QBrush( QColor( 0, 180, 0, 25 ) ) );
         {double maxGrade = pTourData->getSession().maxGrade;
         if( maxGrade < -pTourData->getSession().minGrade ) maxGrade = -pTourData->getSession().minGrade;
@@ -247,24 +248,24 @@ void TourDataPlot::drawPlots( TourData *pTourData, ePlotXType xType, ePlotYType 
         break;
     case HeartRate:
         if( xType == Distance ) graph( Free2ndCurve )->setData( pTourData->getTourDistance(), pTourData->getTourHeartRate() );
-        else                    graph( Free2ndCurve )->setData( tourTimeStamp, pTourData->getTourHeartRate() );
+        else                    graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourHeartRate() );
         yAvg = { pTourData->getSession().avgHeartRate, pTourData->getSession().avgHeartRate };
         graph( AverageLine )->setData( xAvg, yAvg );
         yAxis2->setRange( pTourData->getSession().minHeartRate - 5, pTourData->getSession().maxHeartRate + 5 );
         break;
     case Calories:
         if( xType == Distance ) graph( Free2ndCurve )->setData( pTourData->getTourDistance(), pTourData->getTourCalories() );
-        else                    graph( Free2ndCurve )->setData( tourTimeStamp, pTourData->getTourCalories() );
+        else                    graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourCalories() );
         yAxis2->setRange( -1, pTourData->getSession().totalCalories * 1.05 );
         break;
     case Power:
         if( xType == Distance ) graph( Free2ndCurve )->setData( pTourData->getTourDistance(), pTourData->getTourPower() );
-        else                    graph( Free2ndCurve )->setData( tourTimeStamp, pTourData->getTourPower() );
+        else                    graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourPower() );
         yAxis2->setRange( -1, pTourData->getSession().maxPower * 1.05 );
         break;
     case LRBalance:
         if( xType == Distance ) graph( Free2ndCurve )->setData( pTourData->getTourDistance(), pTourData->getTourLRBalance() );
-        else                    graph( Free2ndCurve )->setData( tourTimeStamp, pTourData->getTourLRBalance() );
+        else                    graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourLRBalance() );
         graph(Free2ndCurve)->rescaleAxes();
         yAxis2->setRange( (int)((yAxis2->range().lower - 10)/20) * 20, (int)((yAxis2->range().upper + 10)/20) * 20 );
         break;
@@ -277,9 +278,9 @@ void TourDataPlot::drawPlots( TourData *pTourData, ePlotXType xType, ePlotYType 
         }
         else
         {
-            graph( Free2ndCurve )->setData( gearTimeStamp, pTourData->getGearRatio() );
-            graph( Free3rdCurve )->setData( gearTimeStamp, pTourData->getGearNumFront() );
-            graph( Free4thCurve )->setData( gearTimeStamp, pTourData->getGearNumRear() );
+            graph( Free2ndCurve )->setData( m_gearTimeStamp, pTourData->getGearRatio() );
+            graph( Free3rdCurve )->setData( m_gearTimeStamp, pTourData->getGearNumFront() );
+            graph( Free4thCurve )->setData( m_gearTimeStamp, pTourData->getGearNumRear() );
         }
         graph( Free2ndCurve )->setLineStyle( ( QCPGraph::lsStepRight ) );
         graph( Free3rdCurve )->setLineStyle( ( QCPGraph::lsStepRight ) );
@@ -291,7 +292,7 @@ void TourDataPlot::drawPlots( TourData *pTourData, ePlotXType xType, ePlotYType 
         break;
     case GpsAccuracy:
         if( xType == Distance ) graph( Free2ndCurve )->setData( pTourData->getTourDistance(), pTourData->getTourGpsAccuracy() );
-        else                    graph( Free2ndCurve )->setData( tourTimeStamp, pTourData->getTourGpsAccuracy() );
+        else                    graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourGpsAccuracy() );
         graph(Free2ndCurve)->rescaleAxes();
         yAxis2->setRange( -1, yAxis2->range().upper * 1.05 );
         break;
@@ -344,7 +345,26 @@ double TourDataPlot::tourTimeToPlotTime( double time )
 {
     QDateTime baseTime = QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
     QDateTime upTime = baseTime.addSecs( (int)time );
-    return upTime.time().msecsSinceStartOfDay() / 1000.0;
+    //qDebug() << m_startDate.secsTo( upTime ) << upTime.time().msecsSinceStartOfDay() / 1000.0;
+    //return upTime.time().msecsSinceStartOfDay() / 1000.0;
+    return m_startDate.secsTo( upTime );
+}
+
+void TourDataPlot::setStartDate( double time )
+{
+    QDateTime baseTime = QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
+    QDateTime upTime = baseTime.addSecs( (int)time );
+    m_startDate = QDateTime( upTime.date() );
+}
+
+QVector<double> TourDataPlot::getTourTimeStamp() const
+{
+    return m_tourTimeStamp;
+}
+
+QVector<double> TourDataPlot::getGearTimeStamp() const
+{
+    return m_gearTimeStamp;
 }
 
 void TourDataPlot::mouseOverPlot(QMouseEvent *event)

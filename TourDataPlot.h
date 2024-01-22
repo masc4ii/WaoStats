@@ -69,7 +69,6 @@ private:
     const double m_lineWidth{1.05};
     QVector<double> m_tourTimeStamp;
     QVector<double> m_gearTimeStamp;
-    QDateTime m_startDate;
 };
 
 #endif // TOURDATAPLOT_H

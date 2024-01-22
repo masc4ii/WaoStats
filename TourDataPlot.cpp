@@ -167,7 +167,6 @@ void TourDataPlot::drawPlots( TourData *pTourData, ePlotXType xType, ePlotYType 
     m_lapLabels.clear();
     init();
 
-    setStartDate( pTourData->getTourTimeStamp().first() );
     m_tourTimeStamp.clear();
     foreach( double time, pTourData->getTourTimeStamp() )
     {
@@ -190,9 +189,9 @@ void TourDataPlot::drawPlots( TourData *pTourData, ePlotXType xType, ePlotYType 
     else
     {
         graph( AltitudeCurve )->setData( m_tourTimeStamp, pTourData->getTourAltitude() );
-        QSharedPointer<QCPAxisTickerTime> timeTicker( new QCPAxisTickerTime );
-        timeTicker->setTimeFormat("%h:%m");
-        xAxis->setTicker( timeTicker );
+        QSharedPointer<QCPAxisTickerDateTime> dateTimeTicker(new QCPAxisTickerDateTime);
+        dateTimeTicker->setDateTimeFormat("hh:mm");
+        xAxis->setTicker(dateTimeTicker);
         xAxis->setRange( m_tourTimeStamp.first(), m_tourTimeStamp.last() );
     }
     //Manual scale for altitude. If no altitude data available, autoscale centers the 0m-line
@@ -345,16 +344,7 @@ double TourDataPlot::tourTimeToPlotTime( double time )
 {
     QDateTime baseTime = QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
     QDateTime upTime = baseTime.addSecs( (int)time );
-    //qDebug() << m_startDate.secsTo( upTime ) << upTime.time().msecsSinceStartOfDay() / 1000.0;
-    //return upTime.time().msecsSinceStartOfDay() / 1000.0;
-    return m_startDate.secsTo( upTime );
-}
-
-void TourDataPlot::setStartDate( double time )
-{
-    QDateTime baseTime = QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
-    QDateTime upTime = baseTime.addSecs( (int)time );
-    m_startDate = QDateTime( upTime.date() );
+    return QCPAxisTickerDateTime::dateTimeToKey(upTime);
 }
 
 QVector<double> TourDataPlot::getTourTimeStamp() const

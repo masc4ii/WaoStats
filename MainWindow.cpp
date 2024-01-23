@@ -455,6 +455,7 @@ void MainWindow::configureMap()
     ui->action_osm->setCheckable( true );
     ui->action_otm->setCheckable( true );
     ui->action_4um->setCheckable( true );
+    ui->action_4um->setVisible( false );
     ui->action_cycle_osm->setCheckable( true );
     ui->action_thunderforest_cycle->setCheckable( true );
     ui->action_thunderforest_landscape->setCheckable( true );

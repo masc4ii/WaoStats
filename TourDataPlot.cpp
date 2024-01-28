@@ -260,6 +260,8 @@ void TourDataPlot::drawPlots( TourData *pTourData, ePlotXType xType, ePlotYType 
     case Power:
         if( xType == Distance ) graph( Free2ndCurve )->setData( pTourData->getTourDistance(), pTourData->getTourPower() );
         else                    graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourPower() );
+        yAvg = { pTourData->getSession().avgPower, pTourData->getSession().avgPower };
+        graph( AverageLine )->setData( xAvg, yAvg );
         yAxis2->setRange( -1, pTourData->getSession().maxPower * 1.05 );
         break;
     case LRBalance:

@@ -313,8 +313,6 @@
      <addaction name="action_sigmasport_topo"/>
      <addaction name="action_sigmasport_cycle"/>
      <addaction name="action_komoot"/>
-     <addaction name="action_esri_topo"/>
-     <addaction name="action_esri_imagery"/>
      <addaction name="separator"/>
      <addaction name="actionMapCaching"/>
      <addaction name="actionClearMapCache"/>
@@ -1556,22 +1554,6 @@
    </property>
    <property name="toolTip">
     <string>Show Average Marker</string>
-   </property>
-  </action>
-  <action name="action_esri_imagery">
-   <property name="text">
-    <string>Esri World Imagery Satellite</string>
-   </property>
-   <property name="toolTip">
-    <string>Esri World Imagery Satellite</string>
-   </property>
-  </action>
-  <action name="action_esri_topo">
-   <property name="text">
-    <string>Esri World Topo</string>
-   </property>
-   <property name="toolTip">
-    <string>Esri World Topo</string>
    </property>
   </action>
  </widget>

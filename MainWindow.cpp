@@ -49,7 +49,6 @@
 #include <QMapControl/MapAdapterBing.h>
 #include <QMapControl/MapAdapterSigma.h>
 #include <QMapControl/MapAdapterKomoot.h>
-#include <QMapControl/MapAdapterEsri.h>
 
 #include "dropbox/DropboxClient.h"
 #include "dropbox/files/FilesRoutes.h"
@@ -448,8 +447,6 @@ void MainWindow::configureMap()
     map_provider_group->addAction( ui->action_sigmasport_topo );
     map_provider_group->addAction( ui->action_sigmasport_cycle );
     map_provider_group->addAction( ui->action_komoot );
-    map_provider_group->addAction( ui->action_esri_topo );
-    map_provider_group->addAction( ui->action_esri_imagery );
     // Ensure the map provider actions are checkable.
     ui->action_google_map->setCheckable( true );
     ui->action_google_satellite->setCheckable( true );
@@ -469,10 +466,6 @@ void MainWindow::configureMap()
     ui->action_sigmasport_cycle->setCheckable( true );
     ui->action_komoot->setCheckable( true );
     ui->action_komoot->setVisible( false );
-    ui->action_esri_topo->setCheckable( true );
-    ui->action_esri_topo->setVisible( false );
-    ui->action_esri_imagery->setCheckable( true );
-    ui->action_esri_imagery->setVisible( false );
     // Default to OTM map.
     ui->action_otm->setChecked( true );
     // Connect signal/slot to set the map provider.
@@ -680,16 +673,6 @@ void MainWindow::mapProviderSelected(QAction* action)
     else if(action == ui->action_komoot)
     {
         map_layer->setMapAdapter(std::make_shared<MapAdapterKomoot>());
-    }
-    // Set the map to esri topo.
-    else if(action == ui->action_esri_topo)
-    {
-        map_layer->setMapAdapter(std::make_shared<MapAdapterEsri>(qmapcontrol::MapAdapterEsri::MapAdapterEsriType::TOPO));
-    }
-    // Set the map to esri satellite.
-    else if(action == ui->action_esri_imagery)
-    {
-        map_layer->setMapAdapter(std::make_shared<MapAdapterEsri>(qmapcontrol::MapAdapterEsri::MapAdapterEsriType::IMAGERY));
     }
 
     // Add the replacement map layer.
@@ -1124,8 +1107,6 @@ void MainWindow::writeSettings()
     else if( ui->action_sigmasport_topo->isChecked() ) mapType = 13;
     else if( ui->action_sigmasport_cycle->isChecked() ) mapType = 14;
     else if( ui->action_komoot->isChecked() ) mapType = 15;
-    else if( ui->action_esri_topo->isChecked() ) mapType = 16;
-    else if( ui->action_esri_imagery->isChecked() ) mapType = 17;
     set.setValue( "maptype", mapType );
     set.setValue( "workingPath", m_workingPath );
 }
@@ -1185,12 +1166,6 @@ void MainWindow::readSettings()
             break;
     case 15: ui->action_komoot->setChecked( true );
             mapProviderSelected( ui->action_komoot );
-            break;
-    case 16: ui->action_esri_topo->setChecked( true );
-            mapProviderSelected( ui->action_esri_topo );
-            break;
-    case 17: ui->action_esri_imagery->setChecked( true );
-            mapProviderSelected( ui->action_esri_imagery );
             break;
     case 0:
     default:

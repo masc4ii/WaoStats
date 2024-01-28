@@ -49,6 +49,7 @@
 #include <QMapControl/MapAdapterBing.h>
 #include <QMapControl/MapAdapterSigma.h>
 #include <QMapControl/MapAdapterKomoot.h>
+#include <QMapControl/MapAdapterEsri.h>
 
 #include "dropbox/DropboxClient.h"
 #include "dropbox/files/FilesRoutes.h"
@@ -432,7 +433,7 @@ void MainWindow::configureMap()
     // Create the map provider actions.
     QActionGroup* map_provider_group = new QActionGroup(this);
     map_provider_group->addAction( ui->action_google_map );
-    map_provider_group->addAction( ui->action_google_satelite );
+    map_provider_group->addAction( ui->action_google_satellite );
     map_provider_group->addAction( ui->action_google_hybrid );
     map_provider_group->addAction( ui->action_google_terrain );
     map_provider_group->addAction( ui->action_osm );
@@ -447,9 +448,11 @@ void MainWindow::configureMap()
     map_provider_group->addAction( ui->action_sigmasport_topo );
     map_provider_group->addAction( ui->action_sigmasport_cycle );
     map_provider_group->addAction( ui->action_komoot );
+    map_provider_group->addAction( ui->action_esri_topo );
+    map_provider_group->addAction( ui->action_esri_imagery );
     // Ensure the map provider actions are checkable.
     ui->action_google_map->setCheckable( true );
-    ui->action_google_satelite->setCheckable( true );
+    ui->action_google_satellite->setCheckable( true );
     ui->action_google_hybrid->setCheckable( true );
     ui->action_google_terrain->setCheckable( true );
     ui->action_osm->setCheckable( true );
@@ -466,6 +469,8 @@ void MainWindow::configureMap()
     ui->action_sigmasport_cycle->setCheckable( true );
     ui->action_komoot->setCheckable( true );
     ui->action_komoot->setVisible( false );
+    ui->action_esri_topo->setCheckable( true );
+    ui->action_esri_imagery->setCheckable( true );
     // Default to OTM map.
     ui->action_otm->setChecked( true );
     // Connect signal/slot to set the map provider.
@@ -600,7 +605,7 @@ void MainWindow::mapProviderSelected(QAction* action)
         map_layer->setMapAdapter(std::make_shared<MapAdapterGoogle>(qmapcontrol::MapAdapterGoogle::GoogleLayerType::MAPS));
     }
     // Set the map to Google Sat.
-    else if(action == ui->action_google_satelite)
+    else if(action == ui->action_google_satellite)
     {
         map_layer->setMapAdapter(std::make_shared<MapAdapterGoogle>(qmapcontrol::MapAdapterGoogle::GoogleLayerType::SATELLITE_ONLY));
     }
@@ -673,6 +678,16 @@ void MainWindow::mapProviderSelected(QAction* action)
     else if(action == ui->action_komoot)
     {
         map_layer->setMapAdapter(std::make_shared<MapAdapterKomoot>());
+    }
+    // Set the map to esri topo.
+    else if(action == ui->action_esri_topo)
+    {
+        map_layer->setMapAdapter(std::make_shared<MapAdapterEsri>(qmapcontrol::MapAdapterEsri::MapAdapterEsriType::TOPO));
+    }
+    // Set the map to esri satellite.
+    else if(action == ui->action_esri_imagery)
+    {
+        map_layer->setMapAdapter(std::make_shared<MapAdapterEsri>(qmapcontrol::MapAdapterEsri::MapAdapterEsriType::IMAGERY));
     }
 
     // Add the replacement map layer.
@@ -1092,7 +1107,7 @@ void MainWindow::writeSettings()
     set.setValue( "mapCaching", ui->actionMapCaching->isChecked() );
     int mapType = 0;
     if( ui->action_google_map->isChecked() ) mapType = 0;
-    else if( ui->action_google_satelite->isChecked() ) mapType = 1;
+    else if( ui->action_google_satellite->isChecked() ) mapType = 1;
     else if( ui->action_google_hybrid->isChecked() ) mapType = 2;
     else if( ui->action_google_terrain->isChecked() ) mapType = 3;
     else if( ui->action_osm->isChecked() ) mapType = 4;
@@ -1107,6 +1122,8 @@ void MainWindow::writeSettings()
     else if( ui->action_sigmasport_topo->isChecked() ) mapType = 13;
     else if( ui->action_sigmasport_cycle->isChecked() ) mapType = 14;
     else if( ui->action_komoot->isChecked() ) mapType = 15;
+    else if( ui->action_esri_topo->isChecked() ) mapType = 16;
+    else if( ui->action_esri_imagery->isChecked() ) mapType = 17;
     set.setValue( "maptype", mapType );
     set.setValue( "workingPath", m_workingPath );
 }
@@ -1122,8 +1139,8 @@ void MainWindow::readSettings()
 
     switch( set.value( "maptype", 0 ).toInt() )
     {
-    case 1: ui->action_google_satelite->setChecked( true );
-            mapProviderSelected( ui->action_google_satelite );
+    case 1: ui->action_google_satellite->setChecked( true );
+            mapProviderSelected( ui->action_google_satellite );
             break;
     case 2: ui->action_google_hybrid->setChecked( true );
             mapProviderSelected( ui->action_google_hybrid );
@@ -1166,6 +1183,12 @@ void MainWindow::readSettings()
             break;
     case 15: ui->action_komoot->setChecked( true );
             mapProviderSelected( ui->action_komoot );
+            break;
+    case 16: ui->action_esri_topo->setChecked( true );
+            mapProviderSelected( ui->action_esri_topo );
+            break;
+    case 17: ui->action_esri_imagery->setChecked( true );
+            mapProviderSelected( ui->action_esri_imagery );
             break;
     case 0:
     default:

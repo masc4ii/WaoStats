@@ -298,7 +298,7 @@
       <string>Map</string>
      </property>
      <addaction name="action_google_map"/>
-     <addaction name="action_google_satelite"/>
+     <addaction name="action_google_satellite"/>
      <addaction name="action_google_hybrid"/>
      <addaction name="action_google_terrain"/>
      <addaction name="action_osm"/>
@@ -313,6 +313,8 @@
      <addaction name="action_sigmasport_topo"/>
      <addaction name="action_sigmasport_cycle"/>
      <addaction name="action_komoot"/>
+     <addaction name="action_esri_topo"/>
+     <addaction name="action_esri_imagery"/>
      <addaction name="separator"/>
      <addaction name="actionMapCaching"/>
      <addaction name="actionClearMapCache"/>
@@ -1288,12 +1290,18 @@
   </action>
   <action name="action_bing">
    <property name="text">
-    <string>Bing Maps</string>
+    <string>Bing Satellite</string>
+   </property>
+   <property name="toolTip">
+    <string>Bing Satellite</string>
    </property>
   </action>
-  <action name="action_google_satelite">
+  <action name="action_google_satellite">
    <property name="text">
-    <string>Google: Satelite</string>
+    <string>Google: Satellite</string>
+   </property>
+   <property name="toolTip">
+    <string>Google: Satellite</string>
    </property>
   </action>
   <action name="action_google_hybrid">
@@ -1548,6 +1556,22 @@
    </property>
    <property name="toolTip">
     <string>Show Average Marker</string>
+   </property>
+  </action>
+  <action name="action_esri_imagery">
+   <property name="text">
+    <string>Esri World Imagery Satellite</string>
+   </property>
+   <property name="toolTip">
+    <string>Esri World Imagery Satellite</string>
+   </property>
+  </action>
+  <action name="action_esri_topo">
+   <property name="text">
+    <string>Esri World Topo</string>
+   </property>
+   <property name="toolTip">
+    <string>Esri World Topo</string>
    </property>
   </action>
  </widget>

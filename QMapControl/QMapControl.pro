@@ -66,6 +66,7 @@ HEADERS +=                                      \
     QMapControl/MapAdapterYahoo.h                           \
     QMapControl/MapAdapterSigma.h                           \
     QMapControl/MapAdapterKomoot.h                          \
+    QMapControl/MapAdapterEsri.h                            \
     QMapControl/NetworkManager.h                            \
     QMapControl/Point.h                                     \
     QMapControl/Projection.h                                \
@@ -110,6 +111,7 @@ SOURCES +=                                      \
     QMapControl/MapAdapterYahoo.cpp                         \
     QMapControl/MapAdapterSigma.cpp                         \
     QMapControl/MapAdapterKomoot.cpp                        \
+    QMapControl/MapAdapterEsri.cpp                          \
     QMapControl/NetworkManager.cpp                          \
     QMapControl/Projection.cpp                              \
     QMapControl/ProjectionEquirectangular.cpp               \

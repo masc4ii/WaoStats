@@ -470,7 +470,9 @@ void MainWindow::configureMap()
     ui->action_komoot->setCheckable( true );
     ui->action_komoot->setVisible( false );
     ui->action_esri_topo->setCheckable( true );
+    ui->action_esri_topo->setVisible( false );
     ui->action_esri_imagery->setCheckable( true );
+    ui->action_esri_imagery->setVisible( false );
     // Default to OTM map.
     ui->action_otm->setChecked( true );
     // Connect signal/slot to set the map provider.

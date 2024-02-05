@@ -971,7 +971,7 @@ void MainWindow::on_actionAbout_triggered()
                                          " <p>See <a href='%4'>this site</a> for more information.</p>"
                                          " <p>Icon by <a href='https://zez.am/71m'>71M</a>.</p>"
                                          " <p>dropboxQt Copyright (c) 2018 , <a href='%5'>prokarpaty.net</a> under MIT.</p>"
-                                         " <p>Qwt under <a href='%6'>Qwt License</a>.</p>"
+                                         " <p>QCustomPlot under <a href='%6'>GPL 3.0</a>.</p>"
                                          " <p>QMapControl under <a href='%7'>LGPL 3.0</a>.</p>"
                                          " <p>FitSDKRelease by <a href='%8'>Garmin</a>.</p>"
                                          " </body></html>" )
@@ -981,7 +981,7 @@ void MainWindow::on_actionAbout_triggered()
                                         .arg( "by masc." ) //3
                                         .arg( "https://github.com/masc4ii/WaoStats" ) //4
                                         .arg( "https://github.com/masc4ii/WaoStats/blob/main/dropboxQt/LICENSE" ) //5
-                                        .arg( "https://qwt.sourceforge.io/qwtlicense.html" ) //6
+                                        .arg( "https://github.com/masc4ii/WaoStats/blob/main/qcustomplot/GPL.txt" ) //6
                                         .arg( "https://github.com/masc4ii/WaoStats/blob/main/QMapControl/COPYING.LESSER" ) //7
                                         .arg( "https://developer.garmin.com/fit/download/" ) ); //8
 }

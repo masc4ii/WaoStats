@@ -21,14 +21,6 @@ git clone http://github.com/masc4ii/WaoStats
 $ unzip -d FitSDKRelease_21.105.00 FitSDKRelease_21.105.00.zip
 ```
 
-## qwt-6.2.0
-- [qwt-6.2.0.zip](https://sourceforge.net/projects/qwt/files/qwt/6.2.0/qwt-6.2.0.zip/download)
-```
-$ unzip qwt-6.2.0.zip
-$ cd qwt-6.2.0
-$ qmake && make && make install
-```
-
 ## dropboxQt
 ```
 $ cd dropboxQt/prj

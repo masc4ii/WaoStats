@@ -22,31 +22,6 @@ jobs:
       with:
         brew: llvm qt5 openssl
 
-    - name: Download Qwt
-      uses: suisei-cn/actions-download-file@master
-      with:
-        url:    https://altushost-swe.dl.sourceforge.net/project/qwt/qwt/6.2.0/qwt-6.2.0.zip
-        target: ${{ env.SOURCE_DIR }}/
-
-    - name: Unzip Qwt
-      working-directory: ${{ env.SOURCE_DIR }}
-      run: |
-           7z x qwt-6.2.0.zip -o${{ env.SOURCE_DIR }}
-           cd ${{ env.SOURCE_DIR }}/qwt-6.2.0
-           ls -al
-
-    - name: Build Qwt
-      continue-on-error: true
-      working-directory: ${{ env.SOURCE_DIR }}/qwt-6.2.0
-      run: |
-           ${{ env.QTDIR }}/qmake -r qwt.pro
-           make -j8
-           sudo make install
-           cd lib
-           ls -al
-           sudo cp -R /usr/local/qwt-6.2.0/lib/qwt.framework /Library/Frameworks/qwt.framework
-           sudo cp -R /usr/local/qwt-6.2.0/lib/qwt.framework /Library/Frameworks/qwt.framework/Versions/6/qwt.framework
-
     - name: Build DropboxQt
       working-directory: ${{ env.SOURCE_DIR }}/dropboxQt/prj
       run: |

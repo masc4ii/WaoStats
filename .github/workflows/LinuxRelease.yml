@@ -20,30 +20,6 @@ jobs:
       run: |
            sudo apt-get install --no-install-recommends make g++ qt5-qmake qtbase5-dev libqt5opengl5-dev libqt5designer5 libqt5svg5-dev libfuse2 libxkbcommon-x11-0 appstream
 
-    - name: Download Qwt
-      uses: suisei-cn/actions-download-file@master
-      with:
-        url:    https://altushost-swe.dl.sourceforge.net/project/qwt/qwt/6.2.0/qwt-6.2.0.zip
-        target: ${{ env.SOURCE_DIR }}/
-
-    - name: Unzip Qwt
-      working-directory: ${{ env.SOURCE_DIR }}
-      run: |
-           unzip qwt-6.2.0.zip
-           cd qwt-6.2.0
-           ls -al
-
-    - name: Build Qwt
-      continue-on-error: true
-      working-directory: ${{ env.SOURCE_DIR }}/qwt-6.2.0
-      run: |
-           qmake qwt.pro
-           make -j8
-           sudo make install
-           cd lib
-           ls -al
-           sudo cp -R * /usr/lib/
-
     - name: Build DropboxQt
       working-directory: ${{ env.SOURCE_DIR }}/dropboxQt/prj
       run: |
@@ -80,7 +56,7 @@ jobs:
     - name: Create Appimage
       working-directory: ${{ env.SOURCE_DIR }}/../build
       run: |
-           # Install lib for linuxdeploy, /usr/local/qwt-6.2.0/lib/libqwt.so.6.2
+           # Install lib for linuxdeploy
            linuxdeploy-x86_64.AppImage --desktop-file=image/WaoStats.desktop --executable=WaoStats --appdir=image --plugin=qt --output=appimage --verbosity=3 --icon-file=image/WaoStatsLogoMap.png
            cp WaoStats-*.AppImage ${{ env.ARTIFACT }}
           

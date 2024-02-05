@@ -38,28 +38,6 @@ jobs:
            dir C:\Qt\5.15.2\mingw81_64\bin
            dir C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin
 
-    - name: Download Qwt
-      uses: suisei-cn/actions-download-file@master
-      with:
-        url:    https://altushost-swe.dl.sourceforge.net/project/qwt/qwt/6.2.0/qwt-6.2.0.zip
-        target: ${{ runner.temp }}\
-
-    - name: Unzip Qwt
-      working-directory: ${{ runner.temp }}
-      run: |
-           7z x qwt-6.2.0.zip -o${{ env.SOURCE_DIR }}
-           dir ${{ env.SOURCE_DIR }}\qwt-6.2.0
-
-    - name: Build Qwt
-      continue-on-error: true
-      working-directory: ${{ env.SOURCE_DIR }}\qwt-6.2.0
-      run: |
-           C:\Qt\5.15.2\mingw81_64\bin\qmake.exe -r qwt.pro
-           ${{ runner.temp }}\jom\jom -j8
-           make.exe install
-           dir
-           dir ${{ env.SOURCE_DIR }}\qwt-6.2.0\lib
-
     - name: Build DropboxQt
       working-directory: ${{ env.SOURCE_DIR }}\dropboxQt\prj
       run: |
@@ -81,7 +59,6 @@ jobs:
            copy C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin\libgomp-1.dll .
            copy "C:\Program Files\OpenSSL\bin\libcrypto-1_1-x64.dll" .
            copy "C:\Program Files\OpenSSL\bin\libssl-1_1-x64.dll" .
-           copy "${{ env.SOURCE_DIR }}\qwt-6.2.0\lib\qwt.dll" .
            copy C:\Qt\5.15.2\mingw81_64\bin\Qt5OpenGL.dll .
            dir
 

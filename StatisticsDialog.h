@@ -4,8 +4,6 @@
 #include <QDialog>
 #include <QTreeWidget>
 
-#include <qwt_plot_multi_barchart.h>
-
 namespace Ui {
 class StatisticsDialog;
 }
@@ -28,8 +26,8 @@ private slots:
 private:
     Ui::StatisticsDialog *ui;
     QTreeWidget *m_pTourTree;
-    QwtPlotMultiBarChart *m_pBarChartItem;
-    QList<QwtText> m_bikeTitles;
+    QStringList m_bikeTitles;
+    const QStringList m_colors = { "palevioletred", "darkred", "tomato", "chocolate", "sandybrown", "gold", "yellowgreen", "seagreen", "mediumturquoise", "deepskyblue" };
 
     void plotCreate( void );
     void plotDaysOfWeek( void );

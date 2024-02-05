@@ -24,6 +24,15 @@
        <string>Distance over Time</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="leftMargin">
+        <number>12</number>
+       </property>
+       <property name="rightMargin">
+        <number>12</number>
+       </property>
+       <property name="bottomMargin">
+        <number>12</number>
+       </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
@@ -139,7 +148,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QwtPlot" name="qwtPlot">
+        <widget class="StatisticsPlot" name="widgetPlot" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -183,9 +192,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QwtPlot</class>
-   <extends>QFrame</extends>
-   <header>qwt_plot.h</header>
+   <class>StatisticsPlot</class>
+   <extends>QWidget</extends>
+   <header>StatisticsPlot.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

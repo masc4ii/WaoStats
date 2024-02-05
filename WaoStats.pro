@@ -25,24 +25,6 @@ include( fitc.pri )
 #Define for FIT CPP SDK
 #include( fitcpp.pri )
 
-CONFIG += qwt
-include( $${PWD}/qwt-6.2.0/qwtconfig.pri )
-#include( $${PWD}/qwt-6.2.0/qwtbuild.pri )
-include( $${PWD}/qwt-6.2.0/qwtfunctions.pri )
-macx{
-    LIBS += -L/usr/local/qwt-6.2.0/lib/ -framework qwt
-    INCLUDEPATH += /usr/local/qwt-6.2.0/lib/qwt.framework/Versions/6/Headers
-    qwtAddLibrary(/usr/local/qwt-6.2.0/lib/, qwt)
-}
-win32{
-    LIBS += -L$${PWD}/qwt-6.2.0/lib/ -lqwt
-    INCLUDEPATH += $${PWD}/qwt-6.2.0/src
-}
-linux-g++{
-    LIBS += -L$${PWD}/qwt-6.2.0/lib/ -lqwt
-    INCLUDEPATH += $${PWD}/qwt-6.2.0/src
-}
-
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
@@ -67,6 +49,7 @@ SOURCES += \
     ServiceEntryDialog.cpp \
     Splash.cpp \
     StatisticsDialog.cpp \
+    StatisticsPlot.cpp \
     ThreadTrack2Point.cpp \
     TourData.cpp \
     TourDataPlot.cpp \
@@ -91,6 +74,7 @@ HEADERS += \
     ServiceEntryDialog.h \
     Splash.h \
     StatisticsDialog.h \
+    StatisticsPlot.h \
     ThreadTrack2Point.h \
     TourData.h \
     TourDataPlot.h \

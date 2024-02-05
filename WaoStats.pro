@@ -5,7 +5,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 CONFIG += c++17
 
 macx{
-    arm64{
+    equals(QT_ARCH, arm64) {
         QMAKE_CC = /opt/homebrew/opt/llvm/bin/clang
         QMAKE_CXX = /opt/homebrew/opt/llvm/bin/clang++
         QMAKE_LINK = /opt/homebrew/opt/llvm/bin/clang++

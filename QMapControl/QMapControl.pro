@@ -11,12 +11,14 @@ include(QMapControl.pri)
 #    TARGET = qmapcontrol
 #}
 
+CONFIG += c++17
+
 macx{equals(QT_ARCH, arm64) {
     QMAKE_CC = /opt/homebrew/opt/llvm/bin/clang
     QMAKE_CXX = /opt/homebrew/opt/llvm/bin/clang++
     QMAKE_LINK = /opt/homebrew/opt/llvm/bin/clang++
     QMAKE_CFLAGS += -fopenmp -ftree-vectorize
-    QMAKE_CXXFLAGS += -fopenmp -std=c++15 -ftree-vectorize
+    QMAKE_CXXFLAGS += -fopenmp -std=c++17 -ftree-vectorize
     INCLUDEPATH += -I/opt/homebrew/opt/llvm/include
     LIBS += -L/opt/homebrew/opt/llvm/lib -lomp -L/opt/homebrew/opt/openssl/lib -lssl
     QMAKE_APPLE_DEVICE_ARCHS = arm64

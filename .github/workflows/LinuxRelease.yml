@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@master
 
     - name: Install compiler & Qt
       run: |
@@ -49,7 +49,7 @@ jobs:
            ls -al
 
     - name: Install LinuxDeploy
-      uses: miurahr/install-linuxdeploy-action@v1.7.0
+      uses: miurahr/install-linuxdeploy-action@master
       with:
         plugins: qt appimage
 

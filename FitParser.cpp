@@ -79,7 +79,7 @@ bool FitParser::loadFit(QString fileName)
 
                 case FIT_MESG_NUM_USER_PROFILE:
                 {
-                    const FIT_USER_PROFILE_MESG *user_profile = (FIT_USER_PROFILE_MESG *) mesg;
+                    //const FIT_USER_PROFILE_MESG *user_profile = (FIT_USER_PROFILE_MESG *) mesg;
                     //printf("User Profile: weight=%0.1fkg\n", user_profile->weight / 10.0f);
                     break;
                 }
@@ -135,7 +135,7 @@ bool FitParser::loadFit(QString fileName)
 
                     if( session->avg_power             < 65535 ) m_session.avgPower = session->avg_power;
                     if( session->max_power             < 65535 ) m_session.maxPower = session->max_power;
-                    if( session->left_right_balance    < 65535 ) if( session->left_right_balance <= 100 ) m_session.leftRightBalance = session->left_right_balance; else m_session.leftRightBalance = session->left_right_balance / 100.0;
+                    if( session->left_right_balance    < 65535 ) if( session->left_right_balance <= 100 ){m_session.leftRightBalance = session->left_right_balance;}else{m_session.leftRightBalance = session->left_right_balance / 100.0;}
                     if( session->total_work            < 65535 ) m_session.totalWork = session->total_work;
                     if( session->total_calories        < 65535 ) m_session.totalCalories = session->total_calories;
                     if( session->normalized_power      < 65535 ) m_session.normalizedPower = session->normalized_power;
@@ -184,7 +184,7 @@ bool FitParser::loadFit(QString fileName)
 
                     if( lapMesg->avg_power          < 65535 ) lap.avgPower = lapMesg->avg_power;
                     if( lapMesg->max_power          < 65535 ) lap.maxPower = lapMesg->max_power;
-                    if( lapMesg->left_right_balance < 65535 ) if( lapMesg->left_right_balance <= 100 ) lap.leftRightBalance = lapMesg->left_right_balance; else lap.leftRightBalance = lapMesg->left_right_balance / 100.0;
+                    if( lapMesg->left_right_balance < 65535 ) if( lapMesg->left_right_balance <= 100 ){lap.leftRightBalance = lapMesg->left_right_balance;}else{lap.leftRightBalance = lapMesg->left_right_balance / 100.0;}
                     if( lapMesg->total_work         < 65535 ) lap.totalWork = lapMesg->total_work;
                     if( lapMesg->total_calories     < 65535 ) lap.totalCalories = lapMesg->total_calories;
                     if( lapMesg->normalized_power   < 65535 ) lap.normalizedPower = lapMesg->normalized_power;
@@ -453,14 +453,14 @@ bool FitParser::loadFit(QString fileName)
 
                 case FIT_MESG_NUM_DEVELOPER_DATA_ID:
                 {
-                    const FIT_DEVELOPER_DATA_ID_MESG *dev = (FIT_DEVELOPER_DATA_ID_MESG *) mesg;
+                    //const FIT_DEVELOPER_DATA_ID_MESG *dev = (FIT_DEVELOPER_DATA_ID_MESG *) mesg;
                     //qDebug() << dev->application_version << dev->developer_data_index << dev->application_id << dev->developer_id << dev->manufacturer_id;
                     break;
                 }
 
                 case FIT_MESG_NUM_FIELD_DESCRIPTION:
                 {
-                    const FIT_FIELD_DESCRIPTION_MESG *field = (FIT_FIELD_DESCRIPTION_MESG *) mesg;
+                    //const FIT_FIELD_DESCRIPTION_MESG *field = (FIT_FIELD_DESCRIPTION_MESG *) mesg;
                     /*qDebug() << field->field_name
                              << field->developer_data_index
                              << field->field_definition_number

@@ -1418,14 +1418,12 @@ void MainWindow::calcBikeTotalDistances()
     {
         QTreeWidgetItem *bikeItem = ui->treeWidgetTours->topLevelItem( i );
         double totalDistance = odoInitKm( i );
-        double totalDistanceWithTime = 0;
         unsigned int totalTimeSec = 0;
         unsigned int totalAscent = 0;
         unsigned int totalDescent = 0;
         for( int j = 0; j < bikeItem->childCount(); j++ )
         {
             totalDistance += bikeItem->child( j )->text( 3 ).toDouble();
-            totalDistanceWithTime += bikeItem->child( j )->text( 3 ).toDouble();
             totalTimeSec += bikeItem->child( j )->text( 4 ).toDouble();
             totalAscent += bikeItem->child( j )->text( 5 ).toDouble();
             totalDescent += bikeItem->child( j )->text( 6 ).toDouble();

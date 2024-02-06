@@ -322,7 +322,7 @@ void ServiceDialog::updateCellColor()
 {
     for( int i = 0; i < ui->tableWidget->rowCount(); i++ )
     {
-        for( int j = 0; j < ui->tableWidget->columnCount(); j++ ) ui->tableWidget->item( i, j )->setBackgroundColor( QColor( 255, 0, 0, 0 ) );
+        for( int j = 0; j < ui->tableWidget->columnCount(); j++ ) ui->tableWidget->item( i, j )->setBackground( QColor( 255, 0, 0, 0 ) );
 
         bool limitOdo = false;
         bool limitTime = false;
@@ -345,10 +345,10 @@ void ServiceDialog::updateCellColor()
         {
             for( int j = 0; j < ui->tableWidget->columnCount(); j++ )
             {
-                ui->tableWidget->item( i, j )->setBackgroundColor( QColor( 255, 0, 0, 64 ) );
+                ui->tableWidget->item( i, j )->setBackground( QColor( 255, 0, 0, 64 ) );
             }
-            if( limitOdo )  ui->tableWidget->item( i, ODOINTER  )->setBackgroundColor( QColor( 255, 0, 0, 128 ) );
-            if( limitTime ) ui->tableWidget->item( i, TIMEINTER )->setBackgroundColor( QColor( 255, 0, 0, 128 ) );
+            if( limitOdo )  ui->tableWidget->item( i, ODOINTER  )->setBackground( QColor( 255, 0, 0, 128 ) );
+            if( limitTime ) ui->tableWidget->item( i, TIMEINTER )->setBackground( QColor( 255, 0, 0, 128 ) );
         }
     }
 }

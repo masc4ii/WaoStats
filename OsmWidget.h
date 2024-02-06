@@ -11,7 +11,7 @@ public:
     explicit OsmWidget(QWidget *parent = nullptr);
 
 private:
-    void resizeEvent( QResizeEvent *event );
+    void resizeEvent(QResizeEvent *);
 
 signals:
     void resized( void );

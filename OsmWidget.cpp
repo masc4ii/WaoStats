@@ -6,7 +6,7 @@ OsmWidget::OsmWidget(QWidget *parent)
 
 }
 
-void OsmWidget::resizeEvent(QResizeEvent *event)
+void OsmWidget::resizeEvent(QResizeEvent *)
 {
     emit resized();
 }

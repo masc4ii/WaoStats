@@ -13,7 +13,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@master
 
     - name: Download JOM
       uses: suisei-cn/actions-download-file@master

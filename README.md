@@ -34,6 +34,7 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 
 ## Used Libraries
 - dropboxQt, under [MIT](https://github.com/masc4ii/WaoStats/blob/main/dropboxQt/LICENSE)
+- QCustomPlot, under [GPL 3.0](https://github.com/masc4ii/WaoStats/blob/main/qcustomplot/GPL.txt)
 - QMapControl, under [LGPL 3.0](https://github.com/masc4ii/WaoStats/blob/main/QMapControl/COPYING.LESSER)
 - FitSDKRelease_21.105.00, download code from Garmin official SDK webpage
 - App Icon by [71M](https://zez.am/71m)

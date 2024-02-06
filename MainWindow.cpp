@@ -519,7 +519,7 @@ void MainWindow::drawPlots( void )
     ui->widgetPlot->drawPlots( pTourData, xType, yType );
 }
 
-void MainWindow::drawTourToMap(TourData *pTourData, bool autoZoom = true)
+void MainWindow::drawTourToMap(TourData *pTourData, bool autoZoom)
 {
     if( !pTourData->containsPositionInfo() )
     {

@@ -79,7 +79,7 @@ private:
     void adjustGui();
     void configureMap( void );
     void drawPlots( void );
-    void drawTourToMap( TourData *pTourData, bool autoZoom );
+    void drawTourToMap( TourData *pTourData, bool autoZoom = true );
     void writeSettings();
     void readSettings();
     void configureActionGroups( void );

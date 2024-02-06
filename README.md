@@ -9,6 +9,7 @@
 [![FitSDK](https://img.shields.io/badge/FitSDKRelease-21.105.00-brightgreen)](https://developer.garmin.com/fit/download/)
 [![dropboxQt](https://img.shields.io/badge/dropboxQt-yellow)](https://github.com/osoftteam/dropboxQt)
 [![QMapControl](https://img.shields.io/badge/QMapControl-yellow)](https://github.com/TheDZhon/QMapControl)
+[![QCustomPlot](https://img.shields.io/badge/QCustomPlot-yellow)](https://www.qcustomplot.com)
 
 [![Commit Activity](https://img.shields.io/github/commit-activity/m/masc4ii/WaoStats)](https://github.com/masc4ii/WaoStats/pulse)
 [![Last Commit](https://img.shields.io/github/last-commit/masc4ii/WaoStats)](https://github.com/masc4ii/WaoStats/pulse)

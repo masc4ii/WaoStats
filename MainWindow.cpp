@@ -11,6 +11,7 @@
 #include "HelperFunctions.h"
 #include "ThreadTrack2Point.h"
 #include "ProgressDialog.h"
+#include "DropBoxDownloadDialog.h"
 
 #include <QDebug>
 #include <QWidget>
@@ -49,13 +50,6 @@
 #include <QMapControl/MapAdapterBing.h>
 #include <QMapControl/MapAdapterSigma.h>
 #include <QMapControl/MapAdapterKomoot.h>
-
-#include "dropbox/DropboxClient.h"
-#include "dropbox/files/FilesRoutes.h"
-#include "dropbox/endpoint/DropboxAppInfo.h"
-#include "dropbox/endpoint/DropboxAuthInfo.h"
-
-using namespace dropboxQt;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -805,75 +799,22 @@ void MainWindow::on_actionSyncDropbox_triggered()
     delete dropboxAuth;
     if( !ret ) return;
 
-    //Load token
-    /*DropboxAuthInfo authInfo;
-    // Read auth info file.
-    if(!authInfo.readFromFile( workingPath() + "token.info" )){
-        QMessageBox::critical( this, tr( "Dropbox Error" ), tr( "Error reading Dropbox <auth-file> !" ) );
-        return;
-    }*/
-    //ApiListener lsn;
-    //DropboxClient c( authInfo.getAccessToken() );
-    DropboxClient c( token );
-    //QObject::connect(&c, &DropboxClient::downloadProgress, &lsn, &ApiListener::progressDownload);
-
-    //What are the new files?
-    QStringList downloadList;
-    QDirIterator it( workingPath(), QStringList() << "*.fit", QDir::Files, QDirIterator::Subdirectories);
-    QStringList localList;
-    while( it.hasNext() ) localList << QFileInfo( it.next() ).fileName();
-    foreach( QString fitFile, c.listFolder( "/Apps/WahooFitness/" ) )
-    {
-        if( !localList.contains( fitFile ) ) downloadList << fitFile;
-    }
-    //qDebug() << downloadList;
-    if( downloadList.isEmpty() )
+    //Load
+    DropBoxDownloadDialog *pDDD = new DropBoxDownloadDialog( this, token, workingPath() );
+    if( !pDDD->createDownloadList() )
     {
         QMessageBox::information( this, tr( "Dropbox Error" ), tr( "No new file found!" ) );
         return;
     }
-
-    //Create Directory
-    if( !QDir( workingPath() + "New/" ).exists() )
-        QDir().mkdir( workingPath() + "New/" );
-
-    //Progress dialog
-    QMutex mutex;
-    uint32_t todo = downloadList.size();
-    ProgressDialog *prD = new ProgressDialog( this, downloadList.size(), &mutex, &todo );
-    prD->setTitle( "Sync Dropbox" );
-    prD->setActionText( "tracks downloaded" );
-    prD->open();
-
-    //Download all files
-    foreach( QString fitFile, downloadList )
+    pDDD->open();
+    pDDD->downloadFiles();
+    while( !pDDD->downloadResult() )
     {
-        QFile out( QString( workingPath() + "New/" + fitFile ) );
-        if(!out.open(QFile::WriteOnly|QIODevice::Truncate)){
-            QMessageBox::critical( this, tr( "Dropbox Error opening file" ), tr( "Dropbox Error opening file" ) );
-            prD->close();
-            delete prD;
-            return;
-        }
-
-        try
-        {
-            files::DownloadArg arg( QString( "/Apps/WahooFitness/" + fitFile ) );
-            std::unique_ptr<files::Metadata> res = c.getFiles()->download(arg, &out);
-        }
-        catch(DropboxException& e)
-        {
-            QMessageBox::critical( this, tr( "Dropbox Exception" ), e.what() );
-        }
-
-        out.close();
-
-        if( prD->wasRejected() ) break;
-        todo--;
-        prD->update();
+        update();
+        QThread::msleep(100);
     }
-    prD->close();
-    delete prD;
+    if( pDDD->downloadResult() == 3 ) QMessageBox::critical( this, tr( "Dropbox Error opening file" ), tr( "Dropbox Error opening file" ) );
+    delete pDDD;
 
     scanTours();
 }

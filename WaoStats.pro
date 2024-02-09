@@ -41,6 +41,7 @@ SOURCES += \
     AdbSelectDeviceDialog.cpp \
     AdbWrapper.cpp \
     DropBoxAuthDialog.cpp \
+    DropBoxDownloadDialog.cpp \
     GpxParser.cpp \
     LineEditEscDelete.cpp \
     OsmWidget.cpp \
@@ -63,6 +64,7 @@ HEADERS += \
     AdbWrapper.h \
     BikeEditingDelegate.h \
     DropBoxAuthDialog.h \
+    DropBoxDownloadDialog.h \
     Globals.h \
     GpxParser.h \
     HelperFunctions.h \
@@ -84,6 +86,7 @@ HEADERS += \
 FORMS += \
     AdbSelectDeviceDialog.ui \
     DropBoxAuthDialog.ui \
+    DropBoxDownloadDialog.ui \
     MainWindow.ui \
     ProgressDialog.ui \
     ServiceDialog.ui \

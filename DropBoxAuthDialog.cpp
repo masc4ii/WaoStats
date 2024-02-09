@@ -7,6 +7,9 @@
 #include <QMessageBox>
 #include <QClipboard>
 
+#include "dropbox/endpoint/DropboxWebAuth.h"
+#include "dropbox/DropboxClient.h"
+
 DropBoxAuthDialog::DropBoxAuthDialog(QString workingPath, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DropBoxAuthDialog),

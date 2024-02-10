@@ -86,6 +86,8 @@ Compiling on Ubuntu: [howto](https://github.com/masc4ii/WaoStats/blob/main/docs/
 - Find downloaded fit tracks in archive folder / WaoStats left list "New"
 
 ## Plot
-- Wheel: zoom
-- Left drag: move
+- Wheel on plot: zoom 2D
+- Wheel on axis: zoom 1D
+- Left drag on plot: move 2D
+- Left drag on axis: move 1D
 - Right click: select between curves

@@ -14,7 +14,6 @@ public:
 
 private:
     int m_jobs;
-    QMutex *m_pMutex;
     uint32_t *m_pTodo;
     QString m_deviceId;
     QStringList m_downloadList;

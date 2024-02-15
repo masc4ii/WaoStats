@@ -4,6 +4,7 @@
 
 #include <QDir>
 #include <QDirIterator>
+#include <QTimer>
 
 AdbDownloadDialog::AdbDownloadDialog(QWidget *parent, QString deviceId, QString workingPath) :
     ProgressDialog(parent),
@@ -41,25 +42,30 @@ bool AdbDownloadDialog::createDownloadList()
     }
     //qDebug() << downloadList;
 
-    //ui->labelInfo->setText( QString( "%1 / %2 %3..." ).arg( 0 ).arg( m_downloadList.size() ).arg( m_actionText ) );
-    ui->labelInfo->setText( "Please wait while downloading tracks..." );
-    ui->progressBar->setVisible( false );
+    ui->labelInfo->setText( QString( "%1 / %2 %3..." ).arg( 0 ).arg( m_downloadList.size() ).arg( m_actionText ) );
+    //ui->labelInfo->setText( "Please wait while downloading tracks..." );
+    //ui->progressBar->setVisible( false );
+
+    m_jobs = m_downloadList.size();
+    m_todo = m_downloadList.size();
 
     return !m_downloadList.isEmpty();
 }
 
 void AdbDownloadDialog::downloadFiles()
 {
-    int todo = m_downloadList.size();
-    int jobs = todo;
-
     //Create Directory
     if( !QDir( m_workingPath + "New/" ).exists() )
         QDir().mkdir( m_workingPath + "New/" );
 
+    QTimer::singleShot( 0, this, SLOT(downloadFile()) );
+}
+
+void AdbDownloadDialog::downloadFile()
+{
     //Download all files
     AdbWrapper *adbWrap = new AdbWrapper( this );
-    foreach( QString fitFile, m_downloadList )
+    QString fitFile = m_downloadList.first();
     {
         if( !adbWrap->downloadTrack( m_deviceId, fitFile, m_workingPath + "New/" ) )
         {
@@ -71,14 +77,19 @@ void AdbDownloadDialog::downloadFiles()
             reject();
             return;
         }
-        todo--;
-        ui->progressBar->setValue( 100 * ( (double)m_jobs - (double)todo ) / (double)jobs );
-        //ui->labelInfo->setText( QString( "%1 / %2 %3..." ).arg( jobs - todo ).arg( jobs ).arg( m_actionText ) );
+        m_todo--;
+        ui->progressBar->setValue( 100 * ( (double)m_jobs - (double)m_todo ) / (double)m_jobs );
+        ui->labelInfo->setText( QString( "%1 / %2 %3..." ).arg( m_jobs - m_todo ).arg( m_jobs ).arg( m_actionText ) );
         update();
-        repaint();
     }
     delete adbWrap;
-    accept();
-    m_retVal = RetAccept;
-    return;
+    m_downloadList.removeFirst();
+
+    if(m_downloadList.empty())
+    {
+        accept();
+        m_retVal = RetAccept;
+        return;
+    }
+    QTimer::singleShot( 0, this, SLOT( downloadFile() ) );
 }

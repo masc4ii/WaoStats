@@ -12,9 +12,12 @@ public:
     bool createDownloadList( void );
     void downloadFiles( void );
 
+public slots:
+    void downloadFile( void );
+
 private:
     int m_jobs;
-    uint32_t *m_pTodo;
+    int m_todo;
     QString m_deviceId;
     QStringList m_downloadList;
     QString m_workingPath;

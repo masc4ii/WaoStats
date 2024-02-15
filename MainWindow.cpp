@@ -1470,7 +1470,7 @@ void MainWindow::on_actionSyncAdb_triggered()
     pAdbD->downloadFiles();
     while( !pAdbD->downloadResult() )
     {
-        update();
+        QApplication::processEvents();
         QThread::msleep(100);
     }
     if( pAdbD->downloadResult() == DropBoxDownloadDialog::RetError ) QMessageBox::critical( this, tr( "ADB Sync error" ), tr( "ADB copy failed!" ) );

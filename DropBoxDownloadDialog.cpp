@@ -41,15 +41,14 @@ void DropBoxDownloadDialog::setTitle(QString text)
     setWindowTitle( text );
 }
 
-int DropBoxDownloadDialog::downloadResult()
+DropBoxDownloadDialog::eDropBoxReturn DropBoxDownloadDialog::downloadResult()
 {
-    return m_NoneAccecptRejectError;
+    return m_retVal;
 }
 
 void DropBoxDownloadDialog::on_pushButtonAbort_clicked()
 {
-    m_NoneAccecptRejectError = 2;
-    //reject();
+    m_retVal = RetReject;
 }
 
 bool DropBoxDownloadDialog::createDownloadList()
@@ -83,7 +82,7 @@ void DropBoxDownloadDialog::downloadFiles()
     {
         QFile out( QString( m_workingPath + "New/" + fitFile ) );
         if(!out.open(QFile::WriteOnly|QIODevice::Truncate)){
-            m_NoneAccecptRejectError = 3;
+            m_retVal = RetError;
             close();
             return;
         }
@@ -100,7 +99,7 @@ void DropBoxDownloadDialog::downloadFiles()
 
         out.close();
 
-        if( m_NoneAccecptRejectError == 2 )
+        if( m_retVal == RetReject )
         {
             reject();
             break;
@@ -111,6 +110,6 @@ void DropBoxDownloadDialog::downloadFiles()
         update();
     }
     accept();
-    m_NoneAccecptRejectError = 1;
+    m_retVal = RetAccept;
     return;
 }

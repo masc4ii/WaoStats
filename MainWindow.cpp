@@ -813,7 +813,7 @@ void MainWindow::on_actionSyncDropbox_triggered()
         update();
         QThread::msleep(100);
     }
-    if( pDDD->downloadResult() == 3 ) QMessageBox::critical( this, tr( "Dropbox Error opening file" ), tr( "Dropbox Error opening file" ) );
+    if( pDDD->downloadResult() == DropBoxDownloadDialog::RetError ) QMessageBox::critical( this, tr( "Dropbox Error opening file" ), tr( "Dropbox Error opening file" ) );
     delete pDDD;
 
     scanTours();

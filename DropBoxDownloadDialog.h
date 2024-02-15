@@ -13,11 +13,17 @@ class DropBoxDownloadDialog : public QDialog
     Q_OBJECT
 
 public:
+    enum eDropBoxReturn {
+        RetNone = 0,
+        RetAccept,
+        RetReject,
+        RetError
+    };
     explicit DropBoxDownloadDialog(QWidget *parent = nullptr, QString token = QString(""), QString workingPath = QString(""));
     ~DropBoxDownloadDialog();
     void setActionText( QString text );
     void setTitle( QString text );
-    int downloadResult( void );
+    eDropBoxReturn downloadResult( void );
     bool createDownloadList( void );
     void downloadFiles( void );
 
@@ -31,7 +37,7 @@ private:
     uint32_t *m_pTodo;
     int m_timerId;
     QString m_actionText = QString( "tracks analyzed" );
-    int m_NoneAccecptRejectError = 0;
+    eDropBoxReturn m_retVal = RetNone;
     QString m_token;
     QStringList m_downloadList;
     QString m_workingPath;

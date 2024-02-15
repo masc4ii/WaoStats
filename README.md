@@ -45,7 +45,7 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 - Currently supported OS: macOS 10.13.6 and later, Windows 8 and later, Ubuntu 20.04 and later
 
 ## Compile
-- Download FitSDKRelease_21.101.00 and copy archive content into FitSDKRelease_21.101.00 folder
+- Download FitSDKRelease_21.101.00 and copy archive content into FitSDKRelease_21.101.00 folder (when using fit C++ parser only - by default this step not needed)
 - Compile dropboxQt, as described in subfolder dropboxQt. You should get "WaoStats/dropboxQt/prj/libdropboxQt.a"
 - Open WaoStats.pro into QtCreator, compile with **Qt5.15.2 and Clang(macOS) or minGW(Windows)**
 - On Windows, install OpenSSL and copy library files to application folder
@@ -86,6 +86,8 @@ Compiling on Ubuntu: [howto](https://github.com/masc4ii/WaoStats/blob/main/docs/
 - Find downloaded fit tracks in archive folder / WaoStats left list "New"
 
 ## Plot
-- Wheel: zoom
-- Left drag: move
+- Wheel on plot: zoom 2D
+- Wheel on axis: zoom 1D
+- Left drag on plot: move 2D
+- Left drag on axis: move 1D
 - Right click: select between curves

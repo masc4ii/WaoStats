@@ -7,10 +7,10 @@
 #include "ServiceDialog.h"
 #include "StatisticsDialog.h"
 #include "AdbSelectDeviceDialog.h"
-#include "AdbWrapper.h"
+#include "AdbDownloadDialog.h"
 #include "HelperFunctions.h"
 #include "ThreadTrack2Point.h"
-#include "ProgressDialog.h"
+#include "TrackSearch.h"
 #include "DropBoxDownloadDialog.h"
 
 #include <QDebug>
@@ -1458,48 +1458,23 @@ void MainWindow::on_actionSyncAdb_triggered()
     QString deviceId = adbSelect->selectedDeviceId();
     delete adbSelect;
 
-    //Get all names of files from Wahoo device
-    AdbWrapper *adbWrap = new AdbWrapper( this );
-    QStringList trackList = adbWrap->trackList( deviceId );
-    delete adbWrap;
-
-    if( trackList.empty() )
+    //Load
+    AdbDownloadDialog *pAdbD = new AdbDownloadDialog( this, deviceId, workingPath() );
+    if( !pAdbD->createDownloadList() )
     {
         QMessageBox::critical( this, tr( "ADB Sync error" ), tr( "No tracks found on device!" ) );
         return;
     }
-    //qDebug() << trackList.size() << trackList;
 
-    //What are the new files?
-    QStringList downloadList;
-    QDirIterator it( workingPath(), QStringList() << "*.fit", QDir::Files, QDirIterator::Subdirectories);
-    QStringList localList;
-    while( it.hasNext() ) localList << QFileInfo( it.next() ).fileName();
-    foreach( QString fitFile, trackList )
+    pAdbD->open();
+    pAdbD->downloadFiles();
+    while( !pAdbD->downloadResult() )
     {
-        if( !localList.contains( fitFile ) ) downloadList << fitFile;
+        update();
+        QThread::msleep(100);
     }
-    //qDebug() << downloadList;
-    if( downloadList.isEmpty() )
-    {
-        QMessageBox::information( this, tr( "ADB Sync Error" ), tr( "No new track found!" ) );
-        return;
-    }
-
-    //Create Directory
-    if( !QDir( workingPath() + "New/" ).exists() )
-        QDir().mkdir( workingPath() + "New/" );
-
-    //Download all files
-    adbWrap = new AdbWrapper( this );
-    foreach( QString fitFile, downloadList )
-    {
-        if( !adbWrap->downloadTrack( deviceId, fitFile, workingPath() + "New/" ) )
-        {
-            QMessageBox::critical( this, tr( "ADB Sync error" ), tr( "ADB copy failed!" ) );
-        }
-    }
-    delete adbWrap;
+    if( pAdbD->downloadResult() == DropBoxDownloadDialog::RetError ) QMessageBox::critical( this, tr( "ADB Sync error" ), tr( "ADB copy failed!" ) );
+    delete pAdbD;
 
     scanTours();
 }
@@ -1539,7 +1514,7 @@ void MainWindow::on_actionDistanceSearch_triggered()
         }
     }
     //Wait for threads done
-    ProgressDialog *prD = new ProgressDialog( this, jobs, &m_threadCntMutex, &m_threadCnt );
+    TrackSearch *prD = new TrackSearch( this, jobs, &m_threadCntMutex, &m_threadCnt );
     if( prD->exec() == QDialog::Rejected )
     {
         //Aborted -> clean partial result

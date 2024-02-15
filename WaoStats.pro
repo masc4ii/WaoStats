@@ -38,6 +38,7 @@ win32: LIBS += -L$${PWD}/dropboxQt/prj/release/ -ldropboxQt
 linux-g++:  LIBS += -L$${PWD}/dropboxQt/prj/ -ldropboxQt
 
 SOURCES += \
+    AdbDownloadDialog.cpp \
     AdbSelectDeviceDialog.cpp \
     AdbWrapper.cpp \
     DropBoxAuthDialog.cpp \
@@ -46,6 +47,7 @@ SOURCES += \
     LineEditEscDelete.cpp \
     OsmWidget.cpp \
     ProgressDialog.cpp \
+    TrackSearch.cpp \
     ServiceDialog.cpp \
     ServiceEntryDialog.cpp \
     Splash.cpp \
@@ -60,6 +62,7 @@ SOURCES += \
     qcustomplot/qcustomplot.cpp
 
 HEADERS += \
+    AdbDownloadDialog.h \
     AdbSelectDeviceDialog.h \
     AdbWrapper.h \
     BikeEditingDelegate.h \
@@ -72,6 +75,7 @@ HEADERS += \
     MainWindow.h \
     OsmWidget.h \
     ProgressDialog.h \
+    TrackSearch.h \
     ServiceDialog.h \
     ServiceEntryDialog.h \
     Splash.h \
@@ -86,7 +90,6 @@ HEADERS += \
 FORMS += \
     AdbSelectDeviceDialog.ui \
     DropBoxAuthDialog.ui \
-    DropBoxDownloadDialog.ui \
     MainWindow.ui \
     ProgressDialog.ui \
     ServiceDialog.ui \

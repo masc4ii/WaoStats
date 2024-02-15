@@ -1,7 +1,6 @@
 #include "DropBoxDownloadDialog.h"
-#include "ui_DropBoxDownloadDialog.h"
+#include "ui_ProgressDialog.h"
 
-#include <QMessageBox>
 #include <QDir>
 #include <QDirIterator>
 
@@ -13,42 +12,16 @@
 using namespace dropboxQt;
 
 DropBoxDownloadDialog::DropBoxDownloadDialog(QWidget *parent, QString token, QString workingPath) :
-    QDialog(parent),
-    ui(new Ui::DropBoxDownloadDialog),
+    ProgressDialog(parent),
     m_token(token),
     m_workingPath(workingPath)
 {
-    ui->setupUi(this);
-    setWindowFlags( Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint );
-    ui->progressBar->setValue( 0 );
-
-    setTitle( "Sync Dropbox" );
-    setActionText( "tracks downloaded" );
+    setTitle( "Sync Dropbox..." );
+    setActionText(QString( "tracks downloaded" ));
 }
 
 DropBoxDownloadDialog::~DropBoxDownloadDialog()
 {
-    delete ui;
-}
-
-void DropBoxDownloadDialog::setActionText(QString text)
-{
-    m_actionText = text;
-}
-
-void DropBoxDownloadDialog::setTitle(QString text)
-{
-    setWindowTitle( text );
-}
-
-DropBoxDownloadDialog::eDropBoxReturn DropBoxDownloadDialog::downloadResult()
-{
-    return m_retVal;
-}
-
-void DropBoxDownloadDialog::on_pushButtonAbort_clicked()
-{
-    m_retVal = RetReject;
 }
 
 bool DropBoxDownloadDialog::createDownloadList()
@@ -78,6 +51,11 @@ void DropBoxDownloadDialog::downloadFiles()
     DropboxClient c( m_token );
     int todo = m_downloadList.size();
     int jobs = todo;
+
+    //Create Directory
+    if( !QDir( m_workingPath + "New/" ).exists() )
+        QDir().mkdir( m_workingPath + "New/" );
+
     foreach( QString fitFile, m_downloadList )
     {
         QFile out( QString( m_workingPath + "New/" + fitFile ) );
@@ -94,7 +72,8 @@ void DropBoxDownloadDialog::downloadFiles()
         }
         catch(DropboxException& e)
         {
-            QMessageBox::critical( this, tr( "Dropbox Exception" ), e.what() );
+            m_retVal = RetError;
+            return;
         }
 
         out.close();
@@ -102,7 +81,7 @@ void DropBoxDownloadDialog::downloadFiles()
         if( m_retVal == RetReject )
         {
             reject();
-            break;
+            return;
         }
         todo--;
         ui->progressBar->setValue( 100 * ( (double)jobs - (double)todo ) / (double)jobs );

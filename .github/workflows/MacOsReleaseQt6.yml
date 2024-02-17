@@ -25,8 +25,6 @@ jobs:
     - name: Build DropboxQt
       working-directory: ${{ env.SOURCE_DIR }}/dropboxQt/prj
       run: |
-           ls -al /usr/local/Homebrew/
-           ls -al /usr/local/Homebrew/opt/
            ${{ env.QTDIR }}/qmake -r dropboxQt.pro
            make -j8
            ls -al

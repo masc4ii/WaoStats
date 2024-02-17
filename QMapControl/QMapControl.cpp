@@ -1457,7 +1457,7 @@ namespace qmapcontrol
         if(force_redraw || checkBackbuffer())
         {
             // Schedule the redraw in a background thread.
-            QtConcurrent::run(this, &QMapControl::redrawBackbuffer);
+            QtConcurrent::run([this]{ redrawBackbuffer(); });
         }
 
         // Loop through the layers to update the Geometries that have widgets as well.

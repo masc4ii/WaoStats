@@ -103,7 +103,7 @@ namespace qmapcontrol
          * @param parent QObject parent ownership.
          * @param window_flags QWidget window flags.
          */
-        QMapControl(QWidget* parent = 0, Qt::WindowFlags window_flags = 0);
+        QMapControl(QWidget* parent = 0);
 
         //! QMapControl constructor.
         /*!
@@ -112,7 +112,7 @@ namespace qmapcontrol
          * @param parent QObject parent ownership.
          * @param window_flags QWidget window flags.
          */
-        QMapControl(const QSizeF& size_px, QWidget* parent = 0, Qt::WindowFlags window_flags = 0);
+        QMapControl(const QSizeF& size_px, QWidget* parent = 0);
 
         //! Disable copy constructor.
         ///QMapControl(const QMapControl&) = delete; @todo re-add once MSVC supports default/delete syntax.

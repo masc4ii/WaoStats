@@ -15,7 +15,7 @@ bool FitParser::loadFit(QString fileName)
     FIT_UINT8 buf[8];
     FIT_CONVERT_RETURN convert_return = FIT_CONVERT_CONTINUE;
     FIT_UINT32 buf_size;
-    FIT_UINT32 mesg_index = 0;
+    //FIT_UINT32 mesg_index = 0;
 
     int minTemp = 9999;
     int lapMinTemp = 9999;
@@ -135,7 +135,7 @@ bool FitParser::loadFit(QString fileName)
 
                     if( session->avg_power             < 65535 ) m_session.avgPower = session->avg_power;
                     if( session->max_power             < 65535 ) m_session.maxPower = session->max_power;
-                    if( session->left_right_balance    < 65535 ) if( session->left_right_balance <= 100 ){m_session.leftRightBalance = session->left_right_balance;}else{m_session.leftRightBalance = session->left_right_balance / 100.0;}
+                    if( session->left_right_balance    < 65535 ) {if( session->left_right_balance <= 100 ){m_session.leftRightBalance = session->left_right_balance;}else{m_session.leftRightBalance = session->left_right_balance / 100.0;}}
                     if( session->total_work            < 65535 ) m_session.totalWork = session->total_work;
                     if( session->total_calories        < 65535 ) m_session.totalCalories = session->total_calories;
                     if( session->normalized_power      < 65535 ) m_session.normalizedPower = session->normalized_power;
@@ -184,7 +184,7 @@ bool FitParser::loadFit(QString fileName)
 
                     if( lapMesg->avg_power          < 65535 ) lap.avgPower = lapMesg->avg_power;
                     if( lapMesg->max_power          < 65535 ) lap.maxPower = lapMesg->max_power;
-                    if( lapMesg->left_right_balance < 65535 ) if( lapMesg->left_right_balance <= 100 ){lap.leftRightBalance = lapMesg->left_right_balance;}else{lap.leftRightBalance = lapMesg->left_right_balance / 100.0;}
+                    if( lapMesg->left_right_balance < 65535 ) {if( lapMesg->left_right_balance <= 100 ){lap.leftRightBalance = lapMesg->left_right_balance;}else{lap.leftRightBalance = lapMesg->left_right_balance / 100.0;}}
                     if( lapMesg->total_work         < 65535 ) lap.totalWork = lapMesg->total_work;
                     if( lapMesg->total_calories     < 65535 ) lap.totalCalories = lapMesg->total_calories;
                     if( lapMesg->normalized_power   < 65535 ) lap.normalizedPower = lapMesg->normalized_power;

@@ -32110,7 +32110,7 @@ double QCPPolarAxisRadial::radiusToCoord(double radius) const
 QCPPolarAxisRadial::SelectablePart QCPPolarAxisRadial::getPartAt(const QPointF &pos) const
 {
   Q_UNUSED(pos) // TODO remove later
-  if (!mVisible)
+  //if (!mVisible)
     return spNone;
   
   /*
@@ -32122,7 +32122,7 @@ QCPPolarAxisRadial::SelectablePart QCPPolarAxisRadial::getPartAt(const QPointF &
   else if (mAxisPainter->labelSelectionBox().contains(pos.toPoint()))
     return spAxisLabel;
   else */
-    return spNone;
+    //return spNone;
 }
 
 /* inherits documentation from base class */
@@ -32930,7 +32930,7 @@ QCPPolarAxisAngular::SelectablePart QCPPolarAxisAngular::getPartAt(const QPointF
 {
   Q_UNUSED(pos) // TODO remove later
   
-  if (!mVisible)
+  //if (!mVisible)
     return spNone;
   
   /*
@@ -32942,7 +32942,7 @@ QCPPolarAxisAngular::SelectablePart QCPPolarAxisAngular::getPartAt(const QPointF
   else if (mAxisPainter->labelSelectionBox().contains(pos.toPoint()))
     return spAxisLabel;
   else */
-    return spNone;
+    //return spNone;
 }
 
 /* inherits documentation from base class */

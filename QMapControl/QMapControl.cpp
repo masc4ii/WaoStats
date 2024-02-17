@@ -46,14 +46,14 @@
 
 namespace qmapcontrol
 {
-    QMapControl::QMapControl(QWidget* parent, Qt::WindowFlags window_flags)
-        : QMapControl(parent->size(), parent, window_flags)
+    QMapControl::QMapControl(QWidget* parent)
+        : QMapControl(parent->size(), parent)
     {
         // Nothing else to do.
     }
 
-    QMapControl::QMapControl(const QSizeF& size_px, QWidget* parent, Qt::WindowFlags window_flags)
-        : QWidget(parent, window_flags),
+    QMapControl::QMapControl(const QSizeF& size_px, QWidget* parent)
+        : QWidget(parent),
           m_scalebar_enabled(false),
           m_crosshairs_enabled(true),
           m_layer_mouse_events_enabled(true),
@@ -844,7 +844,7 @@ namespace qmapcontrol
     void QMapControl::wheelEvent(QWheelEvent* wheel_event)
     {
         //Zoom once per 300ms
-        static QTime lastCall;
+        static QElapsedTimer lastCall;
         if( lastCall.elapsed() == 0 ) // init
         {
             lastCall.start();
@@ -867,7 +867,7 @@ namespace qmapcontrol
             if(m_current_zoom < m_zoom_maximum)
             {
                 // Capture the current wheel point at the current zoom level.
-                const PointViewportPx wheel_px(wheel_event->posF().x(), wheel_event->posF().y());
+                const PointViewportPx wheel_px(wheel_event->position().x(), wheel_event->position().y());
                 const PointWorldCoord wheel_coord(toPointWorldCoord(wheel_px));
                 const PointPx wheel_delta(mapFocusPointWorldPx() - toPointWorldPx(wheel_px));
 
@@ -896,7 +896,7 @@ namespace qmapcontrol
             if(m_current_zoom > m_zoom_minimum)
             {
                 // Capture the current wheel point at the current zoom level.
-                const PointViewportPx wheel_px(wheel_event->posF().x(), wheel_event->posF().y());
+                const PointViewportPx wheel_px(wheel_event->position().x(), wheel_event->position().y());
                 const PointWorldCoord wheel_coord(toPointWorldCoord(wheel_px));
                 const PointPx wheel_delta(mapFocusPointWorldPx() - toPointWorldPx(wheel_px));
 

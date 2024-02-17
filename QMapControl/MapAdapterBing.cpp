@@ -41,7 +41,7 @@ namespace qmapcontrol
     }
 
     /// @todo implement layertype, since Bing has Satelite and Map layers.
-    MapAdapterBing::MapAdapterBing(const MapAdapterBing::BingLayerType& layer_type, QObject* parent)
+    MapAdapterBing::MapAdapterBing(const MapAdapterBing::BingLayerType& /*layer_type*/, QObject* parent)
         : MapAdapter(QString("https://t.ssl.ak.tiles.virtualearth.net/tiles/a%q.jpeg?g=1000"), supportedProjections(), 17, 0, 0, parent) /// @todo remove once MSVC supports initializer lists.
     {
     // https://t.ssl.ak.tiles.virtualearth.net/tiles/a120303211033000013.jpeg?g=8318&n=z&c4w=1&src=h

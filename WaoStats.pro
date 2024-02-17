@@ -15,7 +15,11 @@ macx{
         LIBS += -L/opt/homebrew/opt/llvm/lib -lomp -L/opt/homebrew/opt/openssl/lib -lssl
         QMAKE_APPLE_DEVICE_ARCHS = arm64
     }
-    else: QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.13
+    else
+    {
+        greaterThan(QT_MAJOR_VERSION, 5): QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.0
+        else: QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.13
+    }
 }
 
 #Define for FIT C SDK

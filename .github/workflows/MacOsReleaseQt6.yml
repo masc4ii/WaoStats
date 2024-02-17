@@ -1,4 +1,4 @@
-name: macOS Release
+name: macOS Release Qt6
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
 
 env:
   SOURCE_DIR:   ${{ github.workspace }}
-  QTDIR:        /usr/local/Cellar/qt@6/6.6.1/bin
+  QTDIR:        /usr/local/Cellar/qt/6.6.1/bin
   ARTIFACT:     ${{ github.workspace }}/WaoStats.dmg
 
 jobs:
@@ -25,7 +25,8 @@ jobs:
     - name: Build DropboxQt
       working-directory: ${{ env.SOURCE_DIR }}/dropboxQt/prj
       run: |
-           ls -al /usr/local/
+           ls -al /usr/local/Homebrew/
+           ls -al /usr/local/Homebrew/opt/
            ${{ env.QTDIR }}/qmake -r dropboxQt.pro
            make -j8
            ls -al

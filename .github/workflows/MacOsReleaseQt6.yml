@@ -1,0 +1,50 @@
+name: macOS Release
+
+on:
+  workflow_dispatch:
+    branches: [ "main" ]
+
+env:
+  SOURCE_DIR:   ${{ github.workspace }}
+  QTDIR:        /usr/local/Cellar/qt@6/6.6.1/bin
+  ARTIFACT:     ${{ github.workspace }}/WaoStats.dmg
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Install llvm & Qt & OpenSSL
+      uses: ConorMacBride/install-package@v1.1.0
+      with:
+        brew: llvm qt6 openssl
+
+    - name: Build DropboxQt
+      working-directory: ${{ env.SOURCE_DIR }}/dropboxQt/prj
+      run: |
+           ls -al /usr/local/
+           ${{ env.QTDIR }}/qmake -r dropboxQt.pro
+           make -j8
+           ls -al
+
+    - name: Create build directory
+      run:  mkdir ${{ env.SOURCE_DIR }}/../build
+
+    - name: Build
+      working-directory: ${{ env.SOURCE_DIR }}/../build
+      run: |
+           ${{ env.QTDIR }}/qmake ${{ env.SOURCE_DIR }}/WaoStats.pro
+           make -j8
+           ls -al
+           ${{ env.QTDIR }}/macdeployqt WaoStats.app -dmg
+           ls -al
+           mv WaoStats.dmg ${{ env.SOURCE_DIR }}/
+
+    - name: Save build artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: WaoStats
+        path: ${{ env.ARTIFACT }}

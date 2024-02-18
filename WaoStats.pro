@@ -19,7 +19,16 @@ macx{
     else
     {
         lessThan(QT_MAJOR_VERSION, 6): QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.13
-        else: QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.7
+        else {
+            QMAKE_CC = /usr/local/opt/llvm/bin/clang
+            QMAKE_CXX = /usr/local/opt/llvm/bin/clang++
+            QMAKE_LINK = /usr/local/opt/llvm/bin/clang++
+            QMAKE_CFLAGS += -fopenmp -ftree-vectorize
+            QMAKE_CXXFLAGS += -fopenmp -std=c++17 -ftree-vectorize
+            INCLUDEPATH += -I/usr/local/opt/llvm/include
+            LIBS += -L/usr/local/opt/llvm/lib -lomp -L/usr/local/opt/openssl/lib -lssl
+            QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.7
+        }
     }
 }
 

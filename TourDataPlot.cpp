@@ -35,6 +35,23 @@ void TourDataPlot::init()
     //Font
     QFont font = xAxis->labelFont();
     font.setPointSize( 10 );
+    //Darkmode font color
+    if( palette().background().color().redF() < 0.5 )
+    {
+        xAxis->setLabelColor( Qt::white );
+        yAxis->setLabelColor( Qt::white );
+        yAxis2->setLabelColor( Qt::white );
+        xAxis->setTickLabelColor( Qt::white );
+        yAxis->setTickLabelColor( Qt::white );
+        yAxis2->setTickLabelColor( Qt::white );
+        xAxis->setTickPen( QPen( Qt::gray ) );
+        yAxis->setTickPen( QPen( Qt::gray ) );
+        yAxis2->setTickPen( QPen( Qt::gray ) );
+        xAxis->setSubTickPen( QPen( Qt::gray ) );
+        yAxis->setSubTickPen( QPen( Qt::gray ) );
+        yAxis2->setSubTickPen( QPen( Qt::gray ) );
+        axisRect(0)->setBackground( QColor( 64, 64, 64 ) );
+    }
 
     //X Axis and grid
     xAxis->setLabelFont( font );

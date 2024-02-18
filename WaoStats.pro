@@ -18,6 +18,7 @@ macx{
     else
     {
         lessThan(QT_MAJOR_VERSION, 6): QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.13
+        else: QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.7
     }
 }
 

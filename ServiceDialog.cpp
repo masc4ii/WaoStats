@@ -81,7 +81,7 @@ bool ServiceDialog::bikeNeedsService( int index )
             return true;
         }
         if( ui->tableWidget->item( i, TIMEINTER )->text().chopped( 2 ).toInt()
-         <= ui->tableWidget->item( i, TIMEINUSE )->text().leftRef( ui->tableWidget->item( i, TIMEINUSE )->text().indexOf( ":" ) ).toInt()
+         <= ui->tableWidget->item( i, TIMEINUSE )->text().left( ui->tableWidget->item( i, TIMEINUSE )->text().indexOf( ":" ) ).toInt()
          && ui->tableWidget->item( i, TIMEINTER )->text().chopped( 2 ).toInt() != 0 )
         {
             return true;
@@ -335,7 +335,7 @@ void ServiceDialog::updateCellColor()
         }
 
         if( ui->tableWidget->item( i, TIMEINTER )->text().chopped( 2 ).toInt()
-         <= ui->tableWidget->item( i, TIMEINUSE )->text().leftRef( ui->tableWidget->item( i, TIMEINUSE )->text().indexOf( ":" ) ).toInt()
+         <= ui->tableWidget->item( i, TIMEINUSE )->text().left( ui->tableWidget->item( i, TIMEINUSE )->text().indexOf( ":" ) ).toInt()
          && ui->tableWidget->item( i, TIMEINTER )->text().chopped( 2 ).toInt() != 0 )
         {
             limitTime = true;

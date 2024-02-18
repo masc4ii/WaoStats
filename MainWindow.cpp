@@ -410,7 +410,7 @@ void MainWindow::configureMap()
     QHBoxLayout* layout = new QHBoxLayout( ui->widgetOsm );
     connect( ui->widgetOsm, SIGNAL(resized()), this, SLOT(adjustMap()) );
     layout->addWidget( m_map_control );
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     // Create/add a layer with the default OSM map adapter.
     m_map_control->addLayer(std::make_shared<LayerMapAdapter>("Map", std::make_shared<MapAdapterOTM>()));

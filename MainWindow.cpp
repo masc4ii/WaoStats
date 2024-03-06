@@ -50,6 +50,7 @@
 #include <QMapControl/MapAdapterBing.h>
 #include <QMapControl/MapAdapterSigma.h>
 #include <QMapControl/MapAdapterKomoot.h>
+#include <QMapControl/MapAdapterMichelin.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -441,6 +442,7 @@ void MainWindow::configureMap()
     map_provider_group->addAction( ui->action_sigmasport_topo );
     map_provider_group->addAction( ui->action_sigmasport_cycle );
     map_provider_group->addAction( ui->action_komoot );
+    map_provider_group->addAction( ui->action_michelin );
     // Ensure the map provider actions are checkable.
     ui->action_google_map->setCheckable( true );
     ui->action_google_satellite->setCheckable( true );
@@ -460,6 +462,7 @@ void MainWindow::configureMap()
     ui->action_sigmasport_cycle->setCheckable( true );
     ui->action_komoot->setCheckable( true );
     ui->action_komoot->setVisible( false );
+    ui->action_michelin->setCheckable( true );
     // Default to OTM map.
     ui->action_otm->setChecked( true );
     // Connect signal/slot to set the map provider.
@@ -667,6 +670,11 @@ void MainWindow::mapProviderSelected(QAction* action)
     else if(action == ui->action_komoot)
     {
         map_layer->setMapAdapter(std::make_shared<MapAdapterKomoot>());
+    }
+    // Set the map to Michelin.
+    else if(action == ui->action_michelin)
+    {
+        map_layer->setMapAdapter(std::make_shared<MapAdapterMichelin>());
     }
 
     // Add the replacement map layer.
@@ -1048,6 +1056,7 @@ void MainWindow::writeSettings()
     else if( ui->action_sigmasport_topo->isChecked() ) mapType = 13;
     else if( ui->action_sigmasport_cycle->isChecked() ) mapType = 14;
     else if( ui->action_komoot->isChecked() ) mapType = 15;
+    else if( ui->action_michelin->isChecked() ) mapType = 16;
     set.setValue( "maptype", mapType );
     set.setValue( "workingPath", m_workingPath );
 }
@@ -1107,6 +1116,9 @@ void MainWindow::readSettings()
             break;
     case 15: ui->action_komoot->setChecked( true );
             mapProviderSelected( ui->action_komoot );
+            break;
+    case 16: ui->action_michelin->setChecked( true );
+            mapProviderSelected( ui->action_michelin );
             break;
     case 0:
     default:
@@ -1327,17 +1339,9 @@ void MainWindow::drawPwrPlot(TourData::fitSection_t section)
 
 double MainWindow::odoInitKm(int bikeIndex)
 {
-    double odo = 0.0;
     QTreeWidgetItem *bikeItem = ui->treeWidgetTours->topLevelItem( bikeIndex );
     QString subdir = bikeItem->text( 1 );
-    if( QFileInfo( subdir+"/initKm.txt" ).exists() )
-    {
-        QFile initFile( subdir+"/initKm.txt" );
-        initFile.open( QFile::ReadOnly );
-        odo = initFile.readAll().toDouble();
-        initFile.close();
-    }
-    return odo;
+    return odoInitKm( subdir );
 }
 
 double MainWindow::odoInitKm(QString bikePath)

@@ -42,6 +42,7 @@ private:
     QStringList partList( void );
 
     QTreeWidget *m_tourTree;
+    QString m_currency = QString( " €" );
 };
 
 #endif // SERVICEDIALOG_H

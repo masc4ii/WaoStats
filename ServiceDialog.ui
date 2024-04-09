@@ -86,6 +86,11 @@
      </column>
      <column>
       <property name="text">
+       <string>Costs</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>Part</string>
       </property>
      </column>
@@ -124,17 +129,17 @@
        <string/>
       </property>
      </item>
-     <item row="0" column="7">
+     <item row="0" column="8">
       <property name="text">
        <string>Chain</string>
       </property>
      </item>
-     <item row="0" column="8">
+     <item row="0" column="9">
       <property name="text">
        <string>Replaced</string>
       </property>
      </item>
-     <item row="0" column="9">
+     <item row="0" column="10">
       <property name="text">
        <string>Shimano</string>
       </property>
@@ -164,17 +169,17 @@
        <string/>
       </property>
      </item>
-     <item row="1" column="7">
+     <item row="1" column="8">
       <property name="text">
        <string>Chain</string>
       </property>
      </item>
-     <item row="1" column="8">
+     <item row="1" column="9">
       <property name="text">
        <string>Replaced</string>
       </property>
      </item>
-     <item row="1" column="9">
+     <item row="1" column="10">
       <property name="text">
        <string>NoName</string>
       </property>

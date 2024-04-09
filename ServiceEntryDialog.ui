@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>429</width>
-    <height>480</height>
+    <height>511</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -52,25 +52,22 @@
       <string>Entry</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="spinBoxIntervalDist">
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="suffix">
-         <string> km</string>
-        </property>
-        <property name="maximum">
-         <number>999999999</number>
+      <item row="5" column="0">
+       <widget class="QLabel" name="labelAction">
+        <property name="text">
+         <string>Action</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="6" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
          <string>Description</string>
         </property>
        </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QLineEdit" name="lineEditPart"/>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_3">
@@ -79,19 +76,8 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Proposed Interval</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="labelAction">
-        <property name="text">
-         <string>Action</string>
-        </property>
-       </widget>
+      <item row="6" column="1" colspan="2">
+       <widget class="QLineEdit" name="lineEditDescr"/>
       </item>
       <item row="1" column="2">
        <widget class="QSpinBox" name="spinBoxIntervalTime">
@@ -106,10 +92,27 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QLineEdit" name="lineEditPart"/>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Proposed Interval</string>
+        </property>
+       </widget>
       </item>
-      <item row="2" column="1" colspan="2">
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="spinBoxIntervalDist">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="suffix">
+         <string> km</string>
+        </property>
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" colspan="2">
        <widget class="QComboBox" name="comboBoxAction">
         <item>
          <property name="text">
@@ -128,8 +131,32 @@
         </item>
        </widget>
       </item>
-      <item row="3" column="1" colspan="2">
-       <widget class="QLineEdit" name="lineEditDescr"/>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Costs</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QDoubleSpinBox" name="doubleSpinBoxIntervalCostsM">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="suffix">
+         <string> €</string>
+        </property>
+        <property name="maximum">
+         <double>999999.989999999990687</double>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QTimeEdit" name="timeEditCostsT">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

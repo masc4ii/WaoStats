@@ -20,7 +20,9 @@ public:
                                 QString actionText = "",
                                 QDateTime dateTime = QDateTime::currentDateTime(),
                                 int intervalDistance = 0,
-                                int intervalTime = 0);
+                                int intervalTime = 0,
+                                QTime costsT = QTime(0, 0),
+                                double costsM = 0.0);
     ~ServiceEntryDialog();
     QString part( void );
     QString description( void );
@@ -28,6 +30,8 @@ public:
     QDateTime dateTime( void );
     int intervalDistance( void );
     int intervalHours( void );
+    double costsM( void );
+    QTime costsT( void );
 
 private slots:
     void on_pushButtonNow_clicked();

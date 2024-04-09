@@ -15,9 +15,10 @@
 #define TIMETOTAL 4
 #define TIMEINUSE 5
 #define TIMEINTER 6
-#define PARTNAME  7
-#define ACTION    8
-#define DESCRIPT  9
+#define COSTS     7
+#define PARTNAME  8
+#define ACTION    9
+#define DESCRIPT  10
 
 ServiceDialog::ServiceDialog(QWidget *parent, QTreeWidget *tree) :
     QDialog(parent),
@@ -60,6 +61,7 @@ ServiceDialog::ServiceDialog(QWidget *parent, QTreeWidget *tree) :
     ui->tableWidget->setColumnWidth( TIMETOTAL, 80 );
     ui->tableWidget->setColumnWidth( TIMEINUSE, 80 );
     ui->tableWidget->setColumnWidth( TIMEINTER, 80 );
+    ui->tableWidget->setColumnWidth( COSTS    , 80 );
 
     loadFromJson( ui->comboBoxBike->currentIndex() );
 }
@@ -131,6 +133,8 @@ void ServiceDialog::on_pushButtonDelete_clicked()
 void ServiceDialog::on_tableWidget_cellDoubleClicked(int row, int column)
 {
     Q_UNUSED( column );
+    QStringList costs = ui->tableWidget->item( row, COSTS )->text().split('\n');
+
     ServiceEntryDialog *entryDialog = new ServiceEntryDialog( this,
                                                               partList(),
                                                               ui->tableWidget->item( row, PARTNAME )->text(),
@@ -139,7 +143,9 @@ void ServiceDialog::on_tableWidget_cellDoubleClicked(int row, int column)
                                                               QDateTime::fromString( ui->tableWidget->item( row, DATETIME )->text(),
                                                                                      QString( "yyyy-MM-dd - hh:mm" ) ),
                                                               ui->tableWidget->item( row, ODOINTER )->text().chopped( 3 ).toInt(),
-                                                              ui->tableWidget->item( row, TIMEINTER )->text().chopped( 2 ).toInt() );
+                                                              ui->tableWidget->item( row, TIMEINTER )->text().chopped( 2 ).toInt(),
+                                                              QTime::fromString( costs.at(0), "hh:mm" ),
+                                                              costs.at(1).chopped( m_currency.count() ).toDouble() );
     if( QDialog::Accepted == entryDialog->exec() )
     {
         fillTableRow( entryDialog, row, ui->comboBoxBike->currentIndex() );
@@ -160,6 +166,7 @@ void ServiceDialog::fillTableRow(ServiceEntryDialog *entryDialog, int row, int i
     ui->tableWidget->item( row, TIMETOTAL )->setText( QString( "%1:%2" ).arg( (int)(secsAtDateTime( entryDialog->dateTime(), index )/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( secsAtDateTime( entryDialog->dateTime(), index ) ).toString( "mm:ss" ) ) );
     ui->tableWidget->item( row, TIMEINUSE )->setText( QString( "00:00:00" ) );
     ui->tableWidget->item( row, TIMEINTER )->setText( QString::number( entryDialog->intervalHours() ) + " h" );
+    ui->tableWidget->item( row, COSTS )->setText( QString( "%1\n%2%3" ).arg( entryDialog->costsT().toString( "hh:mm" ) ).arg( entryDialog->costsM(), 0, 'f', 2 ).arg( m_currency ) );
     ui->tableWidget->item( row, PARTNAME )->setText( entryDialog->part() );
     //ui->tableWidget->item( row, ACTION )->setText( entryDialog->actionText() );
     ui->tableWidget->item( row, DESCRIPT )->setText( entryDialog->description() );
@@ -359,9 +366,12 @@ void ServiceDialog::writeToJson( int index )
     QJsonObject info;
     for( int row = 0; row < ui->tableWidget->rowCount(); row++ )
     {
+        QStringList costs = ui->tableWidget->item( row, COSTS )->text().split('\n');
         info.insert( "dateTime",         ui->tableWidget->item( row, DATETIME )->text() );
         info.insert( "propInterval",     ui->tableWidget->item( row, ODOINTER )->text().chopped( 3 ).toInt() );
         info.insert( "propIntervalTime", ui->tableWidget->item( row, TIMEINTER )->text().chopped( 2 ).toInt() );
+        info.insert( "costsT",           costs.at(0) );
+        info.insert( "costsM",           costs.at(1).chopped( m_currency.count() ).toDouble() );
         info.insert( "part",             ui->tableWidget->item( row, PARTNAME )->text() );
         //info.insert( "action",           ui->tableWidget->item( row, ACTION )->text() );
         info.insert( "description",      ui->tableWidget->item( row, DESCRIPT )->text() );
@@ -417,7 +427,9 @@ void ServiceDialog::loadFromJson( int index )
                                                                   QDateTime::fromString( info.value( "dateTime" ).toString(),
                                                                                          QString( "yyyy-MM-dd - hh:mm" ) ),
                                                                   info.value( "propInterval" ).toInt(),
-                                                                  info.value( "propIntervalTime" ).toInt() );
+                                                                  info.value( "propIntervalTime" ).toInt(),
+                                                                  QTime::fromString( info.value( "costsT" ).toString(), "hh:mm" ),
+                                                                  info.value( "costsM" ).toDouble() );
         ui->tableWidget->insertRow( i );
         for( int j = 0; j < ui->tableWidget->columnCount(); j++ )
         {

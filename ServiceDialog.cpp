@@ -171,6 +171,7 @@ void ServiceDialog::fillTableRow(ServiceEntryDialog *entryDialog, int row, int i
     //ui->tableWidget->item( row, ACTION )->setText( entryDialog->actionText() );
     ui->tableWidget->item( row, DESCRIPT )->setText( entryDialog->description() );
     ui->tableWidget->sortByColumn( 0, Qt::DescendingOrder );
+    ui->tableWidget->resizeRowsToContents();
 }
 
 double ServiceDialog::odoAtDateTime(QDateTime dateTime, int index)

@@ -39,9 +39,6 @@
      <attribute name="verticalHeaderVisible">
       <bool>false</bool>
      </attribute>
-     <attribute name="verticalHeaderDefaultSectionSize">
-      <number>36</number>
-     </attribute>
      <row>
       <property name="text">
        <string>2</string>

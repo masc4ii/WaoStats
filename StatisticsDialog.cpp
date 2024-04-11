@@ -64,10 +64,10 @@ void StatisticsDialog::plotDaysOfWeek()
         }
 
         QCPBars *bikeBar = new QCPBars(ui->widgetPlot->xAxis, ui->widgetPlot->yAxis);
-        QPen pen = QPen( QPalette( m_colors[bike] ).brush( QPalette::Window ).color() );
+        QPen pen = QPen( QPalette( m_colors[bike%m_colors.size()] ).brush( QPalette::Window ).color() );
         pen.setWidth(0);
         bikeBar->setPen( pen );
-        bikeBar->setBrush( QBrush( QPalette( m_colors[bike] ).brush( QPalette::Window ) ) );
+        bikeBar->setBrush( QBrush( QPalette( m_colors[bike%m_colors.size()] ).brush( QPalette::Window ) ) );
         bikeBar->setData(vectorDays,vectorBike);
         bike++;
         bikeBars.append(bikeBar);
@@ -116,10 +116,10 @@ void StatisticsDialog::plotMonths()
         }
 
         QCPBars *bikeBar = new QCPBars(ui->widgetPlot->xAxis, ui->widgetPlot->yAxis);
-        QPen pen = QPen( QPalette( m_colors[bike] ).brush( QPalette::Window ).color() );
+        QPen pen = QPen( QPalette( m_colors[bike%m_colors.size()] ).brush( QPalette::Window ).color() );
         pen.setWidth(0);
         bikeBar->setPen( pen );
-        bikeBar->setBrush( QBrush( QPalette( m_colors[bike] ).brush( QPalette::Window ) ) );
+        bikeBar->setBrush( QBrush( QPalette( m_colors[bike%m_colors.size()] ).brush( QPalette::Window ) ) );
         bikeBar->setData( vectorMonths, vectorBike );
         bike++;
         bikeBars.append(bikeBar);
@@ -189,10 +189,10 @@ void StatisticsDialog::plotYears()
         }
 
         QCPBars *bikeBar = new QCPBars(ui->widgetPlot->xAxis, ui->widgetPlot->yAxis);
-        QPen pen = QPen( QPalette( m_colors[bike] ).brush( QPalette::Window ).color() );
+        QPen pen = QPen( QPalette( m_colors[bike%m_colors.size()] ).brush( QPalette::Window ).color() );
         pen.setWidth(0);
         bikeBar->setPen( pen );
-        bikeBar->setBrush( QBrush( QPalette( m_colors[bike] ).brush( QPalette::Window ) ) );
+        bikeBar->setBrush( QBrush( QPalette( m_colors[bike%m_colors.size()] ).brush( QPalette::Window ) ) );
         bikeBar->setData(vectorYears,vectorBike);
         bike++;
         bikeBars.append(bikeBar);

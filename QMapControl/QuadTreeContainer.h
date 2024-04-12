@@ -162,6 +162,7 @@ namespace qmapcontrol
                     else
                     {
                         // We cannot insert, fail!
+                        return false;
                         throw std::runtime_error("Unable to insert into quad tree container.");
                     }
                 }

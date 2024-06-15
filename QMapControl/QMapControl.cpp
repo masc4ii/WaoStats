@@ -43,6 +43,7 @@
 #include "MapCopyrightString.h"
 
 #include <QDebug>
+#include <QElapsedTimer>
 
 namespace qmapcontrol
 {

@@ -44,7 +44,6 @@
 
 #include <QDebug>
 #include <QElapsedTimer>
-#include <QWheelEvent>
 
 namespace qmapcontrol
 {

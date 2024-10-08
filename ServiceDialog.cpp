@@ -7,6 +7,7 @@
 #include <QJsonObject>
 #include <QFile>
 #include <QListView>
+#include <algorithm> // Für std::sort
 
 #define DATETIME  0
 #define ODOTOTAL  1
@@ -114,6 +115,7 @@ void ServiceDialog::on_pushButtonAdd_clicked()
         updateOdoInUseColumn( ui->comboBoxBike->currentIndex() );
         updateSecsInUseColumn( ui->comboBoxBike->currentIndex() );
         updateCellColor();
+        updateCostFilterCombo();
         updateCosts();
         writeToJson( ui->comboBoxBike->currentIndex() );
     }
@@ -128,6 +130,7 @@ void ServiceDialog::on_pushButtonDelete_clicked()
     updateOdoInUseColumn( ui->comboBoxBike->currentIndex() );
     updateSecsInUseColumn( ui->comboBoxBike->currentIndex() );
     updateCellColor();
+    updateCostFilterCombo();
     updateCosts();
     writeToJson( ui->comboBoxBike->currentIndex() );
 }
@@ -154,6 +157,7 @@ void ServiceDialog::on_tableWidget_cellDoubleClicked(int row, int column)
         updateOdoInUseColumn( ui->comboBoxBike->currentIndex() );
         updateSecsInUseColumn( ui->comboBoxBike->currentIndex() );
         updateCellColor();
+        updateCostFilterCombo();
         updateCosts();
         writeToJson( ui->comboBoxBike->currentIndex() );
     }
@@ -371,6 +375,8 @@ void ServiceDialog::updateCosts()
 
     for( int i = 0; i < ui->tableWidget->rowCount(); i++ )
     {
+        if( !( ui->tableWidget->item( i, PARTNAME )->text() == ui->comboBoxCostFilter->currentText()
+            || ui->comboBoxCostFilter->currentText() == QString( "All" ) ) ) continue;
         QStringList costs = ui->tableWidget->item( i, COSTS )->text().split('\n');
         allCostsT_sec += QTime( 0, 0 ).secsTo( QTime::fromString( costs.at(0), "hh:mm" ) );
         allCostsM += costs.at(1).chopped( m_currency.count() ).toDouble();
@@ -380,6 +386,24 @@ void ServiceDialog::updateCosts()
     int minutes = (allCostsT_sec % 3600) / 60;
 
     ui->labelCosts->setText( QString( "Costs sum: %1:%2 & %3%4" ).arg( hours, 2, 10, QChar('0') ).arg( minutes, 2, 10, QChar('0') ).arg( allCostsM, 0, 'f', 2 ).arg( m_currency ) );
+}
+
+void ServiceDialog::updateCostFilterCombo()
+{
+    ui->comboBoxCostFilter->clear();
+    QStringList items;
+    for( int i = 0; i < ui->tableWidget->rowCount(); i++ )
+    {
+        QString itemName = ui->tableWidget->item( i, PARTNAME )->text();
+        bool exists = false;
+        for( int j = 0; j < items.count(); j++ ) {
+            if( itemName == items.at( j ) ) exists = true;
+        }
+        if( !exists ) items << itemName;
+    }
+    std::sort(items.begin(), items.end());
+    items.prepend( QString( "All" ) );
+    ui->comboBoxCostFilter->addItems( items );
 }
 
 void ServiceDialog::writeToJson( int index )
@@ -468,6 +492,7 @@ void ServiceDialog::loadFromJson( int index )
     updateOdoInUseColumn( index );
     updateSecsInUseColumn( index );
     updateCellColor();
+    updateCostFilterCombo();
     updateCosts();
 }
 
@@ -486,3 +511,9 @@ void ServiceDialog::on_comboBoxBike_currentIndexChanged(int index)
 {
     loadFromJson( index );
 }
+
+void ServiceDialog::on_comboBoxCostFilter_currentIndexChanged(int /*index*/)
+{
+    updateCosts();
+}
+

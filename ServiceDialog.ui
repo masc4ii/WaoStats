@@ -224,6 +224,9 @@
       </spacer>
      </item>
      <item>
+      <widget class="QComboBox" name="comboBoxCostFilter"/>
+     </item>
+     <item>
       <widget class="QLabel" name="labelCosts">
        <property name="font">
         <font>

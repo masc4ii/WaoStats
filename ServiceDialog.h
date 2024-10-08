@@ -25,6 +25,7 @@ private slots:
     void on_pushButtonDelete_clicked();
     void on_tableWidget_cellDoubleClicked(int row, int column);
     void on_comboBoxBike_currentIndexChanged(int index);
+    void on_comboBoxCostFilter_currentIndexChanged(int index);
 
 private:
     Ui::ServiceDialog *ui;
@@ -38,6 +39,7 @@ private:
     void updateSecsInUseColumn( int index );
     void updateCellColor( void );
     void updateCosts( void );
+    void updateCostFilterCombo( void );
     void writeToJson( int index );
     void loadFromJson( int index );
     QStringList partList( void );

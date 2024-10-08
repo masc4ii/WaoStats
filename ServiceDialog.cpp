@@ -114,6 +114,7 @@ void ServiceDialog::on_pushButtonAdd_clicked()
         updateOdoInUseColumn( ui->comboBoxBike->currentIndex() );
         updateSecsInUseColumn( ui->comboBoxBike->currentIndex() );
         updateCellColor();
+        updateCosts();
         writeToJson( ui->comboBoxBike->currentIndex() );
     }
     delete entryDialog;
@@ -127,6 +128,7 @@ void ServiceDialog::on_pushButtonDelete_clicked()
     updateOdoInUseColumn( ui->comboBoxBike->currentIndex() );
     updateSecsInUseColumn( ui->comboBoxBike->currentIndex() );
     updateCellColor();
+    updateCosts();
     writeToJson( ui->comboBoxBike->currentIndex() );
 }
 
@@ -152,6 +154,7 @@ void ServiceDialog::on_tableWidget_cellDoubleClicked(int row, int column)
         updateOdoInUseColumn( ui->comboBoxBike->currentIndex() );
         updateSecsInUseColumn( ui->comboBoxBike->currentIndex() );
         updateCellColor();
+        updateCosts();
         writeToJson( ui->comboBoxBike->currentIndex() );
     }
     delete entryDialog;
@@ -361,6 +364,24 @@ void ServiceDialog::updateCellColor()
     }
 }
 
+void ServiceDialog::updateCosts()
+{
+    unsigned int allCostsT_sec = 0;
+    double allCostsM = 0.0;
+
+    for( int i = 0; i < ui->tableWidget->rowCount(); i++ )
+    {
+        QStringList costs = ui->tableWidget->item( i, COSTS )->text().split('\n');
+        allCostsT_sec += QTime( 0, 0 ).secsTo( QTime::fromString( costs.at(0), "hh:mm" ) );
+        allCostsM += costs.at(1).chopped( m_currency.count() ).toDouble();
+    }
+
+    int hours = allCostsT_sec / 3600;
+    int minutes = (allCostsT_sec % 3600) / 60;
+
+    ui->labelCosts->setText( QString( "Costs sum: %1:%2 & %3%4" ).arg( hours, 2, 10, QChar('0') ).arg( minutes, 2, 10, QChar('0') ).arg( allCostsM, 0, 'f', 2 ).arg( m_currency ) );
+}
+
 void ServiceDialog::writeToJson( int index )
 {
     QJsonObject services;
@@ -392,6 +413,8 @@ void ServiceDialog::writeToJson( int index )
 
 void ServiceDialog::loadFromJson( int index )
 {
+    ui->labelCosts->setText( "" );
+
     if( index < 0 ) return;
 
     //ui->tableWidget->clear(); //doesn't work, whyever
@@ -445,6 +468,7 @@ void ServiceDialog::loadFromJson( int index )
     updateOdoInUseColumn( index );
     updateSecsInUseColumn( index );
     updateCellColor();
+    updateCosts();
 }
 
 QStringList ServiceDialog::partList()

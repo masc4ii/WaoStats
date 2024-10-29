@@ -1,6 +1,7 @@
 #include "ServiceDialog.h"
 #include "ui_ServiceDialog.h"
 
+#include "ServiceCostPieDialog.h"
 #include <QDateTime>
 #include <QDebug>
 #include <QJsonDocument>
@@ -368,19 +369,28 @@ void ServiceDialog::updateCellColor()
     }
 }
 
-void ServiceDialog::updateCosts()
+std::pair<unsigned int, double> ServiceDialog::calcCost(QString name)
 {
     unsigned int allCostsT_sec = 0;
     double allCostsM = 0.0;
 
     for( int i = 0; i < ui->tableWidget->rowCount(); i++ )
     {
-        if( !( ui->tableWidget->item( i, PARTNAME )->text() == ui->comboBoxCostFilter->currentText()
-            || ui->comboBoxCostFilter->currentText() == QString( "All" ) ) ) continue;
+        if( !( name == ui->tableWidget->item( i, PARTNAME )->text()
+            || name == QString( "All" ) ) ) continue;
         QStringList costs = ui->tableWidget->item( i, COSTS )->text().split('\n');
         allCostsT_sec += QTime( 0, 0 ).secsTo( QTime::fromString( costs.at(0), "hh:mm" ) );
         allCostsM += costs.at(1).chopped( m_currency.count() ).toDouble();
     }
+
+    return std::pair<unsigned int, double>(allCostsT_sec, allCostsM);
+}
+
+void ServiceDialog::updateCosts()
+{    
+    std::pair<unsigned int, double> result = calcCost( ui->comboBoxCostFilter->currentText() );
+    unsigned int allCostsT_sec = result.first;
+    double allCostsM = result.second;
 
     int hours = allCostsT_sec / 3600;
     int minutes = (allCostsT_sec % 3600) / 60;
@@ -391,16 +401,7 @@ void ServiceDialog::updateCosts()
 void ServiceDialog::updateCostFilterCombo()
 {
     ui->comboBoxCostFilter->clear();
-    QStringList items;
-    for( int i = 0; i < ui->tableWidget->rowCount(); i++ )
-    {
-        QString itemName = ui->tableWidget->item( i, PARTNAME )->text();
-        bool exists = false;
-        for( int j = 0; j < items.count(); j++ ) {
-            if( itemName == items.at( j ) ) exists = true;
-        }
-        if( !exists ) items << itemName;
-    }
+    QStringList items = partList();
     std::sort(items.begin(), items.end());
     items.prepend( QString( "All" ) );
     ui->comboBoxCostFilter->addItems( items );
@@ -515,5 +516,24 @@ void ServiceDialog::on_comboBoxBike_currentIndexChanged(int index)
 void ServiceDialog::on_comboBoxCostFilter_currentIndexChanged(int /*index*/)
 {
     updateCosts();
+}
+
+void ServiceDialog::on_pushButtonPie_clicked()
+{
+    ServiceCostPieDialog *pie = new ServiceCostPieDialog( this );
+
+    QStringList items = partList();
+    std::sort(items.begin(), items.end());
+
+    QList<double> costList;
+
+    foreach( QString item, items)
+    {
+        costList.append( calcCost( item ).second );
+    }
+
+    pie->SetData( items, costList, m_currency );
+    pie->exec();
+    delete pie;
 }
 

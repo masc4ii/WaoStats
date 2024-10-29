@@ -224,6 +224,13 @@
       </spacer>
      </item>
      <item>
+      <widget class="QPushButton" name="pushButtonPie">
+       <property name="text">
+        <string>Statistics</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QComboBox" name="comboBoxCostFilter"/>
      </item>
      <item>

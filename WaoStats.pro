@@ -61,6 +61,7 @@ SOURCES += \
     LineEditEscDelete.cpp \
     OsmWidget.cpp \
     ProgressDialog.cpp \
+    ServiceCostPieDialog.cpp \
     TrackSearch.cpp \
     ServiceDialog.cpp \
     ServiceEntryDialog.cpp \
@@ -71,9 +72,10 @@ SOURCES += \
     TourData.cpp \
     TourDataPlot.cpp \
     VScrollArea.cpp \
+    custompiechart/custompiechart.cpp \
+    qcustomplot/qcustomplot.cpp \
     main.cpp \
-    MainWindow.cpp \
-    qcustomplot/qcustomplot.cpp
+    MainWindow.cpp
 
 HEADERS += \
     AdbDownloadDialog.h \
@@ -89,6 +91,7 @@ HEADERS += \
     MainWindow.h \
     OsmWidget.h \
     ProgressDialog.h \
+    ServiceCostPieDialog.h \
     TrackSearch.h \
     ServiceDialog.h \
     ServiceEntryDialog.h \
@@ -99,6 +102,7 @@ HEADERS += \
     TourData.h \
     TourDataPlot.h \
     VScrollArea.h \
+    custompiechart/custompiechart.h \
     qcustomplot/qcustomplot.h
 
 FORMS += \
@@ -106,6 +110,7 @@ FORMS += \
     DropBoxAuthDialog.ui \
     MainWindow.ui \
     ProgressDialog.ui \
+    ServiceCostPieDialog.ui \
     ServiceDialog.ui \
     ServiceEntryDialog.ui \
     StatisticsDialog.ui

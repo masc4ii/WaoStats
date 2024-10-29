@@ -27,6 +27,8 @@ private slots:
     void on_comboBoxBike_currentIndexChanged(int index);
     void on_comboBoxCostFilter_currentIndexChanged(int index);
 
+    void on_pushButtonPie_clicked();
+
 private:
     Ui::ServiceDialog *ui;
 
@@ -38,6 +40,7 @@ private:
     int secsInUse( int row, int index );
     void updateSecsInUseColumn( int index );
     void updateCellColor( void );
+    std::pair<unsigned int, double> calcCost( QString name );
     void updateCosts( void );
     void updateCostFilterCombo( void );
     void writeToJson( int index );

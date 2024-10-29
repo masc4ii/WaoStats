@@ -13,5 +13,6 @@
         <file>Icons/plot.png</file>
         <file>Icons/paste.png</file>
         <file>Icons/Android.png</file>
+        <file>Icons/pie.png</file>
     </qresource>
 </RCC>

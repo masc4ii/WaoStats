@@ -44,8 +44,20 @@ QStringList extendColors()
 
 void ServiceCostPieDialog::SetData(QStringList nameList, QList<double> costList, QString currency)
 {
+    //Error? Nothing to do...
     if( nameList.count() != costList.count() ) return;
 
+    //Filter empty entries
+    for( int i = nameList.count() - 1; i >= 0; i-- )
+    {
+        if( costList.at(i) == 0.0 )
+        {
+            nameList.removeAt(i);
+            costList.removeAt(i);
+        }
+    }
+
+    //Colors
     QStringList extendedColors = extendColors();
     QList<QColor> colorList;
     for( int i = 0; i < nameList.count(); i++ )
@@ -53,6 +65,7 @@ void ServiceCostPieDialog::SetData(QStringList nameList, QList<double> costList,
         colorList.append( QPalette( extendedColors[i%extendedColors.size()] ).brush( QPalette::Window ).color() );
     }
 
+    //Setup
     ui->widget->setSumUnit( currency );
     ui->widget->setSeries( nameList, costList, colorList );
 

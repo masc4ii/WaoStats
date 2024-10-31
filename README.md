@@ -31,7 +31,8 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 - ADB (USB) sync your FIT files directly from your Wahoo bike computer
 - display your track on 16 different maps (google, openstreetmap, bing and more)
 - load GPX tracks into the application with reduced statistics (compared to FIT)
-- log service activities and get service reminders
+- log service activities (with costs in time and money) and get service reminders
+- get service activity costs statistics
 
 ## Used Libraries
 - dropboxQt, under [MIT](https://github.com/masc4ii/WaoStats/blob/main/dropboxQt/LICENSE)

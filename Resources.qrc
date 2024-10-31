@@ -14,5 +14,7 @@
         <file>Icons/paste.png</file>
         <file>Icons/Android.png</file>
         <file>Icons/pie.png</file>
+        <file>Icons/time.png</file>
+        <file>Icons/money.png</file>
     </qresource>
 </RCC>

@@ -77,8 +77,21 @@ void CustomPieChart::drawPieChart() {
     painter.setFont(sumFont);
     //painter.setPen(QColor(54, 235, 171));
     painter.setPen(QColor(0, 0, 0));
-    painter.drawText(QRectF(-radius, -radius - (radius / 4), diameter, diameter),
-                     Qt::AlignCenter, QString::number(sum, 'f', 2) + sumUnit);
+    if( sumUnit == "hh:mm" )
+    {
+        int hours = (int)sum / 3600;
+        int minutes = ((int)sum % 3600) / 60;
+
+        QString sumString = QString( "%1:%2" ).arg( hours, 2, 10, QChar('0') ).arg( minutes, 2, 10, QChar('0') );
+
+        painter.drawText(QRectF(-radius, -radius - (radius / 4), diameter, diameter),
+                         Qt::AlignCenter, sumString + "\nhours:min");
+    }
+    else
+    {
+        painter.drawText(QRectF(-radius, -radius - (radius / 4), diameter, diameter),
+                         Qt::AlignCenter, QString::number(sum, 'f', 2) + sumUnit);
+    }
     /* Draw "Sum" text */
     //painter.setPen(Qt::white);
     sumTextFont.setPointSizeF(!isSetSumTextFont ? radius / 5 : sumTextFont.pointSizeF());

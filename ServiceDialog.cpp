@@ -525,14 +525,17 @@ void ServiceDialog::on_pushButtonPie_clicked()
     QStringList items = partList();
     std::sort(items.begin(), items.end());
 
-    QList<double> costList;
+    QList<int> costListT;
+    QList<double> costListM;
 
     foreach( QString item, items)
     {
-        costList.append( calcCost( item ).second );
+        auto cost = calcCost( item );
+        costListT.append( cost.first );
+        costListM.append( cost.second );
     }
 
-    pie->SetData( items, costList, m_currency );
+    pie->SetData( items, costListM, costListT, m_currency );
     pie->exec();
     delete pie;
 }

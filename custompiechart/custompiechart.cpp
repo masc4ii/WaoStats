@@ -1,33 +1,15 @@
 #include "custompiechart.h"
 
-#include <QDebug>
+#include <QToolTip>
 
 CustomPieChart::CustomPieChart(QWidget * parent)
-    : QWidget (parent) {
+    : QWidget (parent), tooltipTimer(new QTimer(this)) {
     title = "Default Title"; // Title name
     total = 0;
     sumUnit = "";
-
-    initPieChartWidget();
-}
-
-CustomPieChart::CustomPieChart(const QString &title, const QString &tag, const double &data,
-                               const QColor &color, QWidget * parent)
-    : QWidget (parent) {
-    this->title = title; // Title name
-    total = 1;           // Data length
-    sum = data;          // Total data amount
-
-    addSlice(tag,  data, color);
-    initPieChartWidget();
-}
-
-CustomPieChart::CustomPieChart(const QString &title, QStringList tagList, QList<double> dataList,
-                               QList<QColor> colorList, QWidget * parent)
-    : QWidget (parent) {
-    this->title = title; // Title name
-
-    setSeries(tagList, dataList, colorList);
+    setAttribute(Qt::WA_Hover); // Enable HoverEvent
+    tooltipTimer->setSingleShot(true);
+    connect(tooltipTimer, &QTimer::timeout, this, &CustomPieChart::showTooltip);
     initPieChartWidget();
 }
 
@@ -61,7 +43,7 @@ void CustomPieChart::drawPieChart() {
     double min = qMin(width, height); // The smaller of width and height
     double diameter = min * 7 / 9;    // Diameter
     double radius = diameter / 2;     // Radius
-    double startLength = 0;              // Starting length
+    double startLength = 0;           // Starting length
     int midPoint = 0;                 // Coordinate origin
     double startAngle = 0;            // Starting angle
 
@@ -275,4 +257,76 @@ void CustomPieChart::setSumUnit(const QString &unit)
 /* Set ring size */
 void CustomPieChart::setRingSize(const double &ringSize) {
     this->ringSize = (ringSize > 1) ? 1 : ringSize;
+}
+/* Hover event for tool tipps */
+bool CustomPieChart::event(QEvent *event)
+{
+    if (event->type() == QEvent::HoverMove) {
+        auto *hoverEvent = static_cast<QHoverEvent *>(event);
+        QPoint pos = hoverEvent->pos();
+
+        // Timer reset, if mouse moves
+        if (lastPos != pos) {
+            tooltipTimer->stop();
+            lastPos = pos;
+            tooltipTimer->start(500); // 500ms on same position before fire tooltip
+        }
+
+        // Get pixmap of the widget
+        QPixmap pixmap = this->grab();
+        pixmap.setDevicePixelRatio(this->devicePixelRatio());
+        QImage image = pixmap.toImage();
+
+        // Scale position in devicePixelRatio
+        QPoint scaledPos = pos * pixmap.devicePixelRatio();
+
+        // Check, if position in pixmap
+        if (scaledPos.x() >= 0 && scaledPos.x() < image.width() &&
+            scaledPos.y() >= 0 && scaledPos.y() < image.height())
+        {
+            QColor color = image.pixelColor(scaledPos);
+            bool surroundingPixelsMatch = true;
+            int radius = 1; // Radius 1 pixel, for a 3x3 area
+
+            // Check  surrounding pixels
+            for (int dx = -radius; dx <= radius && surroundingPixelsMatch; ++dx) {
+                for (int dy = -radius; dy <= radius; ++dy) {
+                    QPoint neighborPos = scaledPos + QPoint(dx, dy);
+
+                    // check if neighbor pixels over limit
+                    if (neighborPos.x() >= 0 && neighborPos.x() < image.width() &&
+                        neighborPos.y() >= 0 && neighborPos.y() < image.height())
+                    {
+                        QColor neighborColor = image.pixelColor(neighborPos);
+                        // check color
+                        if (neighborColor != color)
+                        {
+                            surroundingPixelsMatch = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            // save color and match
+            currentColor = color;
+            surroundingMatch = (color != Qt::black && color != Qt::white && surroundingPixelsMatch);
+        } else if (event->type() == QEvent::Leave) {
+            QToolTip::hideText(); // hide tooltip, if mouse leaves widget
+            tooltipTimer->stop(); // stop timer, if mouse leaves
+        }
+    }
+
+    return QWidget::event(event); // Other event handling
+}
+
+void CustomPieChart::showTooltip()
+{
+    if (surroundingMatch) {
+        for (int i = 0; i < colorList.count(); i++) {
+            if (colorList.at(i) == currentColor) {
+                QToolTip::showText(QCursor::pos(), tagList.at(i), this, QRect(), 2000);
+                break;
+            }
+        }
+    }
 }

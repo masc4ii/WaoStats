@@ -6,6 +6,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include <QLabel>
+#include <QHoverEvent>
+#include <QTimer>
 #include <QtMath>
 
 class CustomPieChart : public QWidget {
@@ -13,10 +15,6 @@ class CustomPieChart : public QWidget {
 
 public:
     explicit CustomPieChart(QWidget * parent = nullptr);
-    explicit CustomPieChart(const QString &title, const QString &tag, const double &data,
-                            const QColor &color, QWidget * parent = nullptr);
-    explicit CustomPieChart(const QString &title, QStringList tagList, QList<double> dataList,
-                            QList<QColor> colorList, QWidget * parent = nullptr);
     ~CustomPieChart();
     void addSlice(const QString &tag, const double &data, const QColor &color);                                // Function to add a slice
     void setSeries(QStringList tagList, QList<double> value, QList<QColor> colorList); // Function to set the series
@@ -29,6 +27,12 @@ public:
     void setSumUnit(const QString &unit);                                                     // Function to set the unit of the sum
     void setGlobalFont(const QFont &font);                                                    // Function to set the global font
     void setRingSize(const double &ringSize);                                                 // Function to set the ring size
+
+protected:
+    bool event(QEvent *event) override;
+
+private slots:
+    void showTooltip();
 
 private:
     int total;                                          // Total number of tags
@@ -51,12 +55,15 @@ private:
     QString title;                                      // Title name
     QString sumUnit;                                    // Unit of the sum
     QStringList tagList;                                // List of tags
-    QList<double> dataList;                                // List of data
+    QList<double> dataList;                             // List of data
     QList<QColor> colorList;                            // List of colors
-    bool eventFilter(QObject * widget, QEvent * event); // Function to filter drawing events
+    QPoint lastPos;                                     // Last position of mouse (to check if it still moves)
+    QTimer *tooltipTimer;                               // Timer for mouse position check
+    QColor currentColor;                                // Color of current position
+    bool surroundingMatch = false;                      // Surrounding pixels had same color as cursor position
+    bool eventFilter(QObject * widget, QEvent * event) override; // Function to filter drawing events
     void drawPieChart();                                // Function to draw the pie chart
     void initPieChartWidget();                          // Function to initialize the pie chart widget
-
 };
 
 #endif // CUSTOMPIECHART_H

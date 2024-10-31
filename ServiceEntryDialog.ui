@@ -190,6 +190,8 @@
   <tabstop>lineEditPart</tabstop>
   <tabstop>spinBoxIntervalDist</tabstop>
   <tabstop>spinBoxIntervalTime</tabstop>
+  <tabstop>timeEditCostsT</tabstop>
+  <tabstop>doubleSpinBoxIntervalCostsM</tabstop>
   <tabstop>comboBoxAction</tabstop>
   <tabstop>lineEditDescr</tabstop>
  </tabstops>

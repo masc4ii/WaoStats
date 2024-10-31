@@ -117,8 +117,8 @@ void CustomPieChart::drawPieChart() {
         fontSize = legendFont.pointSize();
         double totalHeight = total * fontSize * 1.3; // Berechne die Gesamthöhe der Legende
         double offsetYL = -totalHeight / 2; // Setze die y-Achse der Legende auf die Mitte
-        painter.drawRect(QRectF(-(this->width() / 2), offsetYL + count * (fontSize * 1.3), fontSize / 2, fontSize / 2));
-        painter.drawText(QRectF(-(this->width() / 2 - fontSize), (offsetYL - fontSize / 3) + count * (fontSize * 1.3), 1000, radius), tagList[count]);
+        painter.drawRect(QRectF(-(this->width() / 2) + 10, offsetYL + count * (fontSize * 1.3), fontSize / 2, fontSize / 2));
+        painter.drawText(QRectF(-(this->width() / 2 - fontSize - 10), (offsetYL - fontSize / 3) + count * (fontSize * 1.3), 1000, radius), tagList[count]);
 
         /* Draw label polyline */
         tagFont.setPointSizeF(!isSetTagFont ? radius / 5 : tagFont.pointSizeF());

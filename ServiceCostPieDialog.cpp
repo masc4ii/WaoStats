@@ -25,17 +25,17 @@ QStringList extendColors()
     const QStringList colors = { "palevioletred", "darkred", "tomato", "chocolate", "sandybrown", "gold", "yellowgreen", "seagreen", "mediumturquoise", "deepskyblue" };
     QStringList extendedColors = colors;
 
-    // Helle Farben hinzufügen
+    // add bright colors
     for (const auto& colorName : colors) {
         QColor color(colorName);
-        color = color.lighter(150);  // 150% Helligkeit
+        color = color.lighter(130);  // 130% brighter
         extendedColors.append(color.name());
     }
 
-    // Dunkle Farben hinzufügen
+    // add dark colors
     for (const auto& colorName : colors) {
         QColor color(colorName);
-        color = color.darker(150);  // 150% Dunkelheit
+        color = color.darker(150);  // 150% darker
         extendedColors.append(color.name());
     }
 
@@ -55,6 +55,12 @@ void ServiceCostPieDialog::SetData(QStringList nameList, QList<double> costList,
 
     ui->widget->setSumUnit( currency );
     ui->widget->setSeries( nameList, costList, colorList );
+
+    //White background
+    ui->widget->setAutoFillBackground(true);
+    QPalette palette = ui->widget->palette();
+    palette.setColor(QPalette::Window, Qt::white);
+    ui->widget->setPalette(palette);
 }
 
 void ServiceCostPieDialog::on_pushButtonClose_clicked()

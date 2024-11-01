@@ -269,7 +269,7 @@ bool CustomPieChart::event(QEvent *event)
         if (lastPos != pos) {
             tooltipTimer->stop();
             lastPos = pos;
-            tooltipTimer->start(500); // 500ms on same position before fire tooltip
+            tooltipTimer->start(100); // 100ms on same position before fire tooltip
         }
 
         // Get pixmap of the widget

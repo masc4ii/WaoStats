@@ -338,36 +338,42 @@ bool FitParser::loadFit(QString fileName)
                 {
                     const FIT_EVENT_MESG *event = (FIT_EVENT_MESG *) mesg;
 
-                    int gearNumFront = ((event->data & 0x00FF0000)>>16);
-                    int gearToothFront = ((event->data & 0xFF000000)>>24);
-                    int gearNumRear = (event->data & 0x000000FF);
-                    int gearToothRear = ((event->data & 0x0000FF00)>>8);
-
-                    if( gearToothFront > 0 && gearToothRear > 0 && gearToothFront < 255 && gearToothRear < 255 )
+                    if( event->event == 42 || event->event == 43 ) //=42 & =43 for gear change
                     {
-                        m_gearInfoRear = true;
-                        m_gearInfoFront = true;
-                        m_gearTimeStamp.append( event->timestamp );
-                        m_gearNumFront.append( gearNumFront );
-                        m_gearToothFront.append( gearToothFront );
-                        m_gearNumRear.append( gearNumRear );
-                        m_gearToothRear.append( gearToothRear );
-                        //Calc ratio only, if tooth info existing
-                        if( (int)gearToothFront > 1 && (int)gearToothRear > 1 ) m_gearRatio.append( (double)gearToothFront / (double)gearToothRear );
-                        else m_gearRatio.append( 0.0 );
-                        //Steel the distance
-                        if( m_tourDistance.count() > 0 ) m_gearDistance.append( m_tourDistance.last() );
-                        else m_gearDistance.append( 0.0 );
-                        if( gearNumFront > m_gearCountFront ) m_gearCountFront = gearNumFront;
-                        if( gearNumRear > m_gearCountRear ) m_gearCountRear = gearNumRear;
+                        int gearNumFront = ((event->data & 0x00FF0000)>>16);
+                        int gearToothFront = ((event->data & 0xFF000000)>>24);
+                        int gearNumRear = (event->data & 0x000000FF);
+                        int gearToothRear = ((event->data & 0x0000FF00)>>8);
+
+                        if( gearToothFront > 0 && gearToothRear > 0 && gearToothFront < 255 && gearToothRear < 255 )
+                        {
+                            m_gearInfoRear = true;
+                            m_gearInfoFront = true;
+                            m_gearTimeStamp.append( event->timestamp );
+                            m_gearNumFront.append( gearNumFront );
+                            m_gearToothFront.append( gearToothFront );
+                            m_gearNumRear.append( gearNumRear );
+                            m_gearToothRear.append( gearToothRear );
+                            //Calc ratio only, if tooth info existing
+                            if( (int)gearToothFront > 1 && (int)gearToothRear > 1 ) m_gearRatio.append( (double)gearToothFront / (double)gearToothRear );
+                            else m_gearRatio.append( 0.0 );
+                            //Steel the distance
+                            if( m_tourDistance.count() > 0 ) m_gearDistance.append( m_tourDistance.last() );
+                            else m_gearDistance.append( 0.0 );
+                            if( gearNumFront > m_gearCountFront ) m_gearCountFront = gearNumFront;
+                            if( gearNumRear > m_gearCountRear ) m_gearCountRear = gearNumRear;
+                        }
+
+                        /*qDebug() << "Gear Event:"
+                                 << (event->data & 0x000000FF)
+                                 << ((event->data & 0x0000FF00)>>8)
+                                 << ((event->data & 0x00FF0000)>>16)
+                                 << ((event->data & 0xFF000000)>>24);*/
                     }
-
-                    /*qDebug() << "Gear Event:"
-                             << (event->data & 0x000000FF)
-                             << ((event->data & 0x0000FF00)>>8)
-                             << ((event->data & 0x00FF0000)>>16)
-                             << ((event->data & 0xFF000000)>>24);*/
-
+                    else if( event->event == 75 ) //=75 for radar
+                    {
+                        qDebug() << "Radar Event:" << event->data;
+                    }
                     break;
                 }
 

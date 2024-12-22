@@ -6,13 +6,13 @@ on:
 
 env:
   SOURCE_DIR:   ${{ github.workspace }}
-  QTDIR:        /opt/homebrew/opt/qt@5/bin
+  QTDIR:        /usr/local/opt/qt@5/bin
   ARTIFACT:     ${{ github.workspace }}/WaoStats.dmg
 
 jobs:
   build:
 
-    runs-on: macos-latest
+    runs-on: macos-12
 
     steps:
     - uses: actions/checkout@master

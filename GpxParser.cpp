@@ -27,8 +27,9 @@ bool GpxParser::loadGpx( QString fileName )
 
     double lastLat = -1, lastLon = -1, lastTime = -1, time = 0, distance = 0, ele = 0, lastEle = -1;
     double factor = ( 180.0 / pow(2,31) );
-    double lat = 0, lon = 0, distSinceLast = 0;
+    double lat = 0, lon = 0, distSinceLast = 0, power = 0, cadence = 0, heartrate = 0;
     double breakSecs = 0;
+    bool cadenceRead = false, powerRead = false, heartrateRead = false;
 
     //Parse
     Rxml.setDevice(&file);
@@ -87,6 +88,21 @@ bool GpxParser::loadGpx( QString fileName )
                 }
             }
         }
+        else if( Rxml.isStartElement() && ( Rxml.name() == QString( "power" ) ) )
+        {
+            power = Rxml.readElementText().toDouble();
+            powerRead = true;
+        }
+        else if( Rxml.isStartElement() && ( Rxml.name() == QString( "cadence" ) ) )
+        {
+            cadence = Rxml.readElementText().toDouble();
+            cadenceRead = true;
+        }
+        else if( Rxml.isStartElement() && ( Rxml.name() == QString( "hr" ) ) )
+        {
+            heartrate = Rxml.readElementText().toDouble();
+            heartrateRead = true;
+        }
         //Altitude
         else if( Rxml.isStartElement() && ( Rxml.name() == QString( "ele" ) ) )
         {
@@ -131,6 +147,9 @@ bool GpxParser::loadGpx( QString fileName )
             m_tourBatterySoc.append( -1 );
             lastTime = time;
             lastEle = ele;
+            if(cadenceRead) m_tourCadence.append( cadence );
+            if(powerRead) m_tourPower.append( power );
+            if(heartrateRead) m_tourHeartRate.append( heartrate );
         }
     }
     file.close();
@@ -167,6 +186,50 @@ bool GpxParser::loadGpx( QString fileName )
         if( m_session.maxGrade < m_tourGrade.at(i) ) m_session.maxGrade = m_tourGrade.at(i);
         else if( m_session.minGrade > m_tourGrade.at(i) ) m_session.minGrade = m_tourGrade.at(i);
     }
+
+    double helpPower = 0;
+    for( int i = 1; i < m_tourPower.size(); i++ )
+    {
+        if( m_session.maxPower < m_tourPower.at(i) ) m_session.maxPower = m_tourPower.at(i);
+
+        if( m_tourPower.size() == m_tourTimeStamp.size() )
+        {
+            double timeDiff = m_tourTimeStamp.at(i) - m_tourTimeStamp.at(i - 1);
+            helpPower += m_tourPower.at(i) * timeDiff;
+        }
+    }
+    if( m_session.totalTimerTime != 0 ) m_session.avgPower = helpPower / m_session.totalTimerTime;
+
+    double helpCadence = 0;
+    double helpCadenceTime = m_session.totalElapsedTime;
+    for( int i = 1; i < m_tourCadence.size(); i++ )
+    {
+        if( m_session.maxCadence < m_tourCadence.at(i) ) m_session.maxCadence = m_tourCadence.at(i);
+
+        if( m_tourCadence.size() == m_tourTimeStamp.size() )
+        {
+            double timeDiff = m_tourTimeStamp.at(i) - m_tourTimeStamp.at(i - 1);
+            if( m_tourCadence.at(i) > 0 ) helpCadence += m_tourCadence.at(i) * timeDiff;
+            else helpCadenceTime -= timeDiff;
+        }
+    }
+    if( helpCadenceTime > 0 ) m_session.avgCadence = helpCadence / helpCadenceTime;
+
+    double helpHeartRate = 0;
+    for( int i = 1; i < m_tourHeartRate.size(); i++ )
+    {
+        if( m_session.maxHeartRate < m_tourHeartRate.at(i) ) m_session.maxHeartRate = m_tourHeartRate.at(i);
+        else if( m_session.minHeartRate > m_tourHeartRate.at(i) ) m_session.minHeartRate = m_tourHeartRate.at(i);
+        else if( m_session.minHeartRate == 0 ) m_session.minHeartRate = m_tourHeartRate.at(i);
+
+        if( m_tourHeartRate.size() == m_tourTimeStamp.size() )
+        {
+            double timeDiff = m_tourTimeStamp.at(i) - m_tourTimeStamp.at(i - 1);
+            helpHeartRate += m_tourHeartRate.at(i) * timeDiff;
+        }
+    }
+    if( m_session.totalTimerTime != 0 ) m_session.avgHeartRate = helpHeartRate / m_session.totalTimerTime;
+
     m_session.altitudeMax = maxAlt;
     m_session.altitudeMin = minAlt;
     m_session.ascent = gradePos;

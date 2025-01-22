@@ -25,11 +25,11 @@ bool GpxParser::loadGpx( QString fileName )
         return false;
     }
 
-    double lastLat = -1, lastLon = -1, lastTime = -1, time = 0, distance = 0, ele = 0, lastEle = -1;
+    double lastLat = -1, lastLon = -1, lastTime = -1, time = 0, distance = 0, ele = 0, lastEle = -1, distanceGpx = 0;
     double factor = ( 180.0 / pow(2,31) );
     double lat = 0, lon = 0, distSinceLast = 0, power = 0, cadence = 0, heartrate = 0;
     double breakSecs = 0;
-    bool cadenceRead = false, powerRead = false, heartrateRead = false;
+    bool cadenceRead = false, powerRead = false, heartrateRead = false, distanceRead = false;
 
     //Parse
     Rxml.setDevice(&file);
@@ -93,6 +93,11 @@ bool GpxParser::loadGpx( QString fileName )
             power = Rxml.readElementText().toDouble();
             powerRead = true;
         }
+        else if( Rxml.isStartElement() && ( Rxml.name() == QString( "distance" ) ) )
+        {
+            distanceGpx = Rxml.readElementText().toDouble();
+            distanceRead = true;
+        }
         else if( Rxml.isStartElement() && ( Rxml.name() == QString( "cadence" ) ) )
         {
             cadence = Rxml.readElementText().toDouble();
@@ -130,7 +135,10 @@ bool GpxParser::loadGpx( QString fileName )
             distance += distSinceLast;
             m_tourPosLat.append( lat / factor );
             m_tourPosLong.append( lon / factor );
-            m_tourDistance.append( distance );
+            if( distanceRead )
+                m_tourDistance.append( distanceGpx / 1000.0 );
+            else
+                m_tourDistance.append( distance );
             m_tourTimeStamp.append( time );
             double speedCalc = 0;
             if( time-lastTime != 0 ) speedCalc = distSinceLast / (time-lastTime) * 3600;
@@ -196,6 +204,9 @@ bool GpxParser::loadGpx( QString fileName )
         {
             double timeDiff = m_tourTimeStamp.at(i) - m_tourTimeStamp.at(i - 1);
             helpPower += m_tourPower.at(i) * timeDiff;
+
+            m_session.totalCalories += m_tourPower.at(i) * timeDiff / (4184 * 0.215);
+            m_tourCalories.append(m_session.totalCalories);
         }
     }
     if( m_session.totalTimerTime != 0 ) m_session.avgPower = helpPower / m_session.totalTimerTime;

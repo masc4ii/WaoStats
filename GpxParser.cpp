@@ -241,7 +241,7 @@ bool GpxParser::loadGpx( QString fileName )
             helpHeartRate += m_tourHeartRate.at(i) * timeDiff;
         }
     }
-    if( m_session.totalTimerTime != 0 ) m_session.avgHeartRate = helpHeartRate / m_session.totalTimerTime;
+    if( m_session.totalTimerTime != 0 ) m_session.avgHeartRate = helpHeartRate / m_session.totalElapsedTime;
 
     m_session.altitudeMax = maxAlt;
     m_session.altitudeMin = minAlt;

@@ -150,7 +150,7 @@ bool GpxParser::loadGpx( QString fileName )
             m_tourTemperature.append( 0 );
             m_tourAltitude.append( ele );
             double grade = 0;
-            if( distSinceLast > 0.005 ) grade = ( ele - lastEle ) / distSinceLast / 10.0;
+            if( distSinceLast > 0.0005 ) grade = ( ele - lastEle ) / distSinceLast / 10.0;
             m_tourGrade.append( filter( grade, FILTERGRADE ) );
             m_tourBatterySoc.append( -1 );
             lastTime = time;
@@ -187,7 +187,9 @@ bool GpxParser::loadGpx( QString fileName )
     }
     for( int i = 1; i < m_tourSpeed.size(); i++ )
     {
-        if( m_session.maxSpeed < m_tourSpeed.at(i) / 3.6 ) m_session.maxSpeed = m_tourSpeed.at(i) / 3.6;
+        // if there is a value over 120km/h it most probably is an error in the track -> filter
+        if( m_session.maxSpeed < m_tourSpeed.at(i) / 3.6
+         && m_tourSpeed.at(i) < 120 ) m_session.maxSpeed = m_tourSpeed.at(i) / 3.6;
     }
     for( int i = 1; i < m_tourGrade.size(); i++ )
     {

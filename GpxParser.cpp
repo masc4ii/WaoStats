@@ -3,6 +3,10 @@
 #include <QXmlStreamReader>
 #include <QDebug>
 #include <QDateTime>
+#include <QSettings>
+#include <QDir>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <math.h>
 #include "HelperFunctions.h"
 
@@ -196,6 +200,10 @@ bool GpxParser::loadGpx( QString fileName )
     }
 
     double helpPower = 0;
+    if( powerRead )
+    {
+        initPwrZoneValues();
+    }
     for( int i = 1; i < m_tourPower.size(); i++ )
     {
         if( m_session.maxPower < m_tourPower.at(i) ) m_session.maxPower = m_tourPower.at(i);
@@ -207,6 +215,13 @@ bool GpxParser::loadGpx( QString fileName )
 
             m_session.totalCalories += m_tourPower.at(i) * timeDiff / (4184 * 0.215);
             m_tourCalories.append(m_session.totalCalories);
+
+            if(     m_tourPower.at(i) <= m_pwrZoneHigh[0]) m_session.pwrTimeInZone[0] += timeDiff;
+            else if(m_tourPower.at(i) <= m_pwrZoneHigh[1]) m_session.pwrTimeInZone[1] += timeDiff;
+            else if(m_tourPower.at(i) <= m_pwrZoneHigh[2]) m_session.pwrTimeInZone[2] += timeDiff;
+            else if(m_tourPower.at(i) <= m_pwrZoneHigh[3]) m_session.pwrTimeInZone[3] += timeDiff;
+            else if(m_tourPower.at(i) <= m_pwrZoneHigh[4]) m_session.pwrTimeInZone[4] += timeDiff;
+            else m_session.pwrTimeInZone[5] += timeDiff;
         }
     }
     if( m_session.totalTimerTime != 0 ) m_session.avgPower = helpPower / m_session.totalTimerTime;
@@ -227,6 +242,10 @@ bool GpxParser::loadGpx( QString fileName )
     if( helpCadenceTime > 0 ) m_session.avgCadence = helpCadence / helpCadenceTime;
 
     double helpHeartRate = 0;
+    if( heartrateRead )
+    {
+        initHrZoneValues();
+    }
     for( int i = 1; i < m_tourHeartRate.size(); i++ )
     {
         if( m_session.maxHeartRate < m_tourHeartRate.at(i) ) m_session.maxHeartRate = m_tourHeartRate.at(i);
@@ -237,6 +256,12 @@ bool GpxParser::loadGpx( QString fileName )
         {
             double timeDiff = m_tourTimeStamp.at(i) - m_tourTimeStamp.at(i - 1);
             helpHeartRate += m_tourHeartRate.at(i) * timeDiff;
+
+            if(     m_tourHeartRate.at(i) <= m_hrZoneHigh[0]) m_session.hrTimeInZone[0] += timeDiff;
+            else if(m_tourHeartRate.at(i) <= m_hrZoneHigh[1]) m_session.hrTimeInZone[1] += timeDiff;
+            else if(m_tourHeartRate.at(i) <= m_hrZoneHigh[2]) m_session.hrTimeInZone[2] += timeDiff;
+            else if(m_tourHeartRate.at(i) <= m_hrZoneHigh[3]) m_session.hrTimeInZone[3] += timeDiff;
+            else m_session.hrTimeInZone[4] += timeDiff;
         }
     }
     if( m_session.totalTimerTime != 0 ) m_session.avgHeartRate = helpHeartRate / m_session.totalElapsedTime;
@@ -268,4 +293,74 @@ void GpxParser::filterReset( double initValue, int channel )
         m_filter[i][channel] = initValue;
     }
     m_cnt[channel] = 0;
+}
+
+bool GpxParser::initHrZoneValues()
+{
+    QSettings set( QSettings::UserScope, "masc.WaoStats", "WaoStats" );
+    QString workingPath = set.value( "workingPath", QDir::homePath() + "/Documents/BikeTracking" ).toString();
+
+    QFile file(workingPath + "/heartRateZones.json");
+    if (!file.open(QIODevice::ReadOnly)) {
+        return false;
+    }
+
+    QByteArray jsonData = file.readAll();
+    file.close();
+
+    QJsonParseError parseError;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
+
+    if (parseError.error != QJsonParseError::NoError) {
+        return false;
+    }
+
+    if (!jsonDoc.isObject()) {
+        return false;
+    }
+
+    QJsonObject jsonObject = jsonDoc.object();
+
+    for (int i = 0; i < 5; ++i) {
+        QString key = QString::number(i); // Schlüssel als String
+        if (jsonObject.contains(key) && jsonObject[key].isString()) {
+            m_hrZoneHigh[i] = jsonObject[key].toString().toInt();
+        }
+    }
+    return true;
+}
+
+bool GpxParser::initPwrZoneValues()
+{
+    QSettings set( QSettings::UserScope, "masc.WaoStats", "WaoStats" );
+    QString workingPath = set.value( "workingPath", QDir::homePath() + "/Documents/BikeTracking" ).toString();
+
+    QFile file(workingPath + "/powerZones.json");
+    if (!file.open(QIODevice::ReadOnly)) {
+        return false;
+    }
+
+    QByteArray jsonData = file.readAll();
+    file.close();
+
+    QJsonParseError parseError;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
+
+    if (parseError.error != QJsonParseError::NoError) {
+        return false;
+    }
+
+    if (!jsonDoc.isObject()) {
+        return false;
+    }
+
+    QJsonObject jsonObject = jsonDoc.object();
+
+    for (int i = 0; i < 8; ++i) {
+        QString key = QString::number(i); // Schlüssel als String
+        if (jsonObject.contains(key) && jsonObject[key].isString()) {
+            m_pwrZoneHigh[i] = jsonObject[key].toString().toInt();
+        }
+    }
+    return true;
 }

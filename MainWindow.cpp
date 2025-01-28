@@ -964,6 +964,7 @@ void MainWindow::on_actionSetArchivePath_triggered()
     if( path.size() )
     {
         m_workingPath = path;
+        writeSettings();
         if( !QDir( path + "/Planned" ).exists() ) QDir( path ).mkdir( "Planned" );
         scanTours();
     }

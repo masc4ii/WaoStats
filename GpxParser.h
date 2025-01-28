@@ -15,6 +15,8 @@ public:
 private:
     double filter( double newValue, int channel );
     void filterReset( double initValue, int channel );
+    bool initHrZoneValues();
+    bool initPwrZoneValues();
 
     double m_filter[FILTERSIZE][2];
     int m_cnt[2];

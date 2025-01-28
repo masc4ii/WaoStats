@@ -123,10 +123,8 @@ bool GpxParser::loadGpx( QString fileName )
         else if( Rxml.isStartElement() && ( Rxml.name() == QString( "time" ) ) )
         {
             QString timeString = Rxml.readElementText();
-            timeString.remove( "T" );
-            timeString.remove( "Z" );
-            time = QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) ).secsTo( QDateTime().fromString( timeString, "yyyy-MM-ddhh:mm:ss.zzz" ) );
-            if( !time ) time = QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) ).secsTo( QDateTime().fromString( timeString, "yyyy-MM-ddhh:mm:ss" ) );
+            time = QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) ).secsTo( QDateTime().fromString( timeString, Qt::ISODateWithMs ) );
+            if( !time ) time = QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) ).secsTo( QDateTime().fromString( timeString, Qt::ISODate ) );
             if( lastTime == -1 ) lastTime = time;
         }
         //Copy data into vectors

@@ -123,6 +123,9 @@ namespace qmapcontrol
 
     void GeometryLineString::draw(QPainter& painter, const RectWorldCoord& backbuffer_rect_coord, const int& controller_zoom)
     {
+        // Paint lines antialiased
+        painter.setRenderHint(QPainter::Antialiasing, true);
+
         // Check the geometry is visible.
         if(isVisible(controller_zoom))
         {

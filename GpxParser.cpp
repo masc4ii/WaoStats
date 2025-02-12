@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QtMath>
 #include <math.h>
 #include "HelperFunctions.h"
 
@@ -224,7 +225,11 @@ bool GpxParser::loadGpx( QString fileName )
             else m_session.pwrTimeInZone[5] += timeDiff;
         }
     }
-    if( m_session.totalTimerTime != 0 ) m_session.avgPower = helpPower / m_session.totalTimerTime;
+    if( m_session.totalTimerTime != 0 )
+    {
+        m_session.avgPower = helpPower / m_session.totalTimerTime;
+        m_session.normalizedPower = calculateNormalizedPower(m_tourPower, m_tourTimeStamp);
+    }
 
     double helpCadence = 0;
     double helpCadenceTime = m_session.totalElapsedTime;
@@ -364,3 +369,71 @@ bool GpxParser::initPwrZoneValues()
     }
     return true;
 }
+
+double GpxParser::calculateNormalizedPower(const QVector<double>& power, const QVector<double>& time) {
+    if (power.size() != time.size() || power.isEmpty()) {
+        return 0.0; // Fehlerbehandlung
+    }
+
+    QVector<double> smoothedPower;
+    int N = power.size();
+
+    // 1. Gleitenden Durchschnitt über 30 Sekunden berechnen
+    for (int i = 0; i < N; ++i) {
+        double sum = 0.0;
+        double duration = 0.0;
+        int j = i;
+
+        // Zurückgehen, bis 30 Sekunden erreicht sind
+        while (j >= 0 && (time[i] - time[j]) <= 30.0) {
+            double dt = (j > 0) ? (time[j] - time[j - 1]) : 1.0; // Zeitdifferenz
+            sum += power[j] * dt;
+            duration += dt;
+            --j;
+        }
+
+        double avgPower = (duration > 0) ? (sum / duration) : power[i];
+        smoothedPower.append(avgPower);
+    }
+
+    // 2. Vierte Potenz berechnen und mitteln
+    double sumPower4 = 0.0;
+    for (double p : smoothedPower) {
+        sumPower4 += qPow(p, 4);
+    }
+    double meanPower4 = sumPower4 / smoothedPower.size();
+
+    // 3. Vierte Wurzel ziehen
+    return qPow(meanPower4, 0.25);
+}
+
+double GpxParser::calculateWeightedPower(const QVector<double>& power, const QVector<double>& time) {
+    if (power.size() != time.size() || power.isEmpty()) {
+        return 0.0; // Fehlerbehandlung
+    }
+
+    QVector<double> weightedPower;
+    int N = power.size();
+
+    double tau = 30.0; // Zeitkonstante für exponentielle Glättung
+    double alpha = 1.0 - qExp(-1.0 / tau); // Glättungsfaktor
+
+    // 1. Exponentielle Glättung berechnen
+    double smoothedPower = power[0]; // Startwert setzen
+    for (int i = 1; i < N; ++i) {
+        smoothedPower = alpha * power[i] + (1 - alpha) * smoothedPower;
+        weightedPower.append(smoothedPower);
+    }
+
+    // 2. Vierte Potenz berechnen und mitteln
+    double sumPower4 = 0.0;
+    for (double p : weightedPower) {
+        sumPower4 += qPow(p, 4);
+    }
+    double meanPower4 = sumPower4 / weightedPower.size();
+
+    // 3. Vierte Wurzel ziehen
+    return qPow(meanPower4, 0.25);
+}
+
+

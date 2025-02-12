@@ -17,6 +17,8 @@ private:
     void filterReset( double initValue, int channel );
     bool initHrZoneValues();
     bool initPwrZoneValues();
+    double calculateNormalizedPower(const QVector<double>& power, const QVector<double>& time);
+    double calculateWeightedPower(const QVector<double>& power, const QVector<double>& time);
 
     double m_filter[FILTERSIZE][2];
     int m_cnt[2];

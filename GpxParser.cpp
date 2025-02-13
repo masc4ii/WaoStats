@@ -166,117 +166,17 @@ bool GpxParser::loadGpx( QString fileName )
     file.close();
 
     //Create session statistics
-    m_session.startTime = m_tourTimeStamp.first();
-    m_session.totalDistance = m_tourDistance.last() * 1000;
-    m_session.totalElapsedTime = m_tourTimeStamp.last() - m_tourTimeStamp.first();
-    m_session.totalTimerTime = m_tourTimeStamp.last() - m_tourTimeStamp.first() - breakSecs;
-    if( m_session.totalTimerTime < 0 ) m_session.totalTimerTime = 0.0;
-
-    double alt = m_tourAltitude.first();
-    double lastAlt = alt;
-    double minAlt = alt;
-    double maxAlt = alt;
-    double gradePos = 0, gradeNeg = 0;
-    for( int i = 1; i < m_tourAltitude.size(); i++ )
-    {
-        alt = m_tourAltitude.at(i);
-        if( alt > maxAlt ) maxAlt = alt;
-        else if( alt < minAlt ) minAlt = alt;
-
-        if( alt > lastAlt ) gradePos += alt - lastAlt;
-        else if( alt < lastAlt ) gradeNeg += lastAlt - alt;
-
-        lastAlt = alt;
-    }
-    for( int i = 1; i < m_tourSpeed.size(); i++ )
-    {
-        // if there is a value over 120km/h it most probably is an error in the track -> filter
-        if( m_session.maxSpeed < m_tourSpeed.at(i) / 3.6
-         && m_tourSpeed.at(i) < 120 ) m_session.maxSpeed = m_tourSpeed.at(i) / 3.6;
-    }
-    for( int i = 1; i < m_tourGrade.size(); i++ )
-    {
-        if( m_session.maxGrade < m_tourGrade.at(i) ) m_session.maxGrade = m_tourGrade.at(i);
-        else if( m_session.minGrade > m_tourGrade.at(i) ) m_session.minGrade = m_tourGrade.at(i);
-    }
-
-    double helpPower = 0;
-    if( powerRead )
-    {
+    timeAnalysis(breakSecs);
+    tourAnalysis();
+    cadenceAnalysis();
+    if( powerRead ) {
         initPwrZoneValues();
+        powerAnalysis();
     }
-    for( int i = 1; i < m_tourPower.size(); i++ )
-    {
-        if( m_session.maxPower < m_tourPower.at(i) ) m_session.maxPower = m_tourPower.at(i);
-
-        if( m_tourPower.size() == m_tourTimeStamp.size() )
-        {
-            double timeDiff = m_tourTimeStamp.at(i) - m_tourTimeStamp.at(i - 1);
-            helpPower += m_tourPower.at(i) * timeDiff;
-
-            m_session.totalCalories += m_tourPower.at(i) * timeDiff / (4184 * 0.215);
-            m_tourCalories.append(m_session.totalCalories);
-
-            if(     m_tourPower.at(i) <= m_pwrZoneHigh[0]) m_session.pwrTimeInZone[0] += timeDiff;
-            else if(m_tourPower.at(i) <= m_pwrZoneHigh[1]) m_session.pwrTimeInZone[1] += timeDiff;
-            else if(m_tourPower.at(i) <= m_pwrZoneHigh[2]) m_session.pwrTimeInZone[2] += timeDiff;
-            else if(m_tourPower.at(i) <= m_pwrZoneHigh[3]) m_session.pwrTimeInZone[3] += timeDiff;
-            else if(m_tourPower.at(i) <= m_pwrZoneHigh[4]) m_session.pwrTimeInZone[4] += timeDiff;
-            else m_session.pwrTimeInZone[5] += timeDiff;
-        }
-    }
-    if( m_session.totalTimerTime != 0 )
-    {
-        m_session.avgPower = helpPower / m_session.totalTimerTime;
-        m_session.normalizedPower = calculateNormalizedPower(m_tourPower, m_tourTimeStamp);
-    }
-
-    double helpCadence = 0;
-    double helpCadenceTime = m_session.totalElapsedTime;
-    for( int i = 1; i < m_tourCadence.size(); i++ )
-    {
-        if( m_session.maxCadence < m_tourCadence.at(i) ) m_session.maxCadence = m_tourCadence.at(i);
-
-        if( m_tourCadence.size() == m_tourTimeStamp.size() )
-        {
-            double timeDiff = m_tourTimeStamp.at(i) - m_tourTimeStamp.at(i - 1);
-            if( m_tourCadence.at(i) > 0 ) helpCadence += m_tourCadence.at(i) * timeDiff;
-            else helpCadenceTime -= timeDiff;
-        }
-    }
-    if( helpCadenceTime > 0 ) m_session.avgCadence = helpCadence / helpCadenceTime;
-
-    double helpHeartRate = 0;
-    if( heartrateRead )
-    {
+    if( heartrateRead ) {
         initHrZoneValues();
+        heartRateAnalysis();
     }
-    for( int i = 1; i < m_tourHeartRate.size(); i++ )
-    {
-        if( m_session.maxHeartRate < m_tourHeartRate.at(i) ) m_session.maxHeartRate = m_tourHeartRate.at(i);
-        else if( m_session.minHeartRate > m_tourHeartRate.at(i) ) m_session.minHeartRate = m_tourHeartRate.at(i);
-        else if( m_session.minHeartRate == 0 ) m_session.minHeartRate = m_tourHeartRate.at(i);
-
-        if( m_tourHeartRate.size() == m_tourTimeStamp.size() )
-        {
-            double timeDiff = m_tourTimeStamp.at(i) - m_tourTimeStamp.at(i - 1);
-            helpHeartRate += m_tourHeartRate.at(i) * timeDiff;
-
-            if(     m_tourHeartRate.at(i) <= m_hrZoneHigh[0]) m_session.hrTimeInZone[0] += timeDiff;
-            else if(m_tourHeartRate.at(i) <= m_hrZoneHigh[1]) m_session.hrTimeInZone[1] += timeDiff;
-            else if(m_tourHeartRate.at(i) <= m_hrZoneHigh[2]) m_session.hrTimeInZone[2] += timeDiff;
-            else if(m_tourHeartRate.at(i) <= m_hrZoneHigh[3]) m_session.hrTimeInZone[3] += timeDiff;
-            else m_session.hrTimeInZone[4] += timeDiff;
-        }
-    }
-    if( m_session.totalTimerTime != 0 ) m_session.avgHeartRate = helpHeartRate / m_session.totalElapsedTime;
-
-    m_session.altitudeMax = maxAlt;
-    m_session.altitudeMin = minAlt;
-    m_session.ascent = gradePos;
-    m_session.descent = gradeNeg;
-    if( m_session.totalTimerTime > 0 ) m_session.avgSpeed = m_session.totalDistance / m_session.totalTimerTime;
-    else m_session.avgSpeed = 0;
 
     return true;
 }
@@ -368,6 +268,127 @@ bool GpxParser::initPwrZoneValues()
         }
     }
     return true;
+}
+
+void GpxParser::timeAnalysis(double breakSecs)
+{
+    m_session.startTime = m_tourTimeStamp.first();
+    m_session.totalDistance = m_tourDistance.last() * 1000;
+    m_session.totalElapsedTime = m_tourTimeStamp.last() - m_tourTimeStamp.first();
+    m_session.totalTimerTime = m_tourTimeStamp.last() - m_tourTimeStamp.first() - breakSecs;
+    if( m_session.totalTimerTime < 0 ) m_session.totalTimerTime = 0.0;
+}
+
+void GpxParser::tourAnalysis()
+{
+    double alt = m_tourAltitude.first();
+    double lastAlt = alt;
+    double minAlt = alt;
+    double maxAlt = alt;
+    double gradePos = 0, gradeNeg = 0;
+    for( int i = 1; i < m_tourAltitude.size(); i++ )
+    {
+        alt = m_tourAltitude.at(i);
+        if( alt > maxAlt ) maxAlt = alt;
+        else if( alt < minAlt ) minAlt = alt;
+
+        if( alt > lastAlt ) gradePos += alt - lastAlt;
+        else if( alt < lastAlt ) gradeNeg += lastAlt - alt;
+
+        lastAlt = alt;
+    }
+    m_session.altitudeMax = maxAlt;
+    m_session.altitudeMin = minAlt;
+    m_session.ascent = gradePos;
+    m_session.descent = gradeNeg;
+
+    for( int i = 1; i < m_tourSpeed.size(); i++ )
+    {
+        // if there is a value over 120km/h it most probably is an error in the track -> filter
+        if( m_session.maxSpeed < m_tourSpeed.at(i) / 3.6
+            && m_tourSpeed.at(i) < 120 ) m_session.maxSpeed = m_tourSpeed.at(i) / 3.6;
+    }
+
+    for( int i = 1; i < m_tourGrade.size(); i++ )
+    {
+        if( m_session.maxGrade < m_tourGrade.at(i) ) m_session.maxGrade = m_tourGrade.at(i);
+        else if( m_session.minGrade > m_tourGrade.at(i) ) m_session.minGrade = m_tourGrade.at(i);
+    }
+
+    if( m_session.totalTimerTime > 0 ) m_session.avgSpeed = m_session.totalDistance / m_session.totalTimerTime;
+    else m_session.avgSpeed = 0;
+}
+
+void GpxParser::powerAnalysis()
+{
+    double helpPower = 0;
+    for( int i = 1; i < m_tourPower.size(); i++ )
+    {
+        if( m_session.maxPower < m_tourPower.at(i) ) m_session.maxPower = m_tourPower.at(i);
+
+        if( m_tourPower.size() == m_tourTimeStamp.size() )
+        {
+            double timeDiff = m_tourTimeStamp.at(i) - m_tourTimeStamp.at(i - 1);
+            helpPower += m_tourPower.at(i) * timeDiff;
+
+            m_session.totalCalories += m_tourPower.at(i) * timeDiff / (4184 * 0.215);
+            m_tourCalories.append(m_session.totalCalories);
+
+            if(     m_tourPower.at(i) <= m_pwrZoneHigh[0]) m_session.pwrTimeInZone[0] += timeDiff;
+            else if(m_tourPower.at(i) <= m_pwrZoneHigh[1]) m_session.pwrTimeInZone[1] += timeDiff;
+            else if(m_tourPower.at(i) <= m_pwrZoneHigh[2]) m_session.pwrTimeInZone[2] += timeDiff;
+            else if(m_tourPower.at(i) <= m_pwrZoneHigh[3]) m_session.pwrTimeInZone[3] += timeDiff;
+            else if(m_tourPower.at(i) <= m_pwrZoneHigh[4]) m_session.pwrTimeInZone[4] += timeDiff;
+            else m_session.pwrTimeInZone[5] += timeDiff;
+        }
+    }
+    if( m_session.totalTimerTime != 0 )
+    {
+        m_session.avgPower = helpPower / m_session.totalTimerTime;
+        m_session.normalizedPower = calculateNormalizedPower(m_tourPower, m_tourTimeStamp);
+    }
+}
+
+void GpxParser::heartRateAnalysis()
+{
+    double helpHeartRate = 0;
+    for( int i = 1; i < m_tourHeartRate.size(); i++ )
+    {
+        if( m_session.maxHeartRate < m_tourHeartRate.at(i) ) m_session.maxHeartRate = m_tourHeartRate.at(i);
+        else if( m_session.minHeartRate > m_tourHeartRate.at(i) ) m_session.minHeartRate = m_tourHeartRate.at(i);
+        else if( m_session.minHeartRate == 0 ) m_session.minHeartRate = m_tourHeartRate.at(i);
+
+        if( m_tourHeartRate.size() == m_tourTimeStamp.size() )
+        {
+            double timeDiff = m_tourTimeStamp.at(i) - m_tourTimeStamp.at(i - 1);
+            helpHeartRate += m_tourHeartRate.at(i) * timeDiff;
+
+            if(     m_tourHeartRate.at(i) <= m_hrZoneHigh[0]) m_session.hrTimeInZone[0] += timeDiff;
+            else if(m_tourHeartRate.at(i) <= m_hrZoneHigh[1]) m_session.hrTimeInZone[1] += timeDiff;
+            else if(m_tourHeartRate.at(i) <= m_hrZoneHigh[2]) m_session.hrTimeInZone[2] += timeDiff;
+            else if(m_tourHeartRate.at(i) <= m_hrZoneHigh[3]) m_session.hrTimeInZone[3] += timeDiff;
+            else m_session.hrTimeInZone[4] += timeDiff;
+        }
+    }
+    if( m_session.totalTimerTime != 0 ) m_session.avgHeartRate = helpHeartRate / m_session.totalElapsedTime;
+}
+
+void GpxParser::cadenceAnalysis()
+{
+    double helpCadence = 0;
+    double helpCadenceTime = m_session.totalElapsedTime;
+    for( int i = 1; i < m_tourCadence.size(); i++ )
+    {
+        if( m_session.maxCadence < m_tourCadence.at(i) ) m_session.maxCadence = m_tourCadence.at(i);
+
+        if( m_tourCadence.size() == m_tourTimeStamp.size() )
+        {
+            double timeDiff = m_tourTimeStamp.at(i) - m_tourTimeStamp.at(i - 1);
+            if( m_tourCadence.at(i) > 0 ) helpCadence += m_tourCadence.at(i) * timeDiff;
+            else helpCadenceTime -= timeDiff;
+        }
+    }
+    if( helpCadenceTime > 0 ) m_session.avgCadence = helpCadence / helpCadenceTime;
 }
 
 double GpxParser::calculateNormalizedPower(const QVector<double>& power, const QVector<double>& time) {

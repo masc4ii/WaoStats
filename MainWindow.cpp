@@ -918,7 +918,7 @@ void MainWindow::on_actionAbout_triggered()
                                          " <p>%1 v%2</p>"
                                          " <p>%3</p>"
                                          " <p>See <a href='%4'>this site</a> for more information.</p>"
-                                         " <p>Icon by <a href='https://zez.am/71m'>71M</a>.</p>"
+                                         " <p>App logo by <a href='https://zez.am/71m'>71M</a>. Icons by <a href='https://icons8.de'>icons8</a>.</p>"
                                          " <p>dropboxQt Copyright (c) 2018 , <a href='%5'>prokarpaty.net</a> under MIT.</p>"
                                          " <p>QCustomPlot under <a href='%6'>GPL 3.0</a>.</p>"
                                          " <p>QMapControl under <a href='%7'>LGPL 3.0</a>.</p>"

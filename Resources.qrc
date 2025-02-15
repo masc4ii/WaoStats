@@ -1,20 +1,20 @@
 <RCC>
     <qresource prefix="/Icons">
         <file>Icons/crossed_circle.svg</file>
-        <file>Icons/Dropbox_Icon.svg.png</file>
-        <file>Icons/Actions-view-refresh-icon.png</file>
-        <file>Icons/Folder-Documents-icon.png</file>
-        <file>Icons/Window-Add-icon.png</file>
         <file>WaoStatsLogoMap.png</file>
         <file>Splash.png</file>
         <file>Icons/minus.png</file>
         <file>Icons/plus.png</file>
-        <file>Icons/Actions-configure-icon.png</file>
         <file>Icons/plot.png</file>
         <file>Icons/paste.png</file>
         <file>Icons/Android.png</file>
         <file>Icons/pie.png</file>
         <file>Icons/time.png</file>
         <file>Icons/money.png</file>
+        <file>Icons/bike.png</file>
+        <file>Icons/folder.png</file>
+        <file>Icons/Dropbox.png</file>
+        <file>Icons/refresh.png</file>
+        <file>Icons/service.png</file>
     </qresource>
 </RCC>

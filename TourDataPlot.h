@@ -25,6 +25,7 @@ enum ePlotYType{
 
 enum eGraph{
     AltitudeCurve = 0,
+    AltitudeLowerBound, // Helps to fill brush under AltitudeCurve under 0
     Free2ndCurve,
     Free3rdCurve,
     Free4thCurve,

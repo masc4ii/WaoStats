@@ -99,6 +99,10 @@ void TourDataPlot::init()
     graph( AltitudeCurve )->setBrush( QBrush( QColor( 255, 0, 0, 25 ) ) );
     graph( AltitudeCurve )->setName( tr( "Altitude [m]" ) );
 
+    addGraph();
+    graph( AltitudeLowerBound )->setPen(Qt::NoPen);
+    graph( AltitudeCurve )->setChannelFillGraph( graph( AltitudeLowerBound ) );
+
     addGraph( xAxis, yAxis2 );
     //graph( Free2ndCurve )->rescaleAxes();
     graph( Free2ndCurve )->setPen( QPen( QColor( 0, 180, 0 ), m_graphWidth ) );
@@ -199,6 +203,7 @@ void TourDataPlot::drawPlots( TourData *pTourData, ePlotXType xType, ePlotYType 
     if( xType == Distance )
     {
         graph( AltitudeCurve )->setData( pTourData->getTourDistance(), pTourData->getTourAltitude() );
+        graph( AltitudeLowerBound )->setData( pTourData->getTourDistance(), QVector<double>(pTourData->getTourDistance().size(), -1e6) );
         QSharedPointer<QCPAxisTicker> stdTicker( new QCPAxisTicker );
         xAxis->setTicker( stdTicker );
         xAxis->setRange( pTourData->getTourDistance().first(), pTourData->getTourDistance().last() );
@@ -206,6 +211,7 @@ void TourDataPlot::drawPlots( TourData *pTourData, ePlotXType xType, ePlotYType 
     else
     {
         graph( AltitudeCurve )->setData( m_tourTimeStamp, pTourData->getTourAltitude() );
+        graph( AltitudeLowerBound )->setData( m_tourTimeStamp, QVector<double>(m_tourTimeStamp.size(), -1e6) );
         QSharedPointer<QCPAxisTickerDateTime> dateTimeTicker(new QCPAxisTickerDateTime);
         dateTimeTicker->setDateTimeFormat("hh:mm");
         xAxis->setTicker(dateTimeTicker);

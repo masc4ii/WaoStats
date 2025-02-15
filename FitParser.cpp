@@ -1,5 +1,5 @@
 #include "FitParser.h"
-#include "FitSDKRelease_21.105.00/c/fit_convert.h"
+#include "FitSDKRelease_21.158.00/c/fit_convert.h"
 #include <QDebug>
 
 FitParser::FitParser() : TourData()

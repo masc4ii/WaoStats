@@ -115,7 +115,7 @@ FORMS += \
     ServiceEntryDialog.ui \
     StatisticsDialog.ui
 
-INCLUDEPATH += -I FitSDKRelease_21.105.00/cpp/
+INCLUDEPATH += -I FitSDKRelease_21.158.00/cpp/
 
 #Application version
 VERSION_MAJOR = 1

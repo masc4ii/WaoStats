@@ -23,8 +23,9 @@ private slots:
 
     void on_pushButtonGetToken_clicked();
     void on_lineEditAuthCode_textChanged(const QString &arg1);
-    void on_pushButtonOk_clicked();
     void on_pushButtonPaste_clicked();
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
 
 private:
     Ui::DropBoxAuthDialog *ui;

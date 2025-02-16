@@ -10,6 +10,7 @@ AdbSelectDeviceDialog::AdbSelectDeviceDialog(QWidget *parent) :
     ui(new Ui::AdbSelectDeviceDialog)
 {
     ui->setupUi(this);
+    ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
     scan();
 }
 
@@ -66,7 +67,7 @@ void AdbSelectDeviceDialog::scan()
     }
 
     if( ui->tableWidget->rowCount() ) ui->tableWidget->selectRow( 0 );
-    ui->pushButtonOk->setEnabled( ui->tableWidget->rowCount() );
+    ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( ui->tableWidget->rowCount() );
 }
 
 void AdbSelectDeviceDialog::reset()

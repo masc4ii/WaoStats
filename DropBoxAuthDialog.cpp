@@ -21,6 +21,7 @@ DropBoxAuthDialog::DropBoxAuthDialog(QString workingPath, QWidget *parent) :
         ui->lineEditAppKey->setText( m_appInfo.getKey() );
         ui->lineEditAppSecret->setText( m_appInfo.getSecret() );
     }
+    ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
 
 DropBoxAuthDialog::~DropBoxAuthDialog()
@@ -40,10 +41,15 @@ void DropBoxAuthDialog::on_pushButtonGetToken_clicked()
 
 void DropBoxAuthDialog::on_lineEditAuthCode_textChanged(const QString &arg1)
 {
-    ui->pushButtonOk->setEnabled( arg1.size() > 0 );
+    ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( arg1.size() > 0 );
 }
 
-void DropBoxAuthDialog::on_pushButtonOk_clicked()
+void DropBoxAuthDialog::on_pushButtonPaste_clicked()
+{
+    ui->lineEditAuthCode->setText( QGuiApplication::clipboard()->text() );
+}
+
+void DropBoxAuthDialog::on_buttonBox_accepted()
 {
     try
     {
@@ -66,7 +72,9 @@ void DropBoxAuthDialog::on_pushButtonOk_clicked()
     return;
 }
 
-void DropBoxAuthDialog::on_pushButtonPaste_clicked()
+
+void DropBoxAuthDialog::on_buttonBox_rejected()
 {
-    ui->lineEditAuthCode->setText( QGuiApplication::clipboard()->text() );
+    reject();
 }
+

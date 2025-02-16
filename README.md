@@ -30,7 +30,7 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 - dropbox sync your FIT files
 - ADB (USB) sync your FIT files directly from your Wahoo bike computer
 - display your track on 16 different maps (google, openstreetmap, bing and more)
-- load GPX tracks into the application with reduced statistics (compared to FIT)
+- load GPX tracks (supports: position, timestamp, altitude, speed, cadence, grade, heartrate, power, calories)
 - log service activities (with costs in time and money) and get service reminders
 - get service activity costs statistics
 

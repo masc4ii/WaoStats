@@ -677,6 +677,19 @@ void MainWindow::mapProviderSelected(QAction* action)
         map_layer->setMapAdapter(std::make_shared<MapAdapterMichelin>());
     }
 
+    // No darkmode for satelite layers
+    if( action == ui->action_google_satellite ||
+        action == ui->action_google_hybrid ||
+        action == ui->action_bing ) {
+        m_map_control->setDarkMode( false );
+        ui->actionDarkMaps->setEnabled( false );
+    }
+    else
+    {
+        ui->actionDarkMaps->setEnabled( true );
+        m_map_control->setDarkMode( ui->actionDarkMaps->isChecked() );
+    }
+
     // Add the replacement map layer.
     m_map_control->addLayer(map_layer, 0);
 }

@@ -315,6 +315,8 @@
      <addaction name="action_komoot"/>
      <addaction name="action_michelin"/>
      <addaction name="separator"/>
+     <addaction name="actionDarkMaps"/>
+     <addaction name="separator"/>
      <addaction name="actionMapCaching"/>
      <addaction name="actionClearMapCache"/>
      <addaction name="separator"/>
@@ -1560,6 +1562,14 @@
   <action name="action_michelin">
    <property name="text">
     <string>Michelin</string>
+   </property>
+  </action>
+  <action name="actionDarkMaps">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Dark Maps</string>
    </property>
   </action>
  </widget>

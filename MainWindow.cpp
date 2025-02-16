@@ -1027,6 +1027,11 @@ void MainWindow::on_actionMapCaching_triggered(bool checked)
     }
 }
 
+void MainWindow::on_actionDarkMaps_triggered(bool checked)
+{
+    m_map_control->setDarkMode( checked );
+}
+
 void MainWindow::on_actionClearMapCache_triggered()
 {
     QDir dir( QCoreApplication::applicationDirPath() + "/QMapCache" );
@@ -1059,6 +1064,7 @@ void MainWindow::writeSettings()
     else if( ui->action_komoot->isChecked() ) mapType = 15;
     else if( ui->action_michelin->isChecked() ) mapType = 16;
     set.setValue( "maptype", mapType );
+    set.setValue( "darkMaps", ui->actionDarkMaps->isChecked() );
     set.setValue( "workingPath", m_workingPath );
 }
 
@@ -1070,6 +1076,9 @@ void MainWindow::readSettings()
     //restoreState( set.value( "mainWindowState" ).toByteArray() ); // create docks, toolbars, etc...
     if( set.value( "mapCaching", false ).toBool() ) ui->actionMapCaching->setChecked( true );
     on_actionMapCaching_triggered( ui->actionMapCaching->isChecked() );
+
+    if( set.value( "darkMaps", false ).toBool() ) ui->actionDarkMaps->setChecked( true );
+    on_actionDarkMaps_triggered( ui->actionDarkMaps->isChecked() );
 
     switch( set.value( "maptype", 0 ).toInt() )
     {

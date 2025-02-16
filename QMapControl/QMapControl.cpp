@@ -86,7 +86,8 @@ namespace qmapcontrol
           m_zoom_control_button_in("+", this),
           m_zoom_control_slider(Qt::Vertical, this),
           m_zoom_control_button_out("-", this),
-          m_progress_indicator(this)
+          m_progress_indicator(this),
+          m_darkModeEnabled(false)
     {
         // Register meta types.
         qRegisterMetaType<RectWorldPx>("RectWorldPx");
@@ -1097,6 +1098,13 @@ namespace qmapcontrol
         redrawPrimaryScreen(true);
     }
 
+    // Darkmode
+    void QMapControl::setDarkMode(bool enable)
+    {
+        m_darkModeEnabled = enable;
+        requestRedraw();
+    }
+
 
     /// Private...
     // Map management.
@@ -1526,13 +1534,41 @@ namespace qmapcontrol
             painter_back_buffer.translate(backbuffer_rect_px.topLeftPx().rawPoint());
 
             // Inform the main thread that we have a new backbuffer.
-            emit updatedBackBuffer(QPixmap::fromImage(image_backbuffer), backbuffer_rect_px, backbuffer_map_focus_px);
+            emit updatedBackBuffer(QPixmap::fromImage(darkModeConvert(image_backbuffer)), backbuffer_rect_px, backbuffer_map_focus_px);
 
             // Stop the progress indicator as we have finished the redrawing process.
             QTimer::singleShot(0, &m_progress_indicator, SLOT(stopAnimation()));
         }
     }
 
+    // Darkmode conversion
+    QImage QMapControl::darkModeConvert(QImage input)
+    {
+        if(!m_darkModeEnabled) {
+            return input;
+        }
+
+        QImage img = input.convertToFormat(QImage::Format_ARGB32);
+
+        // Pointer to image data
+        uint32_t *pixels = reinterpret_cast<uint32_t*>(img.bits());
+        int pixelCount = img.width() * img.height();
+#pragma omp parallel for
+        for (int i = 0; i < pixelCount; ++i) {
+            QColor color = QColor::fromRgba(pixels[i]);
+            // Invert
+            color.setRgb(255 - color.red(), 255 - color.green(), 255 - color.blue());
+            // Turn tone 180° (via HSV)
+            QColor hsv = color.toHsv();
+            int hue = hsv.hue();
+            // hue() could return -1 (for grey tones)
+            if (hue != -1)
+                hue = (hue + 180) % 360;
+            hsv.setHsv(hue, hsv.saturation(), hsv.value(), hsv.alpha());
+            pixels[i] = hsv.rgba();
+        }
+        return img;
+    }
 
     /// Private slots...
     // Geometry management.

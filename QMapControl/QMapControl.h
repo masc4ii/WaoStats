@@ -450,6 +450,12 @@ namespace qmapcontrol
          */
         void requestRedraw();
 
+        /*!
+         * \brief setDarkMode
+         * \param enable true=dark, false=light
+         */
+        void setDarkMode(bool enable);
+
     private:
         // Map management.
         /*!
@@ -541,6 +547,13 @@ namespace qmapcontrol
          * Redraws the backbuffer image, which when ready will emit updatePrimaryScreen() for it to be stored/drawn.
          */
         void redrawBackbuffer();
+
+        /*!
+         * \brief Convert the image to darkmode, if enabled, otherwise bypass input to output
+         * \param input image
+         * \return output image
+         */
+        QImage darkModeConvert(QImage input);
 
     private slots:
         // Geometry management.
@@ -749,5 +762,8 @@ namespace qmapcontrol
 
         /// Progress indicator to alert user to redrawing progress.
         QProgressIndicator m_progress_indicator;
+
+        /// Dis-/Enable darkmode rendering
+        bool m_darkModeEnabled;
     };
 }

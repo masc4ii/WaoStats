@@ -291,8 +291,8 @@ void MainWindow::statistics( void )
     ui->labelPickerHeartRateName->setVisible( (int)m_pTourData->getSession().maxHeartRate != 0 );
     ui->labelPickerCadence->setVisible( (int)m_pTourData->getSession().maxCadence != 0 );
     ui->labelPickerCadenceName->setVisible( (int)m_pTourData->getSession().maxCadence != 0 );
-    ui->labelPickerAltitude->setVisible( (int)m_pTourData->getSession().altitudeMax != 0 && (int)m_pTourData->getSession().altitudeMin != 0 );
-    ui->labelPickerAltitudeName->setVisible( (int)m_pTourData->getSession().altitudeMax != 0 && (int)m_pTourData->getSession().altitudeMin != 0 );
+    ui->labelPickerAltitude->setVisible( (int)m_pTourData->getSession().altitudeMax != 0 || (int)m_pTourData->getSession().altitudeMin != 0 );
+    ui->labelPickerAltitudeName->setVisible( (int)m_pTourData->getSession().altitudeMax != 0 || (int)m_pTourData->getSession().altitudeMin != 0 );
     ui->labelPickerGrade->setVisible( (int)m_pTourData->getSession().descent != 0 && (int)m_pTourData->getSession().ascent != 0 );
     ui->labelPickerGradeName->setVisible( (int)m_pTourData->getSession().descent != 0 && (int)m_pTourData->getSession().ascent != 0 );
     ui->labelPickerTemperature->setVisible( (int)m_pTourData->getSession().minTemperature != 9999 );

@@ -30,7 +30,7 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 - dropbox sync your FIT files
 - ADB (USB) sync your FIT files directly from your Wahoo bike computer
 - display your track on 16 different maps (google, openstreetmap, bing and more)
-- load GPX tracks into the application with reduced statistics (compared to FIT)
+- load GPX tracks (supports: position, timestamp, altitude, speed, cadence, grade, heartrate, power, calories)
 - log service activities (with costs in time and money) and get service reminders
 - get service activity costs statistics
 
@@ -42,7 +42,8 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 - QCustomPlot, under [GPL 3.0](https://github.com/masc4ii/WaoStats/blob/main/qcustomplot/GPL.txt)
 - QMapControl, under [LGPL 3.0](https://github.com/masc4ii/WaoStats/blob/main/QMapControl/COPYING.LESSER)
 - FitSDKRelease_21.105.00, download code from Garmin official SDK webpage
-- App Icon by [71M](https://zez.am/71m)
+- App icon by [71M](https://zez.am/71m)
+- In app icons by [icons8](https://icons8.de)
 
 ## Download
 - Download [here](https://github.com/masc4ii/WaoStats/releases)

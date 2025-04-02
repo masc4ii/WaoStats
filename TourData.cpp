@@ -22,6 +22,8 @@ void TourData::reset()
     m_tourCalories.clear();
     m_tourPower.clear();
     m_tourLRBalance.clear();
+    m_tourWindSpeed.clear();
+    m_tourAirSpeed.clear();
     m_altCorrectionDone = false;
     m_posCorrectionDone = false;
     m_tempCorrectionDone = false;

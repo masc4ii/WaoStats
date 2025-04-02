@@ -77,6 +77,8 @@ void FitListener::OnMesg(fit::Mesg& mesg)
     double tourCalories = 0;
     double tourPower = 0;
     double tourLRBalance = 50;
+    double tourWindSpeed = 0;
+    double tourAirSpeed = 0;
     deviceInfo_t deviceInfo;
     deviceInfo.name = "";
     deviceInfo.battery = "";
@@ -292,6 +294,12 @@ void FitListener::OnMesg(fit::Mesg& mesg)
         {
             if( QString( devField.GetName().c_str() ) == QString( "charge" )
              && QString::fromStdWString( devField.GetSTRINGValue(0) ) != QString( "nan" ) ) deviceInfo.battery = "Battery " + QString::fromStdWString( devField.GetSTRINGValue(0) ) + "%";
+
+        }
+        if( QString( mesg.GetName().c_str() ) == QString( "record" ) )
+        {
+            if( QString( devField.GetName().c_str() ) == QString( "wind_speed" ) ) tourWindSpeed = devField.GetFLOAT64Value(0) * 0.0036;
+            else if( QString( devField.GetName().c_str() ) == QString( "air_speed" ) ) tourAirSpeed = devField.GetFLOAT64Value(0) * 0.0036;
         }
     }
     if( QString( mesg.GetName().c_str() ) == QString( "record" ) && mesg.GetNumFields() > 5 )
@@ -344,6 +352,8 @@ void FitListener::OnMesg(fit::Mesg& mesg)
         m_tourCalories.append( tourCalories );
         m_tourPower.append( tourPower );
         m_tourLRBalance.append( tourLRBalance );
+        m_tourWindSpeed.append( tourWindSpeed );
+        m_tourAirSpeed.append( tourAirSpeed );
     }
     else if( QString( mesg.GetName().c_str() ) == QString( "lap" ) && mesg.GetNumFields() > 5 )
     {

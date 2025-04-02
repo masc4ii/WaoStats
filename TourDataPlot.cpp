@@ -163,6 +163,14 @@ void TourDataPlot::init()
         yAxis2->setLabel( tr( "GPS Accuracy [m]" ) );
         graph( Free2ndCurve )->setName( tr( "GPS Accuracy [m]" ) );
         break;
+    case WindSpeed:
+        yAxis2->setLabel( tr( "Wind Speed [km/h]" ) );
+        graph( Free2ndCurve )->setName( tr( "Wind Speed [km/h]" ) );
+        break;
+    case AirSpeed:
+        yAxis2->setLabel( tr( "Air Speed [km/h]" ) );
+        graph( Free2ndCurve )->setName( tr( "Air Speed [km/h]" ) );
+        break;
     }
 
     //Average Line
@@ -319,6 +327,16 @@ void TourDataPlot::drawPlots( TourData *pTourData, ePlotXType xType, ePlotYType 
         else                    graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourGpsAccuracy() );
         graph(Free2ndCurve)->rescaleAxes();
         yAxis2->setRange( -1, yAxis2->range().upper * 1.05 );
+        break;
+    case WindSpeed:
+        if( xType == Distance ) graph( Free2ndCurve )->setData( pTourData->getTourDistance(), pTourData->getTourWindSpeed() );
+        else                    graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourWindSpeed() );
+        graph( Free2ndCurve )->rescaleAxes();
+        break;
+    case AirSpeed:
+        if( xType == Distance ) graph( Free2ndCurve )->setData( pTourData->getTourDistance(), pTourData->getTourAirSpeed() );
+        else                    graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourAirSpeed() );
+        graph( Free2ndCurve )->rescaleAxes();
         break;
     }
 

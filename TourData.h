@@ -71,6 +71,8 @@ public:
     QVector<double>getTourCalories(){return m_tourCalories;}
     QVector<double>getTourPower(){return m_tourPower;}
     QVector<double>getTourLRBalance(){return m_tourLRBalance;}
+    QVector<double>getTourWindSpeed(){return m_tourWindSpeed;}
+    QVector<double>getTourAirSpeed(){return m_tourAirSpeed;}
     QVector<deviceInfo_t>getDeviceInfo(){return m_deviceInfo;}
 
     QVector<double>getGearTimeStamp(){return m_gearTimeStamp;}
@@ -132,6 +134,8 @@ protected:
     QVector<double>m_tourCalories;
     QVector<double>m_tourPower;
     QVector<double>m_tourLRBalance;
+    QVector<double>m_tourWindSpeed;
+    QVector<double>m_tourAirSpeed;
 
     QVector<deviceInfo_t>m_deviceInfo;
 

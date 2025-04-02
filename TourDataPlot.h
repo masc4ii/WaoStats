@@ -20,7 +20,9 @@ enum ePlotYType{
     Power,
     LRBalance,
     GearInfo,
-    GpsAccuracy
+    GpsAccuracy,
+    WindSpeed,
+    AirSpeed
 };
 
 enum eGraph{

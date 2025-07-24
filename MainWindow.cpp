@@ -398,6 +398,7 @@ void MainWindow::bikeStatistics(QTreeWidgetItem *item)
 
     ui->labelDistanceBike->setText( QString( "%1 km" ).arg( item->text( 3 ).toDouble()-initKm, 0, 'f', 1 ) );
     ui->labelTimeMotionBike->setText( QString( "%1:%2" ).arg( (int)(item->text( 4 ).toDouble()/3600), 2, 'f', 0, '0' ).arg( QTime(0,0).addSecs( item->text( 4 ).toDouble() ).toString( "mm:ss" ) ) );
+    ui->labelTracksBike->setText( QString( "%1" ).arg( item->childCount() ) );
     ui->labelAscentBike->setText( QString( "%1 km" ).arg( item->text( 5 ).toDouble()/1000, 0, 'f', 3 ) );
     ui->labelDescentBike->setText( QString( "%1 km" ).arg( item->text( 6 ).toDouble()/1000, 0, 'f', 3 ) );
     if( item->text( 4 ).toDouble() > 1 ) ui->labelSpeedAverageBike->setText( QString( "%1 km/h" ).arg( (item->text( 3 ).toDouble()-initKm)/item->text( 4 ).toDouble()*3600, 0, 'f', 1 ) );

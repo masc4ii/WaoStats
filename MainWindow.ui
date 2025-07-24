@@ -1156,6 +1156,13 @@
           </property>
          </widget>
         </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_20">
+          <property name="text">
+           <string>Distance:</string>
+          </property>
+         </widget>
+        </item>
         <item row="1" column="1">
          <widget class="QLabel" name="labelTimeMotionBike">
           <property name="toolTip">
@@ -1166,10 +1173,20 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_20">
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_34">
           <property name="text">
-           <string>Distance:</string>
+           <string>Tracks:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="labelTracksBike">
+          <property name="toolTip">
+           <string>hours:minutes:seconds</string>
+          </property>
+          <property name="text">
+           <string>-</string>
           </property>
          </widget>
         </item>

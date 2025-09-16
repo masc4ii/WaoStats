@@ -38,6 +38,7 @@ DEFINES += FITC
 include( fitc.pri )
 #Define for FIT CPP SDK
 #include( fitcpp.pri )
+#DEFINES += LOGOUT
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.

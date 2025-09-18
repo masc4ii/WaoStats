@@ -135,6 +135,8 @@ void MainWindow::scanTours()
     QStringList subdirs;
     subdirs = directory.entryList( QStringList(), QDir::AllDirs | QDir::NoDotAndDotDot );
 
+    QVector<QPair<QDateTime, QStringList>> bikeData;
+
     foreach( QString subdir, subdirs )
     {
         QTreeWidgetItem *bikeItem = new QTreeWidgetItem(ui->treeWidgetTours);
@@ -173,6 +175,8 @@ void MainWindow::scanTours()
                 fitItem->setText( 6, QString( "%1" ).arg( (int)( m_pTourData->getSession().descent ) ) );
                 fitItem->setText( 7, QString( "0" ) );
             }
+
+            bikeData.append(QPair(QDateTime::fromString(fitItem->text(0), "yyyy-MM-dd - hh:mm:ss"), subdir));
         }
     }
     ui->treeWidgetTours->collapseAll();
@@ -181,6 +185,7 @@ void MainWindow::scanTours()
     saveTableToJson();
     m_currentActiveTreeWidgetItem = nullptr;
     ui->treeWidgetTours->setFilter( ui->lineEditFilter->text() );
+    ui->calendarWidget->setBikeDates(bikeData);
 }
 
 void MainWindow::scanFit(QString fileName)

@@ -56,6 +56,7 @@ SOURCES += \
     AdbDownloadDialog.cpp \
     AdbSelectDeviceDialog.cpp \
     AdbWrapper.cpp \
+    CalendarWidget.cpp \
     DropBoxAuthDialog.cpp \
     DropBoxDownloadDialog.cpp \
     GpxParser.cpp \
@@ -83,6 +84,7 @@ HEADERS += \
     AdbSelectDeviceDialog.h \
     AdbWrapper.h \
     BikeEditingDelegate.h \
+    CalendarWidget.h \
     DropBoxAuthDialog.h \
     DropBoxDownloadDialog.h \
     Globals.h \

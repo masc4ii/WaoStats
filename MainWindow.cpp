@@ -589,6 +589,7 @@ void MainWindow::on_treeWidgetTours_itemActivated(QTreeWidgetItem *item, int col
             drawPlots();
             drawTourToMap( m_pTourData );
         }
+        ui->calendarWidget->setSelectedDate(QDateTime::fromString(item->text(0), "yyyy-MM-dd - hh:mm:ss").date());
     }
 }
 

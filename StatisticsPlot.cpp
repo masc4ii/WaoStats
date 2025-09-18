@@ -60,7 +60,6 @@ void StatisticsPlot::init()
     yAxis->setLabelPadding( 5 );
     yAxis->setTickLabelPadding( 0 );
     yAxis->setOffset( 2 );
-    yAxis->setLabel( tr( "Distance [km]" ) );
 
     QCPLayoutGrid *subLayout = new QCPLayoutGrid;
     plotLayout()->addElement(0, 1, subLayout);
@@ -74,6 +73,21 @@ void StatisticsPlot::init()
     legend->setBrush( QBrush( QColor( 0, 0, 0, 0 ) ) );
     legend->setMargins( QMargins( 0, 0, 0, 0 ) );
     legend->setFont( font );
+}
+
+void StatisticsPlot::setDistanceLabel()
+{
+    yAxis->setLabel( tr( "Distance [km]" ) );
+}
+
+void StatisticsPlot::setAscentLabel()
+{
+    yAxis->setLabel( tr( "Ascent [m]" ) );
+}
+
+void StatisticsPlot::setTimeMotionLabel()
+{
+    yAxis->setLabel( tr( "Time Motion [h]" ) );
 }
 
 void StatisticsPlot::setDayTicker()

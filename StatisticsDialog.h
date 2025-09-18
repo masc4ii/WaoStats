@@ -23,7 +23,15 @@ private slots:
     void on_dateEditTo_dateTimeChanged(const QDateTime &dateTime);
     void on_checkBoxFilter_toggled(bool checked);
 
+    void on_comboBoxType_currentIndexChanged(int index);
+
 private:
+    enum Type{
+        Distance = 0,
+        Ascent,
+        TimeMotion
+    };
+
     Ui::StatisticsDialog *ui;
     QTreeWidget *m_pTourTree;
     QStringList m_bikeTitles;

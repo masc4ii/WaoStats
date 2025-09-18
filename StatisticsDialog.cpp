@@ -14,6 +14,15 @@ StatisticsDialog::StatisticsDialog(QWidget *parent, QTreeWidget *tree, bool filt
 
     ui->checkBoxFilter->setVisible( filterActive );
 
+    ui->comboBoxType->addItem(tr("Distance"), Distance);
+    ui->comboBoxType->addItem(tr("Ascent"), Ascent);
+    ui->comboBoxType->addItem(tr("Time Motion"), TimeMotion);
+    ui->comboBoxType->setCurrentIndex(0);
+
+    ui->comboBoxStyle->setCurrentIndex(1);
+
+    ui->comboBox->setCurrentIndex(1);
+
     m_bikeTitles.clear();
     for( int i = 0; i < m_pTourTree->topLevelItemCount(); i++ )
     {
@@ -22,8 +31,9 @@ StatisticsDialog::StatisticsDialog(QWidget *parent, QTreeWidget *tree, bool filt
         m_bikeTitles.append( m_pTourTree->topLevelItem( i )->text( 0 ) );
     }
 
+    ui->dateEditFrom->setDate(QDate(QDate::currentDate().year(), 1, 1));
     ui->dateEditTo->setDateTime( QDateTime::currentDateTime() );
-    plotDaysOfWeek();
+    plotCreate();
 }
 
 StatisticsDialog::~StatisticsDialog()
@@ -57,7 +67,12 @@ void StatisticsDialog::plotDaysOfWeek()
                     && QDateTime().fromString( m_pTourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ) >= ui->dateEditFrom->dateTime()
                     && QDateTime().fromString( m_pTourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ) <= ui->dateEditTo->dateTime() )
                 {
-                    value += m_pTourTree->topLevelItem(j)->child(i)->text(3).toDouble();
+                    if (ui->comboBoxType->currentData() == Distance)
+                        value += m_pTourTree->topLevelItem(j)->child(i)->text(3).toDouble();
+                    else if (ui->comboBoxType->currentData() == Ascent)
+                        value += m_pTourTree->topLevelItem(j)->child(i)->text(5).toDouble();
+                    else
+                        value += m_pTourTree->topLevelItem(j)->child(i)->text(4).toDouble() / 60 / 60;
                 }
             }
             vectorBike.append( value );
@@ -109,7 +124,12 @@ void StatisticsDialog::plotMonths()
                     && QDateTime().fromString( m_pTourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ) >= ui->dateEditFrom->dateTime()
                     && QDateTime().fromString( m_pTourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ) <= ui->dateEditTo->dateTime() )
                 {
-                    value += m_pTourTree->topLevelItem(j)->child(i)->text(3).toDouble();
+                    if (ui->comboBoxType->currentData() == Distance)
+                        value += m_pTourTree->topLevelItem(j)->child(i)->text(3).toDouble();
+                    else if (ui->comboBoxType->currentData() == Ascent)
+                        value += m_pTourTree->topLevelItem(j)->child(i)->text(5).toDouble();
+                    else
+                        value += m_pTourTree->topLevelItem(j)->child(i)->text(4).toDouble() / 60 / 60;
                 }
             }
             vectorBike.append( value );
@@ -182,7 +202,12 @@ void StatisticsDialog::plotYears()
 
                 if( QDateTime().fromString( m_pTourTree->topLevelItem(j)->child(i)->text(0), "yyyy-MM-dd - hh:mm:ss" ).date().year() == year )
                 {
-                    value += m_pTourTree->topLevelItem(j)->child(i)->text(3).toDouble();
+                    if (ui->comboBoxType->currentData() == Distance)
+                        value += m_pTourTree->topLevelItem(j)->child(i)->text(3).toDouble();
+                    else if (ui->comboBoxType->currentData() == Ascent)
+                        value += m_pTourTree->topLevelItem(j)->child(i)->text(5).toDouble();
+                    else
+                        value += m_pTourTree->topLevelItem(j)->child(i)->text(4).toDouble() / 60 / 60;
                 }
             }
             vectorBike.append( value );
@@ -224,6 +249,18 @@ void StatisticsDialog::on_comboBox_currentTextChanged(const QString &arg1)
 
 void StatisticsDialog::plotCreate()
 {
+    switch( ui->comboBoxType->currentData().toUInt() ) {
+    case Distance:
+        ui->widgetPlot->setDistanceLabel();
+        break;
+    case Ascent:
+        ui->widgetPlot->setAscentLabel();
+        break;
+    default:
+        ui->widgetPlot->setTimeMotionLabel();
+        break;
+    }
+
     if( ui->comboBox->currentText() == "Days of Week" ) plotDaysOfWeek();
     else if( ui->comboBox->currentText() == "Months" ) plotMonths();
     else if( ui->comboBox->currentText() == "Years" ) plotYears();
@@ -244,6 +281,12 @@ void StatisticsDialog::on_dateEditTo_dateTimeChanged(const QDateTime &dateTime)
 void StatisticsDialog::on_checkBoxFilter_toggled(bool checked)
 {
     Q_UNUSED( checked );
+    plotCreate();
+}
+
+void StatisticsDialog::on_comboBoxType_currentIndexChanged(int index)
+{
+    Q_UNUSED( index );
     plotCreate();
 }
 

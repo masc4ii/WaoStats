@@ -9,6 +9,9 @@ class StatisticsPlot : public QCustomPlot
 public:
     StatisticsPlot( QWidget *parent );
     void init( void );
+    void setDistanceLabel( void );
+    void setAscentLabel( void );
+    void setTimeMotionLabel( void );
     void setDayTicker( void );
     void setMonthTicker( void );
     void setYearTicker( void );

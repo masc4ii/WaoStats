@@ -52,6 +52,8 @@
 #include <QMapControl/MapAdapterKomoot.h>
 #include <QMapControl/MapAdapterMichelin.h>
 
+const QString cDateFormat = "yyyy-MM-dd - hh:mm:ss";
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -86,8 +88,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->labelHrZone->setVisible( false );
     ui->labelPwrZone->setVisible( false );
     m_pActionShowInFinder = new QAction( tr( "Show In Finder" ), this );
-    connect( m_pActionShowInFinder, SIGNAL(triggered(bool)), this, SLOT(showInFinder()) );
-    connect(ui->widgetPlot, SIGNAL(mouseMove(QMouseEvent*)), this,SLOT(mouseOverPlot(QMouseEvent*)));
+    connect( m_pActionShowInFinder, &QAction::triggered, this, &MainWindow::showInFinder );
+    connect( ui->widgetPlot, &TourDataPlot::mouseMove, this, &MainWindow::mouseOverPlot );
+    connect( ui->calendarWidget, &CalendarWidget::bikeEntryClicked, this, &MainWindow::onCalendarClicked );
     configureMap();
     readSettings();
     if( QDir( m_workingPath ).exists() )
@@ -135,8 +138,6 @@ void MainWindow::scanTours()
     QStringList subdirs;
     subdirs = directory.entryList( QStringList(), QDir::AllDirs | QDir::NoDotAndDotDot );
 
-    QVector<QPair<QDateTime, QStringList>> bikeData;
-
     foreach( QString subdir, subdirs )
     {
         QTreeWidgetItem *bikeItem = new QTreeWidgetItem(ui->treeWidgetTours);
@@ -165,7 +166,7 @@ void MainWindow::scanTours()
                 QDateTime startQTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) );
                 startQTime = startQTime.addSecs( m_pTourData->getSession().startTime );
 
-                fitItem->setText( 0, startQTime.toString( "yyyy-MM-dd - hh:mm:ss" ) );
+                fitItem->setText( 0, startQTime.toString( cDateFormat ) );
                 fitItem->setText( 1, subdir+"/"+fitFile );
                 fitItem->setToolTip( 0, QFileInfo(subdir+"/"+fitFile).fileName() );
                 fitItem->setText( 2, QString( "%1 km" ).arg( (int)( m_pTourData->getSession().totalDistance / 1000.0 + 0.5 ) ) );
@@ -175,8 +176,6 @@ void MainWindow::scanTours()
                 fitItem->setText( 6, QString( "%1" ).arg( (int)( m_pTourData->getSession().descent ) ) );
                 fitItem->setText( 7, QString( "0" ) );
             }
-
-            bikeData.append(QPair(QDateTime::fromString(fitItem->text(0), "yyyy-MM-dd - hh:mm:ss"), subdir));
         }
     }
     ui->treeWidgetTours->collapseAll();
@@ -185,7 +184,7 @@ void MainWindow::scanTours()
     saveTableToJson();
     m_currentActiveTreeWidgetItem = nullptr;
     ui->treeWidgetTours->setFilter( ui->lineEditFilter->text() );
-    ui->calendarWidget->setBikeDates(bikeData);
+    updateCalendarData();
 }
 
 void MainWindow::scanFit(QString fileName)
@@ -501,6 +500,28 @@ void MainWindow::mouseOverPlot(QMouseEvent *event)
     }
 }
 
+void MainWindow::onCalendarClicked(const QString &bikeName, const QDateTime &dateTime)
+{
+    QString dateTimeString = dateTime.toString(cDateFormat);
+    for( int i = 0; i < ui->treeWidgetTours->topLevelItemCount(); i++ )
+    {
+        QTreeWidgetItem *bikeItem = ui->treeWidgetTours->topLevelItem( i );
+        if( bikeItem->text( 0 ) == bikeName )
+        {
+            for( int j = 0; j < bikeItem->childCount(); j++ )
+            {
+                QTreeWidgetItem *fitItem = bikeItem->child( j );
+                if( dateTimeString == fitItem->text(0) )
+                {
+                    ui->treeWidgetTours->setCurrentItem( fitItem );
+                    on_treeWidgetTours_itemActivated( fitItem, 0 );
+                    return;
+                }
+            }
+        }
+    }
+}
+
 void MainWindow::drawPlots( void )
 {
     TourData *pTourData = m_pTourData;
@@ -562,6 +583,23 @@ QString MainWindow::workingPath()
     return m_workingPath;
 }
 
+void MainWindow::updateCalendarData()
+{
+    QVector<QPair<QDateTime, QStringList>> bikeData;
+    for( int i = 0; i < ui->treeWidgetTours->topLevelItemCount(); i++ )
+    {
+        QTreeWidgetItem *bikeItem = ui->treeWidgetTours->topLevelItem( i );
+        QString bikeName = bikeItem->text( 0 );
+        for( int j = 0; j < bikeItem->childCount(); j++ )
+        {
+            QTreeWidgetItem *fitItem = bikeItem->child( j );
+            QDateTime dateTime = QDateTime::fromString(fitItem->text(0), cDateFormat);
+            bikeData.append(QPair(dateTime, bikeName));
+        }
+    }
+    ui->calendarWidget->setBikeDates(bikeData);
+}
+
 void MainWindow::on_treeWidgetTours_itemActivated(QTreeWidgetItem *item, int column)
 {
     Q_UNUSED( column );
@@ -589,7 +627,7 @@ void MainWindow::on_treeWidgetTours_itemActivated(QTreeWidgetItem *item, int col
             drawPlots();
             drawTourToMap( m_pTourData );
         }
-        ui->calendarWidget->setSelectedDate(QDateTime::fromString(item->text(0), "yyyy-MM-dd - hh:mm:ss").date());
+        ui->calendarWidget->setSelectedDate(QDateTime::fromString(item->text(0), cDateFormat).date());
     }
 }
 
@@ -973,6 +1011,7 @@ void MainWindow::on_treeWidgetTours_itemsDropped(QList<QTreeWidgetItem *> pSourc
     }
     QTimer::singleShot( 1, this, SLOT( calcBikeTotalDistances() ) );
     QTimer::singleShot( 2, this, SLOT( showServiceInTree() ) );
+    QTimer::singleShot( 3, this, [this](){updateCalendarData();});
 }
 
 void MainWindow::on_actionSetArchivePath_triggered()

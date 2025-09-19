@@ -70,7 +70,8 @@ private slots:
     void showServiceInTree();
     void setupArchive( void );
     void showInFinder();
-    void mouseOverPlot(QMouseEvent *event);
+    void mouseOverPlot( QMouseEvent *event );
+    void onCalendarClicked( const QString &bikeName, const QDateTime &dateTime );
 
 private:
     Ui::MainWindow *ui;
@@ -92,6 +93,7 @@ private:
     double odoInitKm( int bikeIndex );
     double odoInitKm( QString bikePath );
     QString workingPath( void );
+    void updateCalendarData( void );
 
     TourData *m_pTourData;
  #ifndef FITC

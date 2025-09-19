@@ -188,7 +188,7 @@ QDate CalendarWidget::getDateFromModel(QTableView *tableView, const QModelIndex 
         int month = monthShown();
         int row = index.row();
 
-        if (row == 0 && day > 15) {
+        if (row <= 1 && day > 15) {
             QDate prevMonth = QDate(year, month, 1).addMonths(-1);
             return QDate(prevMonth.year(), prevMonth.month(), day);
         } else if (row >= 4 && day <= 15) {

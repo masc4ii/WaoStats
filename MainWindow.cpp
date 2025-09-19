@@ -1103,6 +1103,7 @@ void MainWindow::writeSettings()
     QSettings set( QSettings::UserScope, "masc.WaoStats", "WaoStats" );
     set.setValue( "mainWindowGeometry", saveGeometry() );
     //set.setValue( "mainWindowState", saveState() ); // docks, toolbars, etc...
+    set.setValue( "splitterState", ui->splitter->saveState() );
     set.setValue( "mapCaching", ui->actionMapCaching->isChecked() );
     int mapType = 0;
     if( ui->action_google_map->isChecked() ) mapType = 0;
@@ -1133,6 +1134,7 @@ void MainWindow::readSettings()
     QSettings set( QSettings::UserScope, "masc.WaoStats", "WaoStats" );
     restoreGeometry( set.value( "mainWindowGeometry" ).toByteArray() );
     //restoreState( set.value( "mainWindowState" ).toByteArray() ); // create docks, toolbars, etc...
+    ui->splitter->restoreState( set.value( "splitterState" ).toByteArray() );
     if( set.value( "mapCaching", false ).toBool() ) ui->actionMapCaching->setChecked( true );
     on_actionMapCaching_triggered( ui->actionMapCaching->isChecked() );
 

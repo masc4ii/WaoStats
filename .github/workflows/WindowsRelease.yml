@@ -27,6 +27,7 @@ jobs:
             7z x jom.zip -ojom
 
     - name: Install OpenSSL
+      continue-on-error: true
       run: |
            choco install openssl
            dir "C:\Program Files\OpenSSL\"

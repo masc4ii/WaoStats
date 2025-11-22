@@ -1,4 +1,8 @@
 #include "StatisticsPlot.h"
+#include <QToolTip>
+#include <QMouseEvent>
+#include <QDebug>
+#include <limits>
 
 StatisticsPlot::StatisticsPlot( QWidget *parent )
     : QCustomPlot( parent )
@@ -17,10 +21,10 @@ void StatisticsPlot::init()
     yAxis->setPadding( 0 );
     yAxis2->setPadding( 0 );
 
-    //Font
+    // Font
     QFont font = xAxis->labelFont();
     font.setPointSize( 10 );
-    //Darkmode font color
+    // Darkmode font color
     if( palette().background().color().redF() < 0.5 )
     {
         xAxis->setLabelColor( Qt::white );
@@ -39,7 +43,7 @@ void StatisticsPlot::init()
         axisRect(0)->setBackground( QColor( 64, 64, 64 ) );
     }
 
-    //X Axis and grid
+    // X Axis and grid
     xAxis->setLabelFont( font );
     xAxis->setTickLabelFont( font );
     xAxis->grid()->setSubGridVisible( false );
@@ -49,7 +53,7 @@ void StatisticsPlot::init()
     xAxis->setTickLabelPadding( 0 );
     xAxis->setOffset( 2 );
 
-    //Y Axis left and grid
+    // Y Axis left and grid
     yAxis->setLabelFont( font );
     yAxis->setTickLabelFont( font );
     yAxis->grid()->setSubGridVisible( true );
@@ -73,6 +77,81 @@ void StatisticsPlot::init()
     legend->setBrush( QBrush( QColor( 0, 0, 0, 0 ) ) );
     legend->setMargins( QMargins( 0, 0, 0, 0 ) );
     legend->setFont( font );
+
+    // Mouse-over tooltips
+    connect(this, &QCustomPlot::mouseMove, this, [this](QMouseEvent *event){
+        QPoint pos = event->pos();
+        QCPAbstractPlottable *pl = plottableAt(pos);
+        if (!pl) { QToolTip::hideText(); return; }
+        QCPBars *bars = qobject_cast<QCPBars*>(pl);
+        if (!bars) { QToolTip::hideText(); return; }
+
+        // Get coordinate in plot coordinates (x)
+        double xCoord = xAxis->pixelToCoord(pos.x());
+
+        // Iterate bar data container, find nearest key
+        auto dataMap = bars->data();
+        if (!dataMap || dataMap->isEmpty()) { QToolTip::hideText(); return; }
+
+        double bestDiff = std::numeric_limits<double>::infinity();
+        double nearestKey = 0;
+        double nearestValue = 0;
+        for (auto it = dataMap->constBegin(); it != dataMap->constEnd(); ++it)
+        {
+            // In this qcustomplot version const_iterator is a pointer to QCPBarsData
+            double key = it->key;
+            double diff = qAbs(key - xCoord);
+            if (diff < bestDiff)
+            {
+                bestDiff = diff;
+                nearestKey = key;
+                nearestValue = it->value;
+            }
+        }
+
+        // Extract unit from y-axis label if present: "Label [unit]"
+        QString unit;
+        QString yLabel = yAxis->label();
+        int l = yLabel.indexOf('[');
+        int r = yLabel.indexOf(']');
+        if (l != -1 && r > l) unit = yLabel.mid(l+1, r-l-1);
+        unit = unit.trimmed();
+
+        // Format the value
+        QString valueStr;
+        // Time case: unit "h" or label contains "Time" -> show as hhhh:mm
+        if (!unit.isEmpty() && (unit == "h" || yLabel.contains("Time", Qt::CaseInsensitive)))
+        {
+            // nearestValue is in hours; round to nearest minute
+            int totalMinutes = int(nearestValue * 60.0 + 0.5);
+            int hours = totalMinutes / 60;
+            int minutes = totalMinutes % 60;
+            valueStr = QString("%1:%2").arg(hours).arg(minutes, 2, 10, QChar('0'));
+        }
+        // Ascent: no decimal places (unit "m" or label contains "Ascent")
+        else if (!unit.isEmpty() && (unit == "m" || yLabel.contains("Ascent", Qt::CaseInsensitive)))
+        {
+            valueStr = QString::number(nearestValue, 'f', 0) + " " + unit;
+        }
+        // Distance: one decimal place (unit "km" or label contains "Distance")
+        else if (!unit.isEmpty() && (unit == "km" || yLabel.contains("Distance", Qt::CaseInsensitive)))
+        {
+            valueStr = QString::number(nearestValue, 'f', 1) + " " + unit;
+        }
+        else if (!unit.isEmpty())
+        {
+            // Default: one decimal place
+            valueStr = QString::number(nearestValue, 'f', 1) + " " + unit;
+        }
+        else
+        {
+            valueStr = QString::number(nearestValue, 'f', 1);
+        }
+
+        QString tooltip = QString("%1\n%2").arg(bars->name()).arg(valueStr);
+
+        QToolTip::showText(event->globalPos(), tooltip, this);
+    });
 }
 
 void StatisticsPlot::setDistanceLabel()

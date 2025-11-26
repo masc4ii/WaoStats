@@ -6,7 +6,7 @@
 [![Windows](https://img.shields.io/badge/Windows-0078D6?style=flat&logo=windows&logoColor=white)](https://www.microsoft.com/windows)
 [![wahooELEMNT](https://img.shields.io/badge/wahoo-ELEMNT-red)](https://de-eu.wahoofitness.com/devices/bike-computers)
 [![Qt&5](https://img.shields.io/badge/Qt-5-brightgreen)](https://doc.qt.io/qt-5/)
-[![FitSDK](https://img.shields.io/badge/FitSDKRelease-21.105.00-brightgreen)](https://developer.garmin.com/fit/download/)
+[![FitSDK](https://img.shields.io/badge/FitSDKRelease-21.158.00-brightgreen)](https://developer.garmin.com/fit/download/)
 [![dropboxQt](https://img.shields.io/badge/dropboxQt-yellow)](https://github.com/osoftteam/dropboxQt)
 [![QMapControl](https://img.shields.io/badge/QMapControl-yellow)](https://github.com/TheDZhon/QMapControl)
 [![QCustomPlot](https://img.shields.io/badge/QCustomPlot-yellow)](https://www.qcustomplot.com)

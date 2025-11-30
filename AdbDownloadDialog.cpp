@@ -12,7 +12,7 @@ AdbDownloadDialog::AdbDownloadDialog(QWidget *parent, QString deviceId, QString 
     m_workingPath(workingPath)
 {
     setTitle( "Sync ADB..." );
-    setActionText(QString( "tracks downloaded" ));
+    setActionText( tr( "tracks downloaded" ) );
 }
 
 AdbDownloadDialog::~AdbDownloadDialog()

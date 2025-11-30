@@ -17,7 +17,7 @@ DropBoxDownloadDialog::DropBoxDownloadDialog(QWidget *parent, QString token, QSt
     m_workingPath(workingPath)
 {
     setTitle( "Sync Dropbox..." );
-    setActionText(QString( "tracks downloaded" ));
+    setActionText( tr( "tracks downloaded" ) );
 }
 
 DropBoxDownloadDialog::~DropBoxDownloadDialog()

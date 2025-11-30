@@ -58,10 +58,10 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    ui->setupUi(this);
+
     QSettings set( QSettings::UserScope, "masc.WaoStats", "WaoStats" );
     loadTranslation( set.value("language", "en").toString() );
-
-    ui->setupUi(this);
 
     Splash splash( QPixmap( ":/Icons/Splash.png" ).scaled( 300, 300, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
     splash.show();

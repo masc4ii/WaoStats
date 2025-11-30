@@ -156,8 +156,6 @@ RESOURCES += \
 TRANSLATIONS += \
     translations/WaoStats_de.ts
 
-CONFIG += lrelease
-
 #unpack & install adb on OSX
 macx: QMAKE_POST_LINK += unzip -o ../WaoStats/adb/macOS/adb.zip $$escape_expand(\n\t)
 macx: QMAKE_POST_LINK += "mv adb WaoStats.app/Contents/MacOS/" $$escape_expand(\n\t)

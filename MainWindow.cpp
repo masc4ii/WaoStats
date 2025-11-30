@@ -605,24 +605,21 @@ void MainWindow::updateCalendarData()
 
 void MainWindow::loadTranslation(QString language)
 {
-    QString translationFile = QString( ":/translations/translations/WaoStats_%1" ).arg( language );
+    qApp->removeTranslator( &m_appTranslator );
+    qApp->removeTranslator( &m_qtTranslator );
+
+    QString translationFile = QString( ":/translations/translations/WaoStats_%1.qm" ).arg( language );
     if( m_appTranslator.load( translationFile ) )
     {
         qApp->installTranslator( &m_appTranslator );
     }
-    else
-    {
-        qApp->removeTranslator( &m_appTranslator );
-    }
-    QString qtTranslation = QString( ":/translations/translations/qtbase_%1" ).arg( language );
+
+    QString qtTranslation = QString( ":/translations/translations/qtbase_%1.qm" ).arg( language );
     if( m_qtTranslator.load( qtTranslation ) )
     {
         qApp->installTranslator( &m_qtTranslator );
     }
-    else
-    {
-        qApp->removeTranslator( &m_qtTranslator );
-    }
+    
     QSettings set( QSettings::UserScope, "masc.WaoStats", "WaoStats" );
     set.setValue( "language", language );
 

@@ -242,8 +242,8 @@ void StatisticsDialog::on_comboBoxStyle_currentIndexChanged(int index)
 
 void StatisticsDialog::on_comboBox_currentTextChanged(const QString &arg1)
 {
-    ui->dateEditFrom->setEnabled( arg1 != "Years" );
-    ui->dateEditTo->setEnabled( arg1 != "Years" );
+    ui->dateEditFrom->setEnabled( arg1 != tr("Years") );
+    ui->dateEditTo->setEnabled( arg1 != tr("Years") );
     plotCreate();
 }
 
@@ -261,9 +261,9 @@ void StatisticsDialog::plotCreate()
         break;
     }
 
-    if( ui->comboBox->currentText() == "Days of Week" ) plotDaysOfWeek();
-    else if( ui->comboBox->currentText() == "Months" ) plotMonths();
-    else if( ui->comboBox->currentText() == "Years" ) plotYears();
+    if( ui->comboBox->currentText() == tr("Days of Week") ) plotDaysOfWeek();
+    else if( ui->comboBox->currentText() == tr("Months") ) plotMonths();
+    else if( ui->comboBox->currentText() == tr("Years") ) plotYears();
 }
 
 void StatisticsDialog::on_dateEditFrom_dateTimeChanged(const QDateTime &dateTime)

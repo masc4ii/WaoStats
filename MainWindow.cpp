@@ -58,6 +58,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    QSettings set( QSettings::UserScope, "masc.WaoStats", "WaoStats" );
+    loadTranslation( set.value("language", "en").toString() );
+
     ui->setupUi(this);
 
     Splash splash( QPixmap( ":/Icons/Splash.png" ).scaled( 300, 300, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
@@ -130,7 +133,7 @@ void MainWindow::scanTours()
     ui->treeWidgetTours->hideColumn( 5 );
     ui->treeWidgetTours->hideColumn( 6 );
     ui->treeWidgetTours->hideColumn( 7 );
-    ui->treeWidgetTours->setHeaderLabels( QStringList() << "Tour" << "Path" << "Distance" << "DistanceAsDouble" << "TimeInMotionSec" << "AscentMeters" << "DescentMeters" << "DistanceToCursor" );
+    ui->treeWidgetTours->setHeaderLabels( QStringList() << tr("Tour") << "Path" << tr("Distance") << "DistanceAsDouble" << "TimeInMotionSec" << "AscentMeters" << "DescentMeters" << "DistanceToCursor" );
     ui->treeWidgetTours->setColumnWidth( 0, 190 );
     ui->treeWidgetTours->setColumnWidth( 2, 50 );
 
@@ -600,6 +603,37 @@ void MainWindow::updateCalendarData()
     ui->calendarWidget->setBikeDates(bikeData);
 }
 
+void MainWindow::loadTranslation(QString language)
+{
+    QString translationFile = QString( ":/translations/translations/WaoStats_%1" ).arg( language );
+    if( m_appTranslator.load( translationFile ) )
+    {
+        qApp->installTranslator( &m_appTranslator );
+    }
+    else
+    {
+        qApp->removeTranslator( &m_appTranslator );
+    }
+    QString qtTranslation = QString( ":/translations/translations/qtbase_%1" ).arg( language );
+    if( m_qtTranslator.load( qtTranslation ) )
+    {
+        qApp->installTranslator( &m_qtTranslator );
+    }
+    else
+    {
+        qApp->removeTranslator( &m_qtTranslator );
+    }
+    QSettings set( QSettings::UserScope, "masc.WaoStats", "WaoStats" );
+    set.setValue( "language", language );
+
+    if( m_languageGroup )
+    {
+        m_languageGroup->blockSignals( true );
+        setLanguageAction( language );
+        m_languageGroup->blockSignals( false );
+    }
+}
+
 void MainWindow::on_treeWidgetTours_itemActivated(QTreeWidgetItem *item, int column)
 {
     Q_UNUSED( column );
@@ -750,6 +784,23 @@ void MainWindow::plotSelected( void )
         m_timePlot = false;
     }
     drawPlots();
+}
+
+void MainWindow::languageSelected(QAction *action)
+{
+    loadTranslation( action->data().toString() );
+}
+
+void MainWindow::setLanguageAction(QString language)
+{
+    for( auto action : m_languageGroup->actions() )
+    {
+        if( action->data() == language )
+        {
+            action->setChecked( true );
+            break;
+        }
+    }
 }
 
 void MainWindow::adjustMap()
@@ -970,7 +1021,7 @@ void MainWindow::on_actionAbout_triggered()
     //QByteArray byteArray;
     //QString pic = QString("<img width='128' height='112' align='right' src=\"data:image/png;base64,") + byteArray.toBase64() + "\"/>";
 
-    QMessageBox::about( this, APPNAME, QString(
+    QMessageBox::about( this, APPNAME, tr(
                                          //"<html>%1"
                                          "<body><h3>%1</h3>"
                                          " <p>%1 v%2</p>"
@@ -1132,6 +1183,7 @@ void MainWindow::writeSettings()
 void MainWindow::readSettings()
 {
     QSettings set( QSettings::UserScope, "masc.WaoStats", "WaoStats" );
+    loadTranslation( set.value("language", "en").toString() );
     restoreGeometry( set.value( "mainWindowGeometry" ).toByteArray() );
     //restoreState( set.value( "mainWindowState" ).toByteArray() ); // create docks, toolbars, etc...
     ui->splitter->restoreState( set.value( "splitterState" ).toByteArray() );
@@ -1210,7 +1262,7 @@ void MainWindow::configureActionGroups( void )
     ui->actionPlotDistance->setCheckable( true );
     ui->actionPlotTime->setCheckable( true );
     ui->actionPlotDistance->setChecked( true );
-    QObject::connect( plotTypeGroup, &QActionGroup::triggered, this, &MainWindow::plotSelected );
+    connect( plotTypeGroup, &QActionGroup::triggered, this, &MainWindow::plotSelected );
 
     QActionGroup* plotValueGroup = new QActionGroup(this);
     plotValueGroup->addAction( ui->actionSpeed );
@@ -1236,7 +1288,16 @@ void MainWindow::configureActionGroups( void )
     ui->actionGearInfo->setCheckable( true );
     ui->actionGpsAccuracy->setCheckable( true );
     ui->actionSpeed->setChecked( true );
-    QObject::connect( plotValueGroup, &QActionGroup::triggered, this, &MainWindow::plotSelected );
+    connect( plotValueGroup, &QActionGroup::triggered, this, &MainWindow::plotSelected );
+
+    m_languageGroup = new QActionGroup(this);
+    m_languageGroup->addAction( ui->actionEnglish );
+    m_languageGroup->addAction( ui->actionGerman );
+    ui->actionEnglish->setCheckable( true );
+    ui->actionEnglish->setData( "en" );
+    ui->actionGerman->setCheckable( true );
+    ui->actionGerman->setData( "de" );
+    connect( m_languageGroup, &QActionGroup::triggered, this, &MainWindow::languageSelected );
 }
 
 void MainWindow::saveTableToJson()
@@ -1630,5 +1691,19 @@ void MainWindow::showInFinder()
 bool MainWindow::initSucess()
 {
     return m_initSuccess;
+}
+
+void MainWindow::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi(this);
+        if( initSucess() )
+        {
+            scanTours();
+            drawPlots();
+        }
+    }
+    QMainWindow::changeEvent(event);
 }
 

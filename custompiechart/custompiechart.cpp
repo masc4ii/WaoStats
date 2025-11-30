@@ -78,7 +78,7 @@ void CustomPieChart::drawPieChart() {
     //painter.setPen(Qt::white);
     sumTextFont.setPointSizeF(!isSetSumTextFont ? radius / 5 : sumTextFont.pointSizeF());
     painter.setFont(sumTextFont);
-    painter.drawText(QRectF(-radius, -radius + fontSize, diameter, diameter), Qt::AlignCenter, "Sum");
+    painter.drawText(QRectF(-radius, -radius + fontSize, diameter, diameter), Qt::AlignCenter, tr("Sum"));
 
     painter.setFont(globalFont);
     for (int count = 0; count < total; count++) {

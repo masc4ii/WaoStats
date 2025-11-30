@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QTreeWidgetItem>
+#include <QTranslator>
 
 // QMapControl includes.
 #include <QMapControl/QMapControl.h>
@@ -20,6 +21,8 @@
 #include "GpxParser.h"
 #include "TourData.h"
 
+class QActionGroup;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -35,6 +38,9 @@ public:
     ~MainWindow();
     bool initSucess();
 
+protected:
+    void changeEvent(QEvent *event) override;
+
 private slots:
     void adjustMap( void );
     void statistics( void );
@@ -43,6 +49,8 @@ private slots:
     void pointInfoHide( bool on );
     void mapProviderSelected( QAction* action );
     void plotSelected( void );
+    void languageSelected( QAction* action );
+    void setLanguageAction( QString language );
     void onBikeItemEditingFinished( QTreeWidgetItem *item );
     void on_actionAbout_triggered();
     void on_actionAboutQt_triggered();
@@ -94,6 +102,7 @@ private:
     double odoInitKm( QString bikePath );
     QString workingPath( void );
     void updateCalendarData( void );
+    void loadTranslation( QString language );
 
     TourData *m_pTourData;
  #ifndef FITC
@@ -125,5 +134,9 @@ private:
     bool m_timePlot;
 
     bool m_initSuccess{false};
+
+    QTranslator m_appTranslator;
+    QTranslator m_qtTranslator;
+    QActionGroup* m_languageGroup;
 };
 #endif // MAINWINDOW_H

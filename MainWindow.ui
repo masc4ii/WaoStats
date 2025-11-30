@@ -345,8 +345,16 @@
      <addaction name="separator"/>
      <addaction name="actionAverageMarker"/>
     </widget>
+    <widget class="QMenu" name="menuLanguage">
+     <property name="title">
+      <string>Language</string>
+     </property>
+     <addaction name="actionEnglish"/>
+     <addaction name="actionGerman"/>
+    </widget>
     <addaction name="menu_map"/>
     <addaction name="menuPlot"/>
+    <addaction name="menuLanguage"/>
    </widget>
    <widget class="QMenu" name="menuArchive">
     <property name="title">
@@ -564,8 +572,11 @@
             </property>
             <item row="0" column="1">
              <widget class="QLabel" name="labelPowerAverage">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -592,15 +603,21 @@
             </item>
             <item row="2" column="1">
              <widget class="QLabel" name="labelPowerNormalized">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
             <item row="4" column="1">
              <widget class="QLabel" name="labelLRBalance">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -613,8 +630,11 @@
             </item>
             <item row="1" column="1">
              <widget class="QLabel" name="labelPowerMax">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -658,7 +678,7 @@
             <item row="2" column="1">
              <widget class="QLabel" name="labelMaximum">
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -686,14 +706,14 @@
             <item row="1" column="1">
              <widget class="QLabel" name="labelDescent">
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
             <item row="3" column="1">
              <widget class="QLabel" name="labelMinimum">
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -714,7 +734,7 @@
             <item row="0" column="1">
              <widget class="QLabel" name="labelAscent">
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -728,14 +748,14 @@
             <item row="4" column="1">
              <widget class="QLabel" name="labelNegGrade">
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
             <item row="5" column="1">
              <widget class="QLabel" name="labelPosGrade">
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -756,8 +776,11 @@
             </property>
             <item row="0" column="1">
              <widget class="QLabel" name="labelHeartRateAverage">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -770,8 +793,11 @@
             </item>
             <item row="1" column="1">
              <widget class="QLabel" name="labelHeartRateMax">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -791,8 +817,11 @@
             </item>
             <item row="3" column="1">
              <widget class="QLabel" name="labelCalories">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -805,8 +834,11 @@
             </item>
             <item row="2" column="1">
              <widget class="QLabel" name="labelHeartRateMin">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -857,7 +889,7 @@
             <item row="0" column="1">
              <widget class="QLabel" name="labelSpeedAverage">
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -871,7 +903,7 @@
             <item row="1" column="1">
              <widget class="QLabel" name="labelSpeedMax">
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -899,7 +931,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string/>
+               <string notr="true"/>
               </property>
              </widget>
             </item>
@@ -944,14 +976,14 @@
             <item row="1" column="1">
              <widget class="QLabel" name="labelDate">
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
             <item row="3" column="1">
              <widget class="QLabel" name="labelDistance">
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -975,14 +1007,14 @@
                <string>hours:minutes:seconds</string>
               </property>
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
             <item row="2" column="1">
              <widget class="QLabel" name="labelStartTime">
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -1006,7 +1038,7 @@
                <string>hours:minutes:seconds</string>
               </property>
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -1040,15 +1072,21 @@
             </item>
             <item row="1" column="1">
              <widget class="QLabel" name="labelCadenceAverage">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
             <item row="2" column="1">
              <widget class="QLabel" name="labelCadenceMax">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -1089,8 +1127,11 @@
             </item>
             <item row="1" column="1">
              <widget class="QLabel" name="labelTempMax">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -1103,8 +1144,11 @@
             </item>
             <item row="0" column="1">
              <widget class="QLabel" name="labelTempAverage">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -1117,8 +1161,11 @@
             </item>
             <item row="2" column="1">
              <widget class="QLabel" name="labelTempMin">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
               <property name="text">
-               <string>-</string>
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>
@@ -1174,7 +1221,7 @@
         <item row="0" column="1">
          <widget class="QLabel" name="labelDistanceBike">
           <property name="text">
-           <string>-</string>
+           <string notr="true">-</string>
           </property>
          </widget>
         </item>
@@ -1191,7 +1238,7 @@
            <string>hours:minutes:seconds</string>
           </property>
           <property name="text">
-           <string>-</string>
+           <string notr="true">-</string>
           </property>
          </widget>
         </item>
@@ -1208,7 +1255,7 @@
            <string>hours:minutes:seconds</string>
           </property>
           <property name="text">
-           <string>-</string>
+           <string notr="true">-</string>
           </property>
          </widget>
         </item>
@@ -1255,7 +1302,7 @@
         <item row="0" column="1">
          <widget class="QLabel" name="labelAscentBike">
           <property name="text">
-           <string>-</string>
+           <string notr="true">-</string>
           </property>
          </widget>
         </item>
@@ -1269,7 +1316,7 @@
         <item row="1" column="1">
          <widget class="QLabel" name="labelDescentBike">
           <property name="text">
-           <string>-</string>
+           <string notr="true">-</string>
           </property>
          </widget>
         </item>
@@ -1303,7 +1350,7 @@
         <item row="0" column="1">
          <widget class="QLabel" name="labelSpeedAverageBike">
           <property name="text">
-           <string>-</string>
+           <string notr="true">-</string>
           </property>
          </widget>
         </item>
@@ -1609,6 +1656,16 @@
    </property>
    <property name="text">
     <string>Dark Maps</string>
+   </property>
+  </action>
+  <action name="actionEnglish">
+   <property name="text">
+    <string>English</string>
+   </property>
+  </action>
+  <action name="actionGerman">
+   <property name="text">
+    <string>Deutsch</string>
    </property>
   </action>
  </widget>

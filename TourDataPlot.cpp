@@ -34,7 +34,9 @@ void TourDataPlot::init()
 
     //Font
     QFont font = xAxis->labelFont();
+#ifdef __APPLE__
     font.setPointSize( 10 );
+#endif
     //Darkmode font color
     if( palette().background().color().redF() < 0.5 )
     {
@@ -186,6 +188,9 @@ void TourDataPlot::init()
 
 void TourDataPlot::drawPlots( TourData *pTourData, ePlotXType xType, ePlotYType yType )
 {
+    if( pTourData->getTourDistance().size() < 2 )
+        return;
+
     m_xType = xType;
     m_yType = yType;
 

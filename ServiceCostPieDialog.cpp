@@ -7,6 +7,8 @@ ServiceCostPieDialog::ServiceCostPieDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    setWindowFlags( Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint );
+
     ui->widget->setTagFont(this->font());
     ui->widget->setLegendFont(this->font());
     QFont sumFont = this->font();

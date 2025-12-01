@@ -30,11 +30,6 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
       <property name="title">
        <string>Picker Info</string>
       </property>
@@ -270,13 +265,7 @@
      </widget>
     </item>
     <item row="0" column="0">
-     <widget class="OsmWidget" name="widgetOsm" native="true">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-     </widget>
+     <widget class="OsmWidget" name="widgetOsm" native="true"/>
     </item>
    </layout>
   </widget>
@@ -393,7 +382,7 @@
    <property name="minimumSize">
     <size>
      <width>296</width>
-     <height>331</height>
+     <height>344</height>
     </size>
    </property>
    <property name="features">
@@ -441,11 +430,6 @@
              <height>16777215</height>
             </size>
            </property>
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-            </font>
-           </property>
            <property name="contextMenuPolicy">
             <enum>Qt::CustomContextMenu</enum>
            </property>
@@ -486,11 +470,6 @@
   <widget class="QDockWidget" name="dockWidgetStats">
    <property name="enabled">
     <bool>true</bool>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
    </property>
    <property name="features">
     <set>QDockWidget::NoDockWidgetFeatures</set>
@@ -538,7 +517,7 @@
           <x>0</x>
           <y>0</y>
           <width>218</width>
-          <height>974</height>
+          <height>1082</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_10">
@@ -862,7 +841,7 @@
           </widget>
          </item>
          <item row="5" column="1">
-          <widget class="QGroupBox" name="groupBox_4">
+          <widget class="QGroupBox" name="groupBoxSpeed">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -911,7 +890,7 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QGroupBox" name="groupBox_7">
+          <widget class="QGroupBox" name="groupBoxDevices">
            <property name="title">
             <string>Devices</string>
            </property>
@@ -949,7 +928,7 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QGroupBox" name="groupBox_2">
+          <widget class="QGroupBox" name="groupBoxStatistics">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -1195,12 +1174,7 @@
    <widget class="QWidget" name="dockWidgetContents_3">
     <layout class="QGridLayout" name="gridLayout_15">
      <item row="0" column="0">
-      <widget class="QGroupBox" name="groupBox">
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
+      <widget class="QGroupBox" name="groupBoxBikeStatistics">
        <property name="title">
         <string>Statistics</string>
        </property>
@@ -1276,12 +1250,7 @@
       </spacer>
      </item>
      <item row="1" column="0">
-      <widget class="QGroupBox" name="groupBox_3">
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
+      <widget class="QGroupBox" name="groupBoxBikeProfile">
        <property name="title">
         <string>Profile</string>
        </property>
@@ -1324,12 +1293,7 @@
       </widget>
      </item>
      <item row="2" column="0">
-      <widget class="QGroupBox" name="groupBox_5">
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
+      <widget class="QGroupBox" name="groupBoxBikeSpeed">
        <property name="title">
         <string>Speed</string>
        </property>

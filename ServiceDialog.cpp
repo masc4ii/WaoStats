@@ -29,6 +29,8 @@ ServiceDialog::ServiceDialog(QWidget *parent, QTreeWidget *tree) :
 {
     ui->setupUi(this);
 
+    setWindowFlags( Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint );
+
     if( m_tourTree == nullptr ) return;
 
     for( int i = 0; i < m_tourTree->topLevelItemCount(); i++ )
@@ -66,6 +68,12 @@ ServiceDialog::ServiceDialog(QWidget *parent, QTreeWidget *tree) :
     ui->tableWidget->setColumnWidth( COSTS    , 80 );
 
     loadFromJson( ui->comboBoxBike->currentIndex() );
+
+#ifdef __APPLE__
+    auto font = ui->tableWidget->font();
+    font.setPointSize( 10 );
+    ui->tableWidget->setFont( font );
+#endif
 }
 
 ServiceDialog::~ServiceDialog()

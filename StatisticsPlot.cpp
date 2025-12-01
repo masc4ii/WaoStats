@@ -23,7 +23,9 @@ void StatisticsPlot::init()
 
     // Font
     QFont font = xAxis->labelFont();
+#ifdef __APPLE__
     font.setPointSize( 10 );
+#endif
     // Darkmode font color
     if( palette().background().color().redF() < 0.5 )
     {
@@ -212,6 +214,7 @@ void StatisticsPlot::groupBars(QVector<QCPBars *> bikeBars)
 
 void StatisticsPlot::stackBars(QVector<QCPBars *> bikeBars)
 {
+    if( bikeBars.size() == 0 ) return;
     for( int i = 1; i < bikeBars.size(); i++ )
     {
         bikeBars.at(i)->setStackingGap(0);

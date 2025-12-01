@@ -57,11 +57,14 @@ const QString cDateFormat = "yyyy-MM-dd - hh:mm:ss";
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , m_currentActiveTreeWidgetItem(nullptr)
+    , m_timePlot(false)
+    , m_languageGroup(nullptr)
 {
-    ui->setupUi(this);
-
     QSettings set( QSettings::UserScope, "masc.WaoStats", "WaoStats" );
     loadTranslation( set.value("language", "en").toString() );
+
+    ui->setupUi(this);
 
     Splash splash( QPixmap( ":/Icons/Splash.png" ).scaled( 300, 300, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
     splash.show();
@@ -83,8 +86,6 @@ MainWindow::MainWindow(QWidget *parent)
 #else
     m_pTourData = &m_fitParser;
 #endif
-    m_timePlot = false;
-    m_currentActiveTreeWidgetItem = nullptr;
     configureActionGroups();
     ui->widgetOsm->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->dockWidgetBikeData->setVisible( false );
@@ -113,6 +114,28 @@ MainWindow::MainWindow(QWidget *parent)
                                                  "-\"radius0.5km\": show all tracks passing in 0.5km radius from reference marker (after processing a search)" ) );
         m_initSuccess = true;
     }
+
+    //Font size
+#ifdef __APPLE__
+    auto font = ui->treeWidgetTours->font();
+    font.setPointSize( 10 );
+    ui->treeWidgetTours->setFont( font );
+    ui->widgetOsm->setFont( font );
+    ui->comboBoxSection->setFont( font );
+    ui->groupBoxPicker->setFont( font );
+    ui->groupBoxDevices->setFont( font );
+    ui->groupBoxStatistics->setFont( font );
+    ui->groupBoxProfile->setFont( font );
+    ui->groupBoxSpeed->setFont( font );
+    ui->groupBoxCadence->setFont( font );
+    ui->groupBoxHeartRate->setFont( font );
+    ui->groupBoxPower->setFont( font );
+    ui->groupBoxTemperature->setFont( font );
+    ui->groupBoxBikeStatistics->setFont( font );
+    ui->groupBoxBikeProfile->setFont( font );
+    ui->groupBoxBikeSpeed->setFont( font );
+#endif
+
     splash.finish( this );
 }
 
@@ -828,12 +851,17 @@ void MainWindow::pointInfo(double x)
                 ui->labelPickerTime->setText( QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) ).addSecs( (int)m_pTourData->getTourTimeStamp().at( i ) ).toString( "hh:mm:ss" ) );
                 ui->labelPickerAltitude->setText( QString( "%1 m" ).arg( (int)m_pTourData->getTourAltitude().at( i ) ) );
                 ui->labelPickerSpeed->setText( QString( "%1 km/h" ).arg( m_pTourData->getTourSpeed().at( i ), 0, 'f', 1 ) );
-                ui->labelPickerCadence->setText( QString( "%1 rpm" ).arg( (int)m_pTourData->getTourCadence().at( i ) ) );
-                ui->labelPickerTemperature->setText( QString( "%1 °C" ).arg( (int)m_pTourData->getTourTemperature().at( i ) ) );
-                ui->labelPickerGrade->setText( QString( "%1 %" ).arg( m_pTourData->getTourGrade().at( i ), 0, 'f', 1 ) );
-                ui->labelPickerHeartRate->setText( QString( "%1 bpm" ).arg( (int)m_pTourData->getTourHeartRate().at( i ) ) );
-                ui->labelPickerPower->setText( QString( "%1 W" ).arg( m_pTourData->getTourPower().at( i ), 0, 'f', 1 ) );
-                ui->labelPickerCalories->setText( QString( "%1 kcal" ).arg( (int)m_pTourData->getTourCalories().at( i ) ) );
+				ui->labelPickerGrade->setText( QString( "%1 %" ).arg( m_pTourData->getTourGrade().at( i ), 0, 'f', 1 ) );
+                if( m_pTourData->getTourCadence().size() > i )
+                    ui->labelPickerCadence->setText( QString( "%1 rpm" ).arg( (int)m_pTourData->getTourCadence().at( i ) ) );
+                if( m_pTourData->getTourTemperature().size() > i )
+                    ui->labelPickerTemperature->setText( QString( "%1 °C" ).arg( (int)m_pTourData->getTourTemperature().at( i ) ) );
+                if( m_pTourData->getTourHeartRate().size() > i )
+                    ui->labelPickerHeartRate->setText( QString( "%1 bpm" ).arg( (int)m_pTourData->getTourHeartRate().at( i ) ) );
+                if( m_pTourData->getTourPower().size() > i )
+                    ui->labelPickerPower->setText( QString( "%1 W" ).arg( m_pTourData->getTourPower().at( i ), 0, 'f', 1 ) );
+                if( m_pTourData->getTourCalories().size() > i )
+                    ui->labelPickerCalories->setText( QString( "%1 kcal" ).arg( (int)m_pTourData->getTourCalories().at( i ) ) );
 
                 // Create the "cross" and add it to the layer.
                 std::shared_ptr<GeometryPoint> cross(std::make_shared<GeometryPointImage>( PointWorldCoord( m_pTourData->getTourPosLong().at(i) * ( 180 / pow(2,31) ),
@@ -866,12 +894,17 @@ void MainWindow::pointInfo(double x)
                 ui->labelPickerTime->setText( QDateTime( QDate( 1989, 12, 31 ), QTime( 1, 0, 0 ) ).addSecs( (int)m_pTourData->getTourTimeStamp().at( i ) ).toString( "hh:mm:ss" ) );
                 ui->labelPickerAltitude->setText( QString( "%1 m" ).arg( (int)m_pTourData->getTourAltitude().at( i ) ) );
                 ui->labelPickerSpeed->setText( QString( "%1 km/h" ).arg( m_pTourData->getTourSpeed().at( i ), 0, 'f', 1 ) );
-                ui->labelPickerCadence->setText( QString( "%1 rpm" ).arg( (int)m_pTourData->getTourCadence().at( i ) ) );
-                ui->labelPickerTemperature->setText( QString( "%1 °C" ).arg( (int)m_pTourData->getTourTemperature().at( i ) ) );
-                ui->labelPickerGrade->setText( QString( "%1 %" ).arg( m_pTourData->getTourGrade().at( i ), 0, 'f', 1 ) );
-                ui->labelPickerHeartRate->setText( QString( "%1 bpm" ).arg( (int)m_pTourData->getTourHeartRate().at( i ) ) );
-                ui->labelPickerPower->setText( QString( "%1 W" ).arg( m_pTourData->getTourPower().at( i ), 0, 'f', 1 ) );
-                ui->labelPickerCalories->setText( QString( "%1 kcal" ).arg( (int)m_pTourData->getTourCalories().at( i ) ) );
+				ui->labelPickerGrade->setText( QString( "%1 %" ).arg( m_pTourData->getTourGrade().at( i ), 0, 'f', 1 ) );
+                if( m_pTourData->getTourCadence().size() > i )
+                    ui->labelPickerCadence->setText( QString( "%1 rpm" ).arg( (int)m_pTourData->getTourCadence().at( i ) ) );
+                if( m_pTourData->getTourTemperature().size() > i )
+                    ui->labelPickerTemperature->setText( QString( "%1 °C" ).arg( (int)m_pTourData->getTourTemperature().at( i ) ) );
+                if( m_pTourData->getTourHeartRate().size() > i )
+                    ui->labelPickerHeartRate->setText( QString( "%1 bpm" ).arg( (int)m_pTourData->getTourHeartRate().at( i ) ) );
+                if( m_pTourData->getTourPower().size() > i )
+                    ui->labelPickerPower->setText( QString( "%1 W" ).arg( m_pTourData->getTourPower().at( i ), 0, 'f', 1 ) );
+                if( m_pTourData->getTourCalories().size() > i )
+                    ui->labelPickerCalories->setText( QString( "%1 kcal" ).arg( (int)m_pTourData->getTourCalories().at( i ) ) );
 
                 // Create the "cross" and add it to the layer.
                 std::shared_ptr<GeometryPoint> cross(std::make_shared<GeometryPointImage>( PointWorldCoord( m_pTourData->getTourPosLong().at(i) * ( 180 / pow(2,31) ),

@@ -9,6 +9,8 @@ ServiceEntryDialog::ServiceEntryDialog(QWidget *parent, QStringList partList, QS
 {
     ui->setupUi(this);
 
+    setWindowFlags( Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint );
+
     QCompleter *completer = new QCompleter( partList, this );
     completer->setCaseSensitivity( Qt::CaseInsensitive );
     ui->lineEditPart->setCompleter( completer );

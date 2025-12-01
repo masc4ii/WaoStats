@@ -12,6 +12,8 @@ StatisticsDialog::StatisticsDialog(QWidget *parent, QTreeWidget *tree, bool filt
 {
     ui->setupUi(this);
 
+    setWindowFlags( Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint );
+
     ui->checkBoxFilter->setVisible( filterActive );
 
     ui->comboBoxType->addItem(tr("Distance"), Distance);

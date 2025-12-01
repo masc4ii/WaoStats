@@ -10,6 +10,7 @@ AdbSelectDeviceDialog::AdbSelectDeviceDialog(QWidget *parent) :
     ui(new Ui::AdbSelectDeviceDialog)
 {
     ui->setupUi(this);
+    setWindowFlags( Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint );
     ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
     scan();
 }

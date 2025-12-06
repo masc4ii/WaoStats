@@ -16,9 +16,12 @@ jobs:
     steps:
     - uses: actions/checkout@master
 
+    - name: Update package sources
+      run: sudo apt update
+
     - name: Install compiler & Qt
       run: |
-           sudo apt-get install --no-install-recommends make g++ qt5-qmake qtbase5-dev libqt5opengl5-dev libqt5designer5 libqt5svg5-dev libfuse2 libxkbcommon-x11-0 appstream --fix-missing
+           sudo apt-get install --no-install-recommends make g++ libinput10 qt5-qmake qtbase5-dev libqt5opengl5-dev libqt5designer5 libqt5svg5-dev libfuse2 libxkbcommon-x11-0 appstream --fix-missing
 
     - name: Build DropboxQt
       working-directory: ${{ env.SOURCE_DIR }}/dropboxQt/prj

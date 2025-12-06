@@ -14,3 +14,8 @@ QMapControl/lib/libqmapcontrol.1.0.0.dylib
 QMapControl/lib/libqmapcontrol.1.0.dylib
 QMapControl/lib/libqmapcontrol.1.dylib
 QMapControl/lib/libqmapcontrol.dylib
+*.o
+*.stash
+moc_*.cpp
+moc_*.h
+dropboxQt/prj/Makefile

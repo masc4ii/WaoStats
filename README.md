@@ -47,7 +47,7 @@ A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer
 
 ## Download
 - Download [here](https://github.com/masc4ii/WaoStats/releases)
-- Currently supported OS: macOS 10.13.6 and later, Windows 8 and later, Ubuntu 20.04 and later
+- Currently supported OS: macOS 10.13.6 and later, Windows 10 and later, Ubuntu 24.04 and later
 
 ## Compile
 - Download FitSDKRelease_21.158.00 and copy archive content into FitSDKRelease_21.158.00 folder (when using fit C++ parser only - by default this step not needed)

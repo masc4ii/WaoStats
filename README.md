@@ -19,7 +19,8 @@
 
 A desktop application to analyse and archive your **Wahoo ELEMNT** bike computer tracks. It runs on **macOS**, **Windows** and **Linux**.
 
-<img width="1000" alt="waostats" src="https://github.com/masc4ii/WaoStats/assets/30245296/6cfd02fc-df87-4b66-8074-3f30f2dde2bd">
+<img width="1000" alt="WaoStats" src="https://github.com/user-attachments/assets/05eeeb43-df07-4e07-86a9-df9bf80e336c" />
+
 
 ## Main features are:
 - load all your Wahoo FIT files into the application

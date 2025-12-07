@@ -63,6 +63,12 @@ jobs:
            copy C:\Qt\5.15.2\mingw81_64\bin\Qt5OpenGL.dll .
            dir
 
+    - name: Extract ADB
+      working-directory: ${{ env.SOURCE_DIR }}\build\release
+      run: |
+           7z x ${{ env.SOURCE_DIR }}\adb\Windows\adb.zip
+           dir
+
     - name: Rename release folder
       working-directory: ${{ env.SOURCE_DIR }}\build
       run: |

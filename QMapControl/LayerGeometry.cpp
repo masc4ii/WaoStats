@@ -335,6 +335,10 @@ namespace qmapcontrol
 
     void LayerGeometry::draw(QPainter& painter, const RectWorldPx& backbuffer_rect_px, const int& controller_zoom) const
     {
+        // Default
+        painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+        painter.setOpacity(1.0);
+
         // Check the layer is visible.
         if(isVisible(controller_zoom))
         {

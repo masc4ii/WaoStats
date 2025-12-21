@@ -61,7 +61,9 @@ namespace qmapcontrol
             /// Layer that draws Geometries.
             LayerGeometry,
             /// Layer that draws ESRI Shapefiles.
-            LayerESRIShapefile
+            LayerESRIShapefile,
+            /// Layer that draws hillshading.
+            LayerHillshading
         };
 
     protected:

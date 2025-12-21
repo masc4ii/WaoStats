@@ -134,7 +134,7 @@ namespace qmapcontrol
          * Set the tile size used in pxiels.
          * @param tile_size_px The tile size in pixels required.
          */
-        void setTileSizePx(const int& tile_size_px = 256);
+        void setTileSizePx(const int& tile_size_px = 128);
 
         /*!
          * Set the background colour of the map control.

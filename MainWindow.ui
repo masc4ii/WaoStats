@@ -305,6 +305,7 @@
      <addaction name="action_michelin"/>
      <addaction name="separator"/>
      <addaction name="actionDarkMaps"/>
+     <addaction name="actionHillshading"/>
      <addaction name="separator"/>
      <addaction name="actionMapCaching"/>
      <addaction name="actionClearMapCache"/>
@@ -1630,6 +1631,20 @@
   <action name="actionGerman">
    <property name="text">
     <string>Deutsch</string>
+   </property>
+  </action>
+  <action name="actionHillshading">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Hillshading</string>
+   </property>
+   <property name="toolTip">
+    <string>Hillshading</string>
    </property>
   </action>
  </widget>

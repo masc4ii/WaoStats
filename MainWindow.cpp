@@ -39,6 +39,7 @@
 #include <QMapControl/GeometryPointImageScaled.h>
 #include <QMapControl/GeometryWidget.h>
 #include <QMapControl/LayerMapAdapter.h>
+#include <QMapControl/LayerHillshading.h>
 #include <QMapControl/MapAdapterOSM.h>
 #include <QMapControl/MapAdapterYahoo.h>
 #include <QMapControl/MapAdapterGoogle.h>
@@ -446,6 +447,8 @@ void MainWindow::configureMap()
 
     // Create/add a layer with the default OSM map adapter.
     m_map_control->addLayer(std::make_shared<LayerMapAdapter>("Map", std::make_shared<MapAdapterOTM>()));
+
+    m_map_control->addLayer(std::make_shared<LayerHillshading>("Hillshading"));
 
     // Create the tours layer.
     m_layer_tours = std::make_shared<LayerGeometry>("Tours");
@@ -1172,6 +1175,14 @@ void MainWindow::on_actionDarkMaps_triggered(bool checked)
     m_map_control->setDarkMode( checked );
 }
 
+void MainWindow::on_actionHillshading_triggered(bool checked)
+{
+    auto layerHillShading = dynamic_cast<LayerHillshading*>(m_map_control->getLayer("Hillshading").get());
+    if (!layerHillShading)
+        return;
+    layerHillShading->setEnabled(checked);
+}
+
 void MainWindow::on_actionClearMapCache_triggered()
 {
     QDir dir( QCoreApplication::applicationDirPath() + "/QMapCache" );
@@ -1206,6 +1217,7 @@ void MainWindow::writeSettings()
     else if( ui->action_michelin->isChecked() ) mapType = 16;
     set.setValue( "maptype", mapType );
     set.setValue( "darkMaps", ui->actionDarkMaps->isChecked() );
+    set.setValue( "hillShading", ui->actionHillshading->isChecked() );
     set.setValue( "workingPath", m_workingPath );
 }
 
@@ -1222,6 +1234,9 @@ void MainWindow::readSettings()
 
     if( set.value( "darkMaps", false ).toBool() ) ui->actionDarkMaps->setChecked( true );
     on_actionDarkMaps_triggered( ui->actionDarkMaps->isChecked() );
+
+    ui->actionHillshading->setChecked( set.value( "hillShading", true ).toBool() );
+    on_actionHillshading_triggered( ui->actionHillshading->isChecked() );
 
     switch( set.value( "maptype", 0 ).toInt() )
     {

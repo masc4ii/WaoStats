@@ -54,6 +54,7 @@ HEADERS +=                                      \
     QMapControl/Layer.h                                     \
     QMapControl/LayerGeometry.h                             \
     QMapControl/LayerMapAdapter.h                           \
+    QMapControl/LayerHillshading.h                          \
     QMapControl/MapAdapter.h                                \
     QMapControl/MapAdapterGoogle.h                          \
     QMapControl/MapAdapterBing.h                            \
@@ -69,6 +70,7 @@ HEADERS +=                                      \
     QMapControl/MapAdapterSigma.h                           \
     QMapControl/MapAdapterKomoot.h                          \
     QMapControl/MapAdapterMichelin.h                        \
+    QMapControl/MapAdapterMapterhorn.h                      \
     QMapControl/NetworkManager.h                            \
     QMapControl/Point.h                                     \
     QMapControl/Projection.h                                \
@@ -99,6 +101,7 @@ SOURCES +=                                      \
     QMapControl/Layer.cpp                                   \
     QMapControl/LayerGeometry.cpp                           \
     QMapControl/LayerMapAdapter.cpp                         \
+    QMapControl/LayerHillshading.cpp                        \
     QMapControl/MapAdapter.cpp                              \
     QMapControl/MapAdapterGoogle.cpp                        \
     QMapControl/MapAdapterBing.cpp                          \
@@ -114,6 +117,7 @@ SOURCES +=                                      \
     QMapControl/MapAdapterSigma.cpp                         \
     QMapControl/MapAdapterKomoot.cpp                        \
     QMapControl/MapAdapterMichelin.cpp                      \
+    QMapControl/MapAdapterMapterhorn.cpp                    \
     QMapControl/NetworkManager.cpp                          \
     QMapControl/Projection.cpp                              \
     QMapControl/ProjectionEquirectangular.cpp               \

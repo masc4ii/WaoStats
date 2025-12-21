@@ -61,6 +61,7 @@ private slots:
     void on_actionSyncDropbox_triggered();
     void on_actionMapCaching_triggered( bool checked );
     void on_actionDarkMaps_triggered( bool checked );
+    void on_actionHillshading_triggered( bool checked );
     void on_actionClearMapCache_triggered();
     void on_actionService_triggered();
     void on_actionStatistics_triggered();

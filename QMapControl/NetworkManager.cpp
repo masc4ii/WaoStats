@@ -34,6 +34,8 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QPushButton>
 
+#include <QBuffer>
+
 namespace qmapcontrol
 {
     NetworkManager::NetworkManager(QObject* parent) : QObject(parent)
@@ -211,8 +213,24 @@ namespace qmapcontrol
             if(continue_processing_image)
             {
                 // Emit that we have downloaded an image.
-                QImageReader image_reader(reply);
-                emit imageDownloaded(reply->url(), QPixmap::fromImageReader(&image_reader));
+                if (reply->url().toString().endsWith("webp"))
+                {
+                    QByteArray data = reply->readAll();
+
+                    QBuffer buffer(&data);
+                    buffer.open(QIODevice::ReadOnly);
+
+                    QImageReader reader(&buffer);
+                    QImage img = reader.read();
+                    //img.setDevicePixelRatio(2.0);
+
+                    emit imageDownloaded(reply->url(), QPixmap::fromImage(img));
+                }
+                else
+                {
+                    QImageReader image_reader(reply);
+                    emit imageDownloaded(reply->url(), QPixmap::fromImageReader(&image_reader));
+                }
             }
         }
 

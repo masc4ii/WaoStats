@@ -39,6 +39,7 @@
 #include "GeometryPolygon.h"
 #include "ImageManager.h"
 #include "LayerGeometry.h"
+#include "LayerHillshading.h"
 #include "Projection.h"
 #include "MapCopyrightString.h"
 
@@ -1326,6 +1327,15 @@ namespace qmapcontrol
         }
 
         // Show map copyright
+        QString mapterhornCopyright;
+        for (auto layer : getLayers())
+        {
+            auto hillshading = dynamic_cast<LayerHillshading*>(layer.get());
+            if (hillshading && hillshading->isEnabled())
+            {
+                mapterhornCopyright = QString(", Mapterhorn");
+            }
+        }
         QBrush brush = painter.background();
         brush.setColor( QColor( 255, 255, 255, 100 ) );
         painter.setBackground( brush );
@@ -1335,7 +1345,7 @@ namespace qmapcontrol
                           m_viewport_size_px.width()-6,
                           m_viewport_size_px.height()-6,
                           Qt::AlignLeft|Qt::AlignBottom,
-                          MapCopyrightString::instance()->copyright() );
+                          MapCopyrightString::instance()->copyright() + mapterhornCopyright );
         painter.setBackgroundMode( Qt::TransparentMode );
 
         // Should we draw the crosshairs?

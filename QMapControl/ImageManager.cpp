@@ -239,7 +239,8 @@ namespace qmapcontrol
 
         // Add a pattern.
         QPainter painter(&m_pixmap_loading);
-        QBrush brush(Qt::lightGray, Qt::Dense5Pattern);
+        //QBrush brush(Qt::lightGray, Qt::Dense5Pattern);
+        QBrush brush(Qt::lightGray);
         painter.fillRect(m_pixmap_loading.rect(), brush);
 
         // Add "LOADING..." text.

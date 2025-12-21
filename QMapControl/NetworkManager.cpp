@@ -49,6 +49,9 @@ namespace qmapcontrol
 
     NetworkManager::~NetworkManager()
     {
+        // Disconnect all connections
+        QObject::disconnect(&m_nam, nullptr, nullptr, nullptr);
+
         // Ensure all download queues are aborted.
         abortDownloads();
     }

@@ -149,7 +149,6 @@ namespace qmapcontrol
                 const int furthest_tile_bottom = std::floor(backbuffer_rect_px.bottomPx() / tile_size_px.height());
 
                 // Loop through the tiles to draw (left to right).
-#pragma parallel for collapse(2)
                 for(int i = furthest_tile_left; i <= furthest_tile_right; ++i)
                 {
                     // Loop through the tiles to draw (top to bottom).
@@ -246,6 +245,7 @@ namespace qmapcontrol
         // Pixelabstand (für WebMercator egal → relativ)
         double cellSize = std::pow(10.0, (16.0 - controller_zoom) / 4.0) * m_light_height / 10.0;
 
+#pragma omp parallel for collapse(2)
         for (int y = 1; y < h - 1; ++y) {
             for (int x = 1; x < w - 1; ++x) {
 

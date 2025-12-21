@@ -38,7 +38,8 @@ namespace qmapcontrol
         : Layer(LayerType::LayerHillshading, name, zoom_minimum, zoom_maximum, parent),
         m_mapadapter(std::make_shared<MapAdapterMapterhorn>()),
         m_light_direction(180),
-        m_opacity(50),
+        m_light_height(20),
+        m_opacity(90),
         m_enabled(true)
     {
 
@@ -57,6 +58,29 @@ namespace qmapcontrol
         emit requestRedraw();
     }
 
+    int LayerHillshading::lightDirection() const
+    {
+        return m_light_direction;
+    }
+
+    void LayerHillshading::setLightHeight(const int &height)
+    {
+        if (height < 1)
+            m_light_height = 1;
+        else if (height > 22)
+            m_light_height = 22;
+        else
+            m_light_height = height;
+        
+        // Emit to redraw layer.
+        emit requestRedraw();
+    }
+
+    int LayerHillshading::lightHeight() const
+    {
+        return m_light_height;
+    }
+
     void LayerHillshading::setOpacity(const uint8_t &opacity)
     {
         if (opacity > 100)
@@ -66,6 +90,11 @@ namespace qmapcontrol
 
         // Emit to redraw layer.
         emit requestRedraw();
+    }
+
+    uint8_t LayerHillshading::opacity() const
+    {
+        return m_opacity;
     }
 
     void LayerHillshading::setEnabled(bool on)
@@ -215,7 +244,7 @@ namespace qmapcontrol
         hillshade.fill(0);
 
         // Pixelabstand (für WebMercator egal → relativ)
-        double cellSize = std::pow(10.0, (16.0 - controller_zoom) / 4.0);
+        double cellSize = std::pow(10.0, (16.0 - controller_zoom) / 4.0) * m_light_height / 10.0;
 
         for (int y = 1; y < h - 1; ++y) {
             for (int x = 1; x < w - 1; ++x) {

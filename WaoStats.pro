@@ -60,6 +60,7 @@ SOURCES += \
     DropBoxAuthDialog.cpp \
     DropBoxDownloadDialog.cpp \
     GpxParser.cpp \
+    HillShadingSettingsDialog.cpp \
     LineEditEscDelete.cpp \
     OsmWidget.cpp \
     ProgressDialog.cpp \
@@ -90,6 +91,7 @@ HEADERS += \
     Globals.h \
     GpxParser.h \
     HelperFunctions.h \
+    HillShadingSettingsDialog.h \
     LineEditEscDelete.h \
     MainWindow.h \
     OsmWidget.h \
@@ -111,6 +113,7 @@ HEADERS += \
 FORMS += \
     AdbSelectDeviceDialog.ui \
     DropBoxAuthDialog.ui \
+    HillShadingSettingsDialog.ui \
     MainWindow.ui \
     ProgressDialog.ui \
     ServiceCostPieDialog.ui \

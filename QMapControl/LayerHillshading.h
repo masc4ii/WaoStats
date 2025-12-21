@@ -73,10 +73,30 @@ namespace qmapcontrol
          */
         void setLightDirection(const int& degree);
 
+        /*! Returns the direction of the light source.
+         * @return The direction in degrees (0..359).
+         */
+        int lightDirection() const;
+
+        /*! Sets the height of the light source.
+         * @param height The height (1..22).
+         */
+        void setLightHeight(const int& height);
+
+        /*! Returns the height of the light source.
+         * @return The height (1..22).
+         */
+        int lightHeight() const;
+
         /*! Sets the opacity of the hillshading layer.
          * @param opacity The opacity in percent (0..100).
          */
         void setOpacity(const uint8_t& opacity);
+
+        /*! Returns the opacity of the hillshading layer.
+         * @return The opacity in percent (0..100).
+         */
+        uint8_t opacity() const;
 
         /*! Enables or disables the hillshading layer.
          * @param on true to enable, false to disable.
@@ -116,6 +136,9 @@ namespace qmapcontrol
 
         /// Direction of light 0..359°
         int m_light_direction;
+
+        /// Height of light 1..22
+        int m_light_height;
 
         /// Opacity in % 0..100
         uint8_t m_opacity;

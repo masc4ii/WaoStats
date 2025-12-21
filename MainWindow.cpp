@@ -12,6 +12,7 @@
 #include "ThreadTrack2Point.h"
 #include "TrackSearch.h"
 #include "DropBoxDownloadDialog.h"
+#include "HillShadingSettingsDialog.h"
 
 #include <QDebug>
 #include <QWidget>
@@ -447,7 +448,6 @@ void MainWindow::configureMap()
 
     // Create/add a layer with the default OSM map adapter.
     m_map_control->addLayer(std::make_shared<LayerMapAdapter>("Map", std::make_shared<MapAdapterOTM>()));
-
     m_map_control->addLayer(std::make_shared<LayerHillshading>("Hillshading"));
 
     // Create the tours layer.
@@ -1178,9 +1178,18 @@ void MainWindow::on_actionDarkMaps_triggered(bool checked)
 void MainWindow::on_actionHillshading_triggered(bool checked)
 {
     auto layerHillShading = dynamic_cast<LayerHillshading*>(m_map_control->getLayer("Hillshading").get());
-    if (!layerHillShading)
+    if( !layerHillShading )
         return;
-    layerHillShading->setEnabled(checked);
+    layerHillShading->setEnabled( checked );
+}
+
+void MainWindow::on_actionHillshadingSettings_triggered()
+{
+    auto layerHillShading = std::dynamic_pointer_cast<LayerHillshading>(m_map_control->getLayer("Hillshading"));
+    if( !layerHillShading.get() )
+        return;
+    HillShadingSettingsDialog dialog( layerHillShading, this );
+    dialog.exec();
 }
 
 void MainWindow::on_actionClearMapCache_triggered()
@@ -1218,6 +1227,13 @@ void MainWindow::writeSettings()
     set.setValue( "maptype", mapType );
     set.setValue( "darkMaps", ui->actionDarkMaps->isChecked() );
     set.setValue( "hillShading", ui->actionHillshading->isChecked() );
+    auto layerHillShading = std::dynamic_pointer_cast<LayerHillshading>(m_map_control->getLayer("Hillshading"));
+    if( layerHillShading.get() )
+    {
+        set.setValue( "hillShadingOpacity", layerHillShading->opacity() );
+        set.setValue( "hillShadingDirection", layerHillShading->lightDirection() );
+        set.setValue( "hillShadingHeight", layerHillShading->lightHeight() );
+    }
     set.setValue( "workingPath", m_workingPath );
 }
 
@@ -1237,6 +1253,13 @@ void MainWindow::readSettings()
 
     ui->actionHillshading->setChecked( set.value( "hillShading", true ).toBool() );
     on_actionHillshading_triggered( ui->actionHillshading->isChecked() );
+    auto layerHillShading = std::dynamic_pointer_cast<LayerHillshading>(m_map_control->getLayer("Hillshading"));
+    if( layerHillShading.get() )
+    {
+        layerHillShading->setOpacity( set.value( "hillShadingOpacity", 90 ).toInt() );
+        layerHillShading->setLightDirection( set.value( "hillShadingDirection", 180 ).toInt() );
+        layerHillShading->setLightHeight( set.value( "hillShadingHeight", 20 ).toInt() );
+    }
 
     switch( set.value( "maptype", 0 ).toInt() )
     {
@@ -1751,4 +1774,3 @@ void MainWindow::changeEvent(QEvent *event)
     }
     QMainWindow::changeEvent(event);
 }
-

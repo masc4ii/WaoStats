@@ -306,6 +306,7 @@
      <addaction name="separator"/>
      <addaction name="actionDarkMaps"/>
      <addaction name="actionHillshading"/>
+     <addaction name="actionHillshadingSettings"/>
      <addaction name="separator"/>
      <addaction name="actionMapCaching"/>
      <addaction name="actionClearMapCache"/>
@@ -1645,6 +1646,11 @@
    </property>
    <property name="toolTip">
     <string>Hillshading</string>
+   </property>
+  </action>
+  <action name="actionHillshadingSettings">
+   <property name="text">
+    <string>Hillshading Settings</string>
    </property>
   </action>
  </widget>

@@ -262,7 +262,12 @@ bool FitParser::loadFit(QString fileName)
                     else if( m_tourPower.count() > 0 ) m_tourPower.append( m_tourPower.last() );
                     else m_tourPower.append( 0 );
 
-                    if( record->left_right_balance < 255 ) m_tourLRBalance.append( record->left_right_balance );
+                    if( record->left_right_balance < 255 ) {
+                        uint8_t v = record->left_right_balance;
+                        bool right = (v & 0x80) != 0;
+                        int percent = v & 0x7F;
+                        m_tourLRBalance.append( right ? (100 - percent) : percent );
+                    }
                     else if( m_tourLRBalance.count() > 0 ) m_tourLRBalance.append( m_tourLRBalance.last() );
                     else m_tourLRBalance.append( 0 );
 

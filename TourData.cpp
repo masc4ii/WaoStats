@@ -109,3 +109,59 @@ int TourData::deviceIdInVectorAt(deviceInfo_t a)
     }
     return -1;
 }
+
+QVector<QPair<double, double>> TourData::getPowerCurve()
+{
+    QVector<QPair<double, double>> powerCurve;
+    const QVector<double> timeIntervals = {5, 15, 30, 60, 120, 180, 300, 480, 600, 900, 1200, 1800, 2700, 3600, 7200, 10800, 18000, 36000}; // in seconds
+
+    if (m_tourTimeStamp.isEmpty() || m_tourPower.isEmpty() ||
+        m_tourTimeStamp.size() != m_tourPower.size()) {
+        return powerCurve;
+    }
+
+    double startTime = m_tourTimeStamp.first();
+    double endTime = m_tourTimeStamp.last();
+
+    // for each time interval
+    for (int intervalIdx = 0; intervalIdx < timeIntervals.size(); ++intervalIdx) {
+        double maxAvgPower = 0.0;
+        double interval = timeIntervals[intervalIdx];
+
+        if  (startTime + interval > endTime)
+            break;
+
+        // move window over all start positions
+        for (int startIdx = 0; startIdx < m_tourTimeStamp.size(); ++startIdx) {
+            double windowStartTime = m_tourTimeStamp[startIdx];
+            double windowEndTime = windowStartTime + interval;
+
+            // full windows only
+            if (windowEndTime > endTime)
+                break;
+
+            double powerSum = 0.0;
+            int count = 0;
+
+            // collect data in window
+            for (int idx = startIdx; idx < m_tourTimeStamp.size(); ++idx) {
+                if (m_tourTimeStamp[idx] < windowEndTime) {
+                    powerSum += m_tourPower[idx];
+                    count++;
+                } else {
+                    break; // quit window
+                }
+            }
+
+            // calc average
+            if (count > 0) {
+                double avgPower = powerSum / count;
+                maxAvgPower = std::max(maxAvgPower, avgPower);
+            }
+        }
+
+        powerCurve.push_back(QPair<double, double>(interval, maxAvgPower));
+    }
+
+    return powerCurve;
+}

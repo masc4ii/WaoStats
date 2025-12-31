@@ -94,6 +94,8 @@ public:
 
     QString getWorkoutName( void ){return m_workoutName;}
 
+    QVector<QPair<double, double>> getPowerCurve();
+
 protected:
     fitSection_t m_session;
     QVector<fitSection_t> m_sections;

@@ -98,6 +98,39 @@
     </message>
 </context>
 <context>
+    <name>FitParser</name>
+    <message>
+        <location filename="../FitParser.cpp" line="217"/>
+        <source>Battery %1%</source>
+        <translation>Batterie %1%</translation>
+    </message>
+    <message>
+        <location filename="../FitParser.cpp" line="396"/>
+        <source>Battery new</source>
+        <translation>Batterie neu</translation>
+    </message>
+    <message>
+        <location filename="../FitParser.cpp" line="398"/>
+        <source>Battery good</source>
+        <translation>Batterie gut</translation>
+    </message>
+    <message>
+        <location filename="../FitParser.cpp" line="400"/>
+        <source>Battery ok</source>
+        <translation>Batterie ok</translation>
+    </message>
+    <message>
+        <location filename="../FitParser.cpp" line="402"/>
+        <source>Battery low</source>
+        <translation>Batterie niedrig</translation>
+    </message>
+    <message>
+        <location filename="../FitParser.cpp" line="404"/>
+        <source>Battery critical</source>
+        <translation>Batterie kritisch</translation>
+    </message>
+</context>
+<context>
     <name>HillShadingSettingsDialog</name>
     <message>
         <location filename="../HillShadingSettingsDialog.ui" line="14"/>
@@ -141,7 +174,7 @@
     </message>
     <message>
         <location filename="../MainWindow.ui" line="46"/>
-        <location filename="../MainWindow.ui" line="812"/>
+        <location filename="../MainWindow.ui" line="828"/>
         <source>Calories:</source>
         <translation>Kalorien:</translation>
     </message>
@@ -157,8 +190,8 @@
     </message>
     <message>
         <location filename="../MainWindow.ui" line="73"/>
-        <location filename="../MainWindow.ui" line="974"/>
-        <location filename="../MainWindow.ui" line="1207"/>
+        <location filename="../MainWindow.ui" line="990"/>
+        <location filename="../MainWindow.ui" line="1223"/>
         <source>Distance:</source>
         <translation>Strecke:</translation>
     </message>
@@ -264,523 +297,523 @@
     </message>
     <message>
         <location filename="../MainWindow.ui" line="545"/>
-        <location filename="../MainWindow.ui" line="1514"/>
+        <location filename="../MainWindow.ui" line="1530"/>
         <source>Power</source>
         <translation>Leistung</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="567"/>
+        <location filename="../MainWindow.ui" line="604"/>
         <source>Normalized Power:</source>
         <translation>Normalisierte Leistung:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="574"/>
+        <location filename="../MainWindow.ui" line="557"/>
         <source>Max Power:</source>
         <translation>Max. Leistung:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="581"/>
+        <location filename="../MainWindow.ui" line="571"/>
         <source>ø Power:</source>
         <translation>Ø Leistung:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="608"/>
+        <location filename="../MainWindow.ui" line="564"/>
         <source>L/R Balance:</source>
         <translation>L/R-Balance:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="650"/>
-        <location filename="../MainWindow.ui" line="1257"/>
+        <location filename="../MainWindow.ui" line="666"/>
+        <location filename="../MainWindow.ui" line="1273"/>
         <source>Profile</source>
         <translation>Profil</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="669"/>
-        <location filename="../MainWindow.ui" line="1269"/>
+        <location filename="../MainWindow.ui" line="685"/>
+        <location filename="../MainWindow.ui" line="1285"/>
         <source>Ascent:</source>
         <translation>Anstieg:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="676"/>
-        <location filename="../MainWindow.ui" line="1283"/>
+        <location filename="../MainWindow.ui" line="692"/>
+        <location filename="../MainWindow.ui" line="1299"/>
         <source>Descent:</source>
         <translation>Abstieg:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="683"/>
+        <location filename="../MainWindow.ui" line="699"/>
         <source>Minimum:</source>
         <translation>Minimum:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="704"/>
+        <location filename="../MainWindow.ui" line="720"/>
         <source>Maximum:</source>
         <translation>Maximum:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="711"/>
+        <location filename="../MainWindow.ui" line="727"/>
         <source>Neg. Grade:</source>
         <translation>Neg. Steigung:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="725"/>
+        <location filename="../MainWindow.ui" line="741"/>
         <source>Pos. Grade:</source>
         <translation>Pos. Steigung:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="749"/>
-        <location filename="../MainWindow.ui" line="1504"/>
+        <location filename="../MainWindow.ui" line="765"/>
+        <location filename="../MainWindow.ui" line="1520"/>
         <source>Heart Rate</source>
         <translation>Herzfrequenz</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="771"/>
+        <location filename="../MainWindow.ui" line="787"/>
         <source>Min Heart Rate:</source>
         <translation>Min. Herzfrequenz:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="788"/>
+        <location filename="../MainWindow.ui" line="804"/>
         <source>ø Heart Rate:</source>
         <translation>Ø Herzfrequenz:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="795"/>
+        <location filename="../MainWindow.ui" line="811"/>
         <source>Max Heart Rate:</source>
         <translation>Max. Herzfrequenz:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="854"/>
-        <location filename="../MainWindow.ui" line="1300"/>
-        <location filename="../MainWindow.ui" line="1460"/>
+        <location filename="../MainWindow.ui" line="870"/>
+        <location filename="../MainWindow.ui" line="1316"/>
+        <location filename="../MainWindow.ui" line="1476"/>
         <source>Speed</source>
         <translation>Geschwindigkeit</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="866"/>
-        <location filename="../MainWindow.ui" line="1312"/>
+        <location filename="../MainWindow.ui" line="882"/>
+        <location filename="../MainWindow.ui" line="1328"/>
         <source>ø Speed:</source>
         <translation>Ø Geschwindigkeit:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="880"/>
+        <location filename="../MainWindow.ui" line="896"/>
         <source>Max Speed:</source>
         <translation>Max. Geschwindigkeit:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="897"/>
+        <location filename="../MainWindow.ui" line="913"/>
         <source>Devices</source>
         <translation>Geräte</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="941"/>
-        <location filename="../MainWindow.ui" line="1181"/>
-        <location filename="../MainWindow.ui" line="1552"/>
+        <location filename="../MainWindow.ui" line="957"/>
+        <location filename="../MainWindow.ui" line="1197"/>
+        <location filename="../MainWindow.ui" line="1568"/>
         <source>Statistics</source>
         <translation>Statistiken</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="953"/>
-        <location filename="../MainWindow.ui" line="1193"/>
+        <location filename="../MainWindow.ui" line="969"/>
+        <location filename="../MainWindow.ui" line="1209"/>
         <source>Time Motion:</source>
         <translation>Bewegungszeit:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="981"/>
+        <location filename="../MainWindow.ui" line="997"/>
         <source>Start Time:</source>
         <translation>Startzeit:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="988"/>
-        <location filename="../MainWindow.ui" line="1019"/>
-        <location filename="../MainWindow.ui" line="1214"/>
-        <location filename="../MainWindow.ui" line="1231"/>
+        <location filename="../MainWindow.ui" line="1004"/>
+        <location filename="../MainWindow.ui" line="1035"/>
+        <location filename="../MainWindow.ui" line="1230"/>
+        <location filename="../MainWindow.ui" line="1247"/>
         <source>hours:minutes:seconds</source>
         <translation>Stunden:Minuten:Sekunden</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1005"/>
+        <location filename="../MainWindow.ui" line="1021"/>
         <source>Date:</source>
         <translation>Datum:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1012"/>
+        <location filename="../MainWindow.ui" line="1028"/>
         <source>Time Total:</source>
         <translation>Gesamtzeit:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1038"/>
-        <location filename="../MainWindow.ui" line="1465"/>
+        <location filename="../MainWindow.ui" line="1054"/>
+        <location filename="../MainWindow.ui" line="1481"/>
         <source>Cadence</source>
         <translation>Trittfrequenz</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1050"/>
+        <location filename="../MainWindow.ui" line="1066"/>
         <source>ø Cadence:</source>
         <translation>Ø Trittfrequenz:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1077"/>
+        <location filename="../MainWindow.ui" line="1093"/>
         <source>Max Cadence:</source>
         <translation>Max. Trittfrequenz:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1093"/>
-        <location filename="../MainWindow.ui" line="1470"/>
+        <location filename="../MainWindow.ui" line="1109"/>
+        <location filename="../MainWindow.ui" line="1486"/>
         <source>Temperature</source>
         <translation>Temperatur</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1105"/>
+        <location filename="../MainWindow.ui" line="1121"/>
         <source>ø Temperature:</source>
         <translation>Ø Temperatur:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1122"/>
+        <location filename="../MainWindow.ui" line="1138"/>
         <source>Max Temperature:</source>
         <translation>Max. Temperatur:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1139"/>
+        <location filename="../MainWindow.ui" line="1155"/>
         <source>Min Temperature:</source>
         <translation>Min. Temperatur:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1171"/>
+        <location filename="../MainWindow.ui" line="1187"/>
         <source>Bike Data</source>
         <translation>Fahrrad-Daten</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1224"/>
+        <location filename="../MainWindow.ui" line="1240"/>
         <source>Tracks:</source>
         <translation>Strecken:</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1331"/>
+        <location filename="../MainWindow.ui" line="1347"/>
         <source>Google: Maps</source>
         <translation>Google: Karten</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1336"/>
+        <location filename="../MainWindow.ui" line="1352"/>
         <source>OpenStreetMaps</source>
         <translation>OpenStreetMap</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1341"/>
+        <location filename="../MainWindow.ui" line="1357"/>
         <source>OpenTopoMaps</source>
         <translation>OpenTopoMap</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1346"/>
-        <location filename="../MainWindow.ui" line="1349"/>
+        <location filename="../MainWindow.ui" line="1362"/>
+        <location filename="../MainWindow.ui" line="1365"/>
         <source>Bing Satellite</source>
         <translation>Bing Satellit</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1354"/>
-        <location filename="../MainWindow.ui" line="1357"/>
+        <location filename="../MainWindow.ui" line="1370"/>
+        <location filename="../MainWindow.ui" line="1373"/>
         <source>Google: Satellite</source>
         <translation>Google: Satellit</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1362"/>
+        <location filename="../MainWindow.ui" line="1378"/>
         <source>Google: Hybrid</source>
         <translation>Google: Hybrid</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1367"/>
+        <location filename="../MainWindow.ui" line="1383"/>
         <source>Google: Terrain</source>
         <translation>Google: Gelände</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1372"/>
+        <location filename="../MainWindow.ui" line="1388"/>
         <source>CycleOSM</source>
         <translation>CycleOSM</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1377"/>
+        <location filename="../MainWindow.ui" line="1393"/>
         <source>Time</source>
         <translation>Zeit</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1382"/>
-        <location filename="../MainWindow.cpp" line="161"/>
+        <location filename="../MainWindow.ui" line="1398"/>
+        <location filename="../MainWindow.cpp" line="162"/>
         <source>Distance</source>
         <translation>Strecke</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1387"/>
+        <location filename="../MainWindow.ui" line="1403"/>
         <source>Thunderforest Cycle</source>
         <translation>Thunderforest Cycle</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1392"/>
+        <location filename="../MainWindow.ui" line="1408"/>
         <source>Thunderforest Landscape</source>
         <translation>Thunderforest Landschaft</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1401"/>
+        <location filename="../MainWindow.ui" line="1417"/>
         <source>Sync Dropbox</source>
         <translation>Dropbox synchronisieren</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1404"/>
+        <location filename="../MainWindow.ui" line="1420"/>
         <source>Sync with Dropbox</source>
         <translation>Mit Dropbox synchronisieren</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1413"/>
-        <location filename="../MainWindow.ui" line="1416"/>
+        <location filename="../MainWindow.ui" line="1429"/>
+        <location filename="../MainWindow.ui" line="1432"/>
         <source>Scan Archive</source>
         <translation>Archiv scannen</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1425"/>
-        <location filename="../MainWindow.ui" line="1428"/>
+        <location filename="../MainWindow.ui" line="1441"/>
+        <location filename="../MainWindow.ui" line="1444"/>
         <source>Add New Bike</source>
         <translation>Neues Fahrrad hinzufügen</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1433"/>
-        <location filename="../MainWindow.ui" line="1436"/>
+        <location filename="../MainWindow.ui" line="1449"/>
+        <location filename="../MainWindow.ui" line="1452"/>
         <source>4UMaps</source>
         <translation>4UMaps</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1441"/>
+        <location filename="../MainWindow.ui" line="1457"/>
         <source>About...</source>
         <translation>Über...</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1446"/>
+        <location filename="../MainWindow.ui" line="1462"/>
         <source>About Qt</source>
         <translation>Über Qt</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1455"/>
+        <location filename="../MainWindow.ui" line="1471"/>
         <source>Set Archive Path</source>
         <translation>Archiv-Pfad festlegen</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1475"/>
+        <location filename="../MainWindow.ui" line="1491"/>
         <source>Grade</source>
         <translation>Steigung</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1486"/>
+        <location filename="../MainWindow.ui" line="1502"/>
         <source>Show</source>
         <translation>Anzeigen</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1494"/>
+        <location filename="../MainWindow.ui" line="1510"/>
         <source>Map Caching</source>
         <translation>Karten-Caching</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1499"/>
+        <location filename="../MainWindow.ui" line="1515"/>
         <source>Clear Map Cache</source>
         <translation>Karten-Cache löschen</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1509"/>
+        <location filename="../MainWindow.ui" line="1525"/>
         <source>Calories</source>
         <translation>Kalorien</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1519"/>
+        <location filename="../MainWindow.ui" line="1535"/>
         <source>L/R Balance</source>
         <translation>L/R-Balance</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1524"/>
+        <location filename="../MainWindow.ui" line="1540"/>
         <source>Device Battery</source>
         <translation>Geräte-Akku</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1529"/>
+        <location filename="../MainWindow.ui" line="1545"/>
         <source>Gear Info</source>
         <translation>Übersetzungs-Info</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1538"/>
+        <location filename="../MainWindow.ui" line="1554"/>
         <source>Service List</source>
         <translation>Wartungsliste</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1543"/>
+        <location filename="../MainWindow.ui" line="1559"/>
         <source>GPS Accuracy</source>
         <translation>GPS-Genauigkeit</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1557"/>
+        <location filename="../MainWindow.ui" line="1573"/>
         <source>MTB Map</source>
         <translation>MTB-Karte</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1562"/>
+        <location filename="../MainWindow.ui" line="1578"/>
         <source>Sigma Sport Topo</source>
         <translation>Sigma Sport Topo</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1567"/>
+        <location filename="../MainWindow.ui" line="1583"/>
         <source>Sigma Sport Cycle</source>
         <translation>Sigma Sport Cycle</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1572"/>
-        <location filename="../MainWindow.ui" line="1575"/>
+        <location filename="../MainWindow.ui" line="1588"/>
+        <location filename="../MainWindow.ui" line="1591"/>
         <source>Sigma Sport Maps</source>
         <translation>Sigma Sport Karten</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1580"/>
+        <location filename="../MainWindow.ui" line="1596"/>
         <source>Komoot</source>
         <translation>Komoot</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1589"/>
+        <location filename="../MainWindow.ui" line="1605"/>
         <source>Sync ADB</source>
         <translation>ADB synchronisieren</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1592"/>
+        <location filename="../MainWindow.ui" line="1608"/>
         <source>Sync with ADB</source>
         <translation>Mit ADB synchronisieren</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1597"/>
-        <location filename="../MainWindow.ui" line="1600"/>
+        <location filename="../MainWindow.ui" line="1613"/>
+        <location filename="../MainWindow.ui" line="1616"/>
         <source>Search Tracks Near Focus</source>
         <translation>Strecken in der Nähe des Fokus suchen</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1608"/>
+        <location filename="../MainWindow.ui" line="1624"/>
         <source>Average Marker</source>
         <translation>Durchschnitts-Marker</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1611"/>
+        <location filename="../MainWindow.ui" line="1627"/>
         <source>Show Average Marker</source>
         <translation>Durchschnitts-Marker anzeigen</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1616"/>
+        <location filename="../MainWindow.ui" line="1632"/>
         <source>Michelin</source>
         <translation>Michelin</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1624"/>
+        <location filename="../MainWindow.ui" line="1640"/>
         <source>Dark Maps</source>
         <translation>Dunkle Karten</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1629"/>
+        <location filename="../MainWindow.ui" line="1645"/>
         <source>English</source>
         <translation>English</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1634"/>
+        <location filename="../MainWindow.ui" line="1650"/>
         <source>Deutsch</source>
         <translation>Deutsch</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1645"/>
-        <location filename="../MainWindow.ui" line="1648"/>
+        <location filename="../MainWindow.ui" line="1661"/>
+        <location filename="../MainWindow.ui" line="1664"/>
         <source>Hillshading</source>
         <translation>Höhenschummerung</translation>
     </message>
     <message>
-        <location filename="../MainWindow.ui" line="1653"/>
+        <location filename="../MainWindow.ui" line="1669"/>
         <source>Hillshading Settings</source>
         <translation>Höhenschummerung Einstellungen</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="96"/>
+        <location filename="../MainWindow.cpp" line="97"/>
         <source>Show In Finder</source>
         <translation>Im Finder anzeigen</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="161"/>
+        <location filename="../MainWindow.cpp" line="162"/>
         <source>Tour</source>
         <translation>Tour</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="263"/>
+        <location filename="../MainWindow.cpp" line="264"/>
         <source>Track / Session</source>
         <translation>Strecke / Session</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="267"/>
+        <location filename="../MainWindow.cpp" line="268"/>
         <source>Lap / Section </source>
         <translation>Runde / Abschnitt </translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="956"/>
+        <location filename="../MainWindow.cpp" line="959"/>
         <source>Dropbox Error</source>
         <translation>Dropbox-Fehler</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="956"/>
+        <location filename="../MainWindow.cpp" line="959"/>
         <source>No new file found!</source>
         <translation>Keine neue Datei gefunden!</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="966"/>
+        <location filename="../MainWindow.cpp" line="969"/>
         <source>Dropbox Error opening file</source>
         <translation>Dropbox-Fehler beim Öffnen der Datei</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="1012"/>
+        <location filename="../MainWindow.cpp" line="1015"/>
         <source>Reveal in Explorer</source>
         <translation>Im Explorer anzeigen</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="1013"/>
+        <location filename="../MainWindow.cpp" line="1016"/>
         <source>Reveal selected file in Explorer</source>
         <translation>Ausgewählte Datei im Explorer anzeigen</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="1016"/>
+        <location filename="../MainWindow.cpp" line="1019"/>
         <source>Reveal in Nautilus</source>
         <translation>In Nautilus anzeigen</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="1017"/>
+        <location filename="../MainWindow.cpp" line="1020"/>
         <source>Reveal selected file in Nautilus</source>
         <translation>Ausgewählte Datei in Nautilus anzeigen</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="1057"/>
+        <location filename="../MainWindow.cpp" line="1060"/>
         <source>&lt;body&gt;&lt;h3&gt;%1&lt;/h3&gt; &lt;p&gt;%1 v%2&lt;/p&gt; &lt;p&gt;%3&lt;/p&gt; &lt;p&gt;See &lt;a href=&apos;%4&apos;&gt;this site&lt;/a&gt; for more information.&lt;/p&gt; &lt;p&gt;App logo by &lt;a href=&apos;https://zez.am/71m&apos;&gt;71M&lt;/a&gt;. Icons by &lt;a href=&apos;https://icons8.de&apos;&gt;icons8&lt;/a&gt;.&lt;/p&gt; &lt;p&gt;dropboxQt Copyright (c) 2018 , &lt;a href=&apos;%5&apos;&gt;prokarpaty.net&lt;/a&gt; under MIT.&lt;/p&gt; &lt;p&gt;QCustomPlot under &lt;a href=&apos;%6&apos;&gt;GPL 3.0&lt;/a&gt;.&lt;/p&gt; &lt;p&gt;QMapControl under &lt;a href=&apos;%7&apos;&gt;LGPL 3.0&lt;/a&gt;.&lt;/p&gt; &lt;p&gt;FitSDKRelease by &lt;a href=&apos;%8&apos;&gt;Garmin&lt;/a&gt;.&lt;/p&gt; &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;body&gt;&lt;h3&gt;%1&lt;/h3&gt; &lt;p&gt;%1 v%2&lt;/p&gt; &lt;p&gt;%3&lt;/p&gt; &lt;p&gt;Weitere Informationen auf &lt;a href=&apos;%4&apos;&gt;dieser Website&lt;/a&gt;. &lt;/p&gt; &lt;p&gt;App-Logo von &lt;a href=‚https://zez.am/71m‘&gt;71M&lt;/a&gt;. Symbole von &lt;a href=‚https://icons8.de‘&gt;icons8&lt;/a&gt;.&lt;/p&gt; &lt;p&gt;dropboxQt Copyright (c) 2018 , &lt;a href=&apos;%5&apos;&gt;prokarpaty.net&lt;/a&gt; unter MIT. &lt;/p&gt; &lt;p&gt;QCustomPlot unter &lt;a href=&apos;%6&apos;&gt;GPL 3.0&lt;/a&gt;.&lt;/p&gt; &lt;p&gt;QMapControl unter &lt;a href=&apos;%7&apos;&gt;LGPL 3.0&lt;/a&gt;.&lt;/p&gt; &lt;p&gt;FitSDKRelease von &lt;a href=&apos;%8&apos;&gt;Garmin&lt;/a&gt;.&lt;/p&gt; &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="1103"/>
+        <location filename="../MainWindow.cpp" line="1106"/>
         <source>Choose Working Path</source>
         <translation>Arbeitspfad wählen</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="1598"/>
-        <location filename="../MainWindow.cpp" line="1599"/>
+        <location filename="../MainWindow.cpp" line="1717"/>
+        <location filename="../MainWindow.cpp" line="1718"/>
         <source>Check Service List!</source>
         <translation>Wartungsliste überprüfen!</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="1619"/>
+        <location filename="../MainWindow.cpp" line="1738"/>
         <source>Please setup archive path!</source>
         <translation>Bitte richten Sie den Archiv-Pfad ein!</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="1669"/>
-        <location filename="../MainWindow.cpp" line="1680"/>
+        <location filename="../MainWindow.cpp" line="1788"/>
+        <location filename="../MainWindow.cpp" line="1799"/>
         <source>ADB Sync error</source>
         <translation>ADB-Synchronisierungsfehler</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="1669"/>
+        <location filename="../MainWindow.cpp" line="1788"/>
         <source>No tracks found on device!</source>
         <translation>Keine Strecken auf dem Gerät gefunden!</translation>
     </message>
     <message>
-        <location filename="../MainWindow.cpp" line="1680"/>
+        <location filename="../MainWindow.cpp" line="1799"/>
         <source>ADB copy failed!</source>
         <translation>ADB-Kopie fehlgeschlagen!</translation>
     </message>

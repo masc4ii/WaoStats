@@ -94,9 +94,11 @@ public:
 
     QString getWorkoutName( void ){return m_workoutName;}
 
-    QVector<QPair<double, double>> getPowerCurve();
+    QVector<QPair<double, double>> getPowerCurve( void ){return m_pwrCurve;}
 
 protected:
+    void analysePowerCurve( void );
+
     fitSection_t m_session;
     QVector<fitSection_t> m_sections;
     bool m_altCorrectionDone;
@@ -140,6 +142,8 @@ protected:
     QVector<double>m_tourAirSpeed;
 
     QVector<deviceInfo_t>m_deviceInfo;
+
+    QVector<QPair<double, double>> m_pwrCurve;
 
     QString m_workoutName;
 

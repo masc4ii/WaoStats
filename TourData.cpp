@@ -85,6 +85,8 @@ void TourData::reset()
 
     m_deviceInfo.clear();
 
+    m_pwrCurve.clear();
+
     m_sections.clear();
 
     m_workoutName.clear();
@@ -110,14 +112,13 @@ int TourData::deviceIdInVectorAt(deviceInfo_t a)
     return -1;
 }
 
-QVector<QPair<double, double>> TourData::getPowerCurve()
+void TourData::analysePowerCurve()
 {
-    QVector<QPair<double, double>> powerCurve;
     const QVector<double> timeIntervals = {0, 5, 15, 30, 60, 120, 180, 300, 480, 600, 900, 1200, 1800, 2700, 3600, 7200, 10800, 18000, 36000}; // in seconds
 
     if (m_tourTimeStamp.isEmpty() || m_tourPower.isEmpty() ||
         m_tourTimeStamp.size() != m_tourPower.size()) {
-        return powerCurve;
+        return;
     }
 
     double startTime = m_tourTimeStamp.first();
@@ -129,12 +130,12 @@ QVector<QPair<double, double>> TourData::getPowerCurve()
         if (interval > diffTime)
             break;
 
-        powerCurve.push_back(QPair<double, double>(interval, 0));
+        m_pwrCurve.push_back(QPair<double, double>(interval, 0));
     }
 
-    powerCurve.first().second = getSession().maxPower;
+    m_pwrCurve.first().second = getSession().maxPower;
 
-    // for each time interval
+// for each time interval
 #pragma omp parallel for
     for (int intervalIdx = 1; intervalIdx < timeIntervals.size(); ++intervalIdx) {
         double maxAvgPower = 0.0;
@@ -170,9 +171,7 @@ QVector<QPair<double, double>> TourData::getPowerCurve()
                     maxAvgPower = std::max(maxAvgPower, avgPower);
                 }
             }
-            powerCurve[intervalIdx].second = maxAvgPower;
+            m_pwrCurve[intervalIdx].second = maxAvgPower;
         }
     }
-
-    return powerCurve;
 }

@@ -347,6 +347,7 @@ void GpxParser::powerAnalysis()
         m_session.avgPower = helpPower / m_session.totalTimerTime;
         m_session.normalizedPower = calculateNormalizedPower(m_tourPower, m_tourTimeStamp);
     }
+    analysePowerCurve();
 }
 
 void GpxParser::heartRateAnalysis()

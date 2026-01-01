@@ -1,6 +1,7 @@
 #include "FitParser.h"
 #include "FitSDKRelease_21.158.00/c/fit_convert.h"
 #include <QDebug>
+#include <QApplication>
 
 FitParser::FitParser() : TourData()
 {
@@ -213,7 +214,7 @@ bool FitParser::loadFit(QString fileName)
                         batterySoc = record->battery_soc / 2.0;
                         //Bring to device_info!
                         deviceInfo_t deviceInfo = m_deviceInfo.first();
-                        deviceInfo.battery = QString( "Battery %1\%" ).arg( batterySoc );
+                        deviceInfo.battery = QApplication::translate( "FitParser", "Battery %1\%" ).arg( batterySoc );
                         m_deviceInfo.replace( 0, deviceInfo );
                     }
 
@@ -392,15 +393,15 @@ bool FitParser::loadFit(QString fileName)
                     info.deviceId = device_info->device_index;
                     switch( device_info->battery_status )
                     {
-                    case 1: info.battery = "Battery new";
+                    case 1: info.battery = QApplication::translate( "FitParser", "Battery new" );
                         break;
-                    case 2: info.battery = "Battery good";
+                    case 2: info.battery = QApplication::translate( "FitParser", "Battery good" );
                         break;
-                    case 3: info.battery = "Battery ok";
+                    case 3: info.battery = QApplication::translate( "FitParser", "Battery ok" );
                         break;
-                    case 4: info.battery = "Battery low";
+                    case 4: info.battery = QApplication::translate( "FitParser", "Battery low" );
                         break;
-                    case 5: info.battery = "Battery critical";
+                    case 5: info.battery = QApplication::translate( "FitParser", "Battery critical" );
                         break;
                     default:
                         break;
@@ -537,6 +538,7 @@ bool FitParser::loadFit(QString fileName)
     fclose(file);
 
     if( minTemp < m_session.minTemperature ) m_session.minTemperature = minTemp;
+    analysePowerCurve();
 
     return true;
 }

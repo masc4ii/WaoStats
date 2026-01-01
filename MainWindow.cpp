@@ -93,6 +93,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->dockWidgetBikeData->setVisible( false );
     ui->labelHrZone->setVisible( false );
     ui->labelPwrZone->setVisible( false );
+    ui->labelPwrCurve->setVisible( false );
     m_pActionShowInFinder = new QAction( tr( "Show In Finder" ), this );
     connect( m_pActionShowInFinder, &QAction::triggered, this, &MainWindow::showInFinder );
     connect( ui->widgetPlot, &TourDataPlot::mouseMove, this, &MainWindow::mouseOverPlot );
@@ -375,6 +376,7 @@ void MainWindow::statistics( void )
 
         drawHrPlot( m_pTourData->getSession() );
         drawPwrPlot( m_pTourData->getSession() );
+        drawPwrCurve();
     }
     else
     {
@@ -419,6 +421,7 @@ void MainWindow::statistics( void )
 
         drawHrPlot( m_pTourData->getSections().at(ind) );
         drawPwrPlot( m_pTourData->getSections().at(ind) );
+        drawPwrCurve();
     }
 }
 
@@ -1535,6 +1538,122 @@ void MainWindow::drawPwrPlot(TourData::fitSection_t section)
     toolTip.append( QString( "\n%1..∞: %2\%, %3" ).arg( m_pTourData->getPwrZoneHigh()[cnt-2] + 1 ).arg( (int)( section.pwrTimeInZone[cnt-1] / section.totalTimerTime * 100 + 0.5 ) ).arg( QTime(0,0).addSecs( section.pwrTimeInZone[cnt-1] ).toString( "hh:mm:ss" ) ) );
 
     ui->labelPwrZone->setToolTip( toolTip );
+}
+
+void MainWindow::drawPwrCurve()
+{
+    auto pwrCurve = m_pTourData->getPowerCurve();
+    ui->labelPwrCurve->setVisible( !pwrCurve.empty() );
+    if( pwrCurve.empty() )
+        return;
+
+    int b = 8 * devicePixelRatio(); //boarder
+    int h = ( ui->labelPwrCurve->height() * devicePixelRatio() ) - 1;
+    int w = 164 * devicePixelRatio();
+    QPixmap pix( w, h );
+    QPainter paint( &pix );
+    pix.fill( ui->groupBoxPower->palette().window().color() );
+
+    // Draw curve
+    if( pwrCurve.size() > 1 )
+    {
+        // Find min and max values for scaling
+        double minTime = pwrCurve.at(0).first;
+        double maxTime = pwrCurve.at(pwrCurve.size() - 1).first;
+        double minPower = 0.0; // Always start from 0
+        double maxPower = pwrCurve.at(0).second;
+        
+        for( int i = 0; i < pwrCurve.size(); i++ )
+        {
+            if( pwrCurve.at(i).second > maxPower ) maxPower = pwrCurve.at(i).second;
+        }
+        
+        // Add some padding to power range (only at top)
+        double powerRange = maxPower - minPower;
+        if( powerRange < 1 ) powerRange = 1;
+        maxPower += powerRange * 0.1;
+        
+        int drawWidth = w - 2 * b;
+        int drawHeight = h - 2 * b;
+        
+        // Create path for filling
+        QPainterPath fillPath;
+        bool firstPoint = true;
+        
+        for( int i = 0; i < pwrCurve.size(); i++ )
+        {
+            // Calculate logarithmic x position
+            double logMinTime = log10( minTime > 0 ? minTime : 1 );
+            double logMaxTime = log10( maxTime > 0 ? maxTime : 1 );
+            double logCurrentTime = log10( pwrCurve.at(i).first > 0 ? pwrCurve.at(i).first : 1 );
+            
+            int x = b + (int)( (logCurrentTime - logMinTime) / (logMaxTime - logMinTime) * drawWidth );
+            int y = h - b - (int)( (pwrCurve.at(i).second - minPower) / (maxPower - minPower) * drawHeight );
+            
+            if( firstPoint )
+            {
+                fillPath.moveTo( x, y );
+                firstPoint = false;
+            }
+            else
+            {
+                fillPath.lineTo( x, y );
+            }
+        }
+        
+        // Close the path for filling (line to bottom right, then to bottom left)
+        fillPath.lineTo( b + drawWidth, h - b );
+        fillPath.lineTo( b, h - b );
+        fillPath.closeSubpath();
+        
+        // Fill the area under the curve
+        QBrush fillBrush( QColor( 255, 0, 0, 20 ) ); // Red with alpha 100 (semi-transparent)
+        paint.fillPath( fillPath, fillBrush );
+        
+        // Draw the curve line
+        QPen pen( QColor( 255, 0, 0 ) );
+        pen.setWidth( 1 );
+        paint.setPen( pen );
+        
+        for( int i = 0; i < pwrCurve.size() - 1; i++ )
+        {
+            // Calculate logarithmic x position for current point
+            double logMinTime = log10( minTime > 0 ? minTime : 1 );
+            double logMaxTime = log10( maxTime > 0 ? maxTime : 1 );
+            double logCurrentTime = log10( pwrCurve.at(i).first > 0 ? pwrCurve.at(i).first : 1 );
+            double logNextTime = log10( pwrCurve.at(i+1).first > 0 ? pwrCurve.at(i+1).first : 1 );
+            
+            int x1 = b + (int)( (logCurrentTime - logMinTime) / (logMaxTime - logMinTime) * drawWidth );
+            int x2 = b + (int)( (logNextTime - logMinTime) / (logMaxTime - logMinTime) * drawWidth );
+            
+            // Calculate y position (inverted because y increases downward)
+            int y1 = h - b - (int)( (pwrCurve.at(i).second - minPower) / (maxPower - minPower) * drawHeight );
+            int y2 = h - b - (int)( (pwrCurve.at(i+1).second - minPower) / (maxPower - minPower) * drawHeight );
+            
+            paint.drawLine( x1, y1, x2, y2 );
+        }
+    }
+    pix.setDevicePixelRatio( devicePixelRatio() );
+    ui->labelPwrCurve->setPixmap( pix );
+
+    // Tooltip
+    QString toolTip;
+    for( int i = 0; i < pwrCurve.size(); i++ )
+    {
+        QString interval;
+        if( pwrCurve.at(i).first < 60 )
+            interval = QString::number( pwrCurve.at(i).first ) + " sec";
+        else if( pwrCurve.at(i).first < 3600 )
+            interval = QString::number( pwrCurve.at(i).first / 60 ) + " min";
+        else
+            interval = QString::number( pwrCurve.at(i).first / 3600 ) + " h";
+
+        if( i > 0 )
+            toolTip.append( "\n" );
+
+        toolTip.append( interval + ": " + QString::number( pwrCurve.at(i).second, 'f', 1 ) + " W" );
+    }
+    ui->labelPwrCurve->setToolTip( toolTip );
 }
 
 double MainWindow::odoInitKm(int bikeIndex)

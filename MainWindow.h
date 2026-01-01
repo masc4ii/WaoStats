@@ -100,6 +100,7 @@ private:
     void markActiveTour( QTreeWidgetItem *item );
     void drawHrPlot(TourData::fitSection_t section );
     void drawPwrPlot(TourData::fitSection_t section );
+    void drawPwrCurve();
     double odoInitKm( int bikeIndex );
     double odoInitKm( QString bikePath );
     QString workingPath( void );

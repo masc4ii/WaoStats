@@ -22,6 +22,8 @@ void TourData::reset()
     m_tourCalories.clear();
     m_tourPower.clear();
     m_tourLRBalance.clear();
+    m_tourLPedalSmoothness.clear();
+    m_tourRPedalSmoothness.clear();
     m_tourWindSpeed.clear();
     m_tourAirSpeed.clear();
     m_altCorrectionDone = false;
@@ -72,6 +74,8 @@ void TourData::reset()
     m_session.avgPower = 0;
     m_session.maxPower = 0;
     m_session.leftRightBalance = 0;
+    m_session.leftPedalSmoothness = 0;
+    m_session.rightPedalSmoothness = 0;
     m_session.totalWork = 0;
     m_session.totalCalories = 0;
     m_session.normalizedPower = 0;
@@ -174,4 +178,22 @@ void TourData::analysePowerCurve()
             m_pwrCurve[intervalIdx].second = maxAvgPower;
         }
     }
+}
+
+void TourData::analysePedalSmoothness()
+{
+    double sumL = 0.0;
+    double sumR = 0.0;
+
+    if (m_tourTimeStamp.size() != m_tourLPedalSmoothness.size()) return;
+    if (m_tourTimeStamp.size() != m_tourRPedalSmoothness.size()) return;
+
+    for (int i = 0; i < m_tourTimeStamp.size(); i++)
+    {
+        sumL += m_tourLPedalSmoothness.at(i);
+        sumR += m_tourRPedalSmoothness.at(i);
+    }
+
+    m_session.leftPedalSmoothness = sumL / double(m_tourLPedalSmoothness.size());
+    m_session.rightPedalSmoothness = sumR / double(m_tourRPedalSmoothness.size());
 }

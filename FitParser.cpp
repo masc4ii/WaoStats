@@ -143,6 +143,8 @@ bool FitParser::loadFit(QString fileName)
                     if( session->threshold_power       < 65535 ) m_session.thresholdPower = session->threshold_power;
                     if( session->training_stress_score < 65535 ) m_session.trainingStressScore = session->training_stress_score;
                     if( session->intensity_factor      < 65535 ) m_session.itensityFactor = session->intensity_factor;
+                    m_session.leftPedalSmoothness = 0;
+                    m_session.rightPedalSmoothness = 0;
                     break;
                 }
 
@@ -189,6 +191,8 @@ bool FitParser::loadFit(QString fileName)
                     if( lapMesg->total_work         < 65535 ) lap.totalWork = lapMesg->total_work;
                     if( lapMesg->total_calories     < 65535 ) lap.totalCalories = lapMesg->total_calories;
                     if( lapMesg->normalized_power   < 65535 ) lap.normalizedPower = lapMesg->normalized_power;
+                    lap.leftPedalSmoothness = 0;
+                    lap.rightPedalSmoothness = 0;
 
                     m_sections.append( lap );
                     if( !m_tourDistance.empty() ) lastLapStartDistance = m_tourDistance.last();
@@ -271,6 +275,14 @@ bool FitParser::loadFit(QString fileName)
                     }
                     else if( m_tourLRBalance.count() > 0 ) m_tourLRBalance.append( m_tourLRBalance.last() );
                     else m_tourLRBalance.append( 0 );
+
+                    if( record->left_pedal_smoothness < 255 ) m_tourLPedalSmoothness.append( record->left_pedal_smoothness );
+                    else if( m_tourLPedalSmoothness.count() > 0 ) m_tourLPedalSmoothness.append( m_tourLPedalSmoothness.last() );
+                    else m_tourLPedalSmoothness.append( 0 );
+
+                    if( record->right_pedal_smoothness < 255 ) m_tourRPedalSmoothness.append( record->right_pedal_smoothness );
+                    else if( m_tourRPedalSmoothness.count() > 0 ) m_tourRPedalSmoothness.append( m_tourRPedalSmoothness.last() );
+                    else m_tourRPedalSmoothness.append( 0 );
 
                     m_tourCalories.append( record->calories );
                     m_tourBatterySoc.append( batterySoc );
@@ -539,6 +551,9 @@ bool FitParser::loadFit(QString fileName)
 
     if( minTemp < m_session.minTemperature ) m_session.minTemperature = minTemp;
     analysePowerCurve();
+    analysePedalSmoothness();
+
+    qDebug() << m_session.leftPedalSmoothness << m_session.rightPedalSmoothness;
 
     return true;
 }

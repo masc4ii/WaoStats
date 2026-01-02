@@ -19,6 +19,7 @@ enum ePlotYType{
     Calories,
     Power,
     LRBalance,
+    PedalSmoothness,
     GearInfo,
     GpsAccuracy,
     WindSpeed,

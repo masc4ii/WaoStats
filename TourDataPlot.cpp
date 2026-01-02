@@ -155,6 +155,11 @@ void TourDataPlot::init()
         yAxis2->setLabel( tr( "L/R Balance" ) );
         graph( Free2ndCurve )->setName( tr( "L/R Balance" ) );
         break;
+    case PedalSmoothness:
+        yAxis2->setLabel( tr( "Pedal Smoothness [%]" ) );
+        graph( Free2ndCurve )->setName( tr( "Left" ) );
+        graph( Free3rdCurve )->setName( tr( "Right" ) );
+        break;
     case GearInfo:
         yAxis2->setLabel( tr( "Gear Ratio / Gear Number" ) );
         graph( Free2ndCurve )->setName( tr( "Gear Ratio" ) );
@@ -303,6 +308,20 @@ void TourDataPlot::drawPlots( TourData *pTourData, ePlotXType xType, ePlotYType 
     case LRBalance:
         if( xType == Distance ) graph( Free2ndCurve )->setData( pTourData->getTourDistance(), pTourData->getTourLRBalance() );
         else                    graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourLRBalance() );
+        graph(Free2ndCurve)->rescaleAxes();
+        yAxis2->setRange( (int)((yAxis2->range().lower - 10)/20) * 20, (int)((yAxis2->range().upper + 10)/20) * 20 );
+        break;
+    case PedalSmoothness:
+        if( xType == Distance )
+        {
+            graph( Free2ndCurve )->setData( pTourData->getTourDistance(), pTourData->getTourLPedalSmoothness() );
+            graph( Free3rdCurve )->setData( pTourData->getTourDistance(), pTourData->getTourRPedalSmoothness() );
+        }
+        else
+        {
+            graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourLPedalSmoothness() );
+            graph( Free3rdCurve )->setData( m_tourTimeStamp, pTourData->getTourRPedalSmoothness() );
+        }
         graph(Free2ndCurve)->rescaleAxes();
         yAxis2->setRange( (int)((yAxis2->range().lower - 10)/20) * 20, (int)((yAxis2->range().upper + 10)/20) * 20 );
         break;

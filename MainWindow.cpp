@@ -1559,6 +1559,7 @@ void MainWindow::drawPwrCurve()
     int w = 164 * devicePixelRatio();
     QPixmap pix( w, h );
     QPainter paint( &pix );
+    paint.setRenderHint( QPainter::Antialiasing, true );
     pix.fill( ui->groupBoxPower->palette().window().color() );
 
     // Draw curve

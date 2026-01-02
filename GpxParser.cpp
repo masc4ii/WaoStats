@@ -322,7 +322,6 @@ void GpxParser::tourAnalysis()
 void GpxParser::powerAnalysis()
 {
     double helpPower = 0;
-    double work_J = 0.0;
     for( int i = 1; i < m_tourPower.size(); i++ )
     {
         if( m_session.maxPower < m_tourPower.at(i) ) m_session.maxPower = m_tourPower.at(i);
@@ -333,6 +332,7 @@ void GpxParser::powerAnalysis()
         {
             helpPower += m_tourPower.at(i) * timeDiff;
 
+            m_session.totalWork += m_tourPower.at(i) * timeDiff;
             m_session.totalCalories += m_tourPower.at(i) * timeDiff / (4184 * 0.215);
             m_tourCalories.append(m_session.totalCalories);
 
@@ -343,16 +343,12 @@ void GpxParser::powerAnalysis()
             else if(m_tourPower.at(i) <= m_pwrZoneHigh[4]) m_session.pwrTimeInZone[4] += timeDiff;
             else m_session.pwrTimeInZone[5] += timeDiff;
         }
-
-        if (timeDiff > 0)
-            work_J += m_tourPower.at(i - 1) * timeDiff;
     }
     if( m_session.totalTimerTime != 0 )
     {
         m_session.avgPower = helpPower / m_session.totalTimerTime;
         m_session.normalizedPower = calculateNormalizedPower(m_tourPower, m_tourTimeStamp);
     }
-    m_session.totalWork = work_J;
     analysePowerCurve();
 }
 

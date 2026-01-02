@@ -1589,14 +1589,14 @@ void MainWindow::drawPwrCurve()
         // Create path for filling
         QPainterPath fillPath;
         bool firstPoint = true;
-        
+
         for( int i = 0; i < pwrCurve.size(); i++ )
         {
             // Calculate logarithmic x position
-            double logMinTime = log10( minTime > 0 ? minTime : 1 );
-            double logMaxTime = log10( maxTime > 0 ? maxTime : 1 );
-            double logCurrentTime = log10( pwrCurve.at(i).first > 0 ? pwrCurve.at(i).first : 1 );
-            
+            double logMinTime = log1p( minTime > 0 ? minTime : 1 );
+            double logMaxTime = log1p( maxTime > 0 ? maxTime : 1 );
+            double logCurrentTime = log1p( pwrCurve.at(i).first > 0 ? pwrCurve.at(i).first : 1 );
+
             int x = b + (int)( (logCurrentTime - logMinTime) / (logMaxTime - logMinTime) * drawWidth );
             int y = h - b - (int)( (pwrCurve.at(i).second - minPower) / (maxPower - minPower) * drawHeight );
             
@@ -1628,11 +1628,11 @@ void MainWindow::drawPwrCurve()
         for( int i = 0; i < pwrCurve.size() - 1; i++ )
         {
             // Calculate logarithmic x position for current point
-            double logMinTime = log10( minTime > 0 ? minTime : 1 );
-            double logMaxTime = log10( maxTime > 0 ? maxTime : 1 );
-            double logCurrentTime = log10( pwrCurve.at(i).first > 0 ? pwrCurve.at(i).first : 1 );
-            double logNextTime = log10( pwrCurve.at(i+1).first > 0 ? pwrCurve.at(i+1).first : 1 );
-            
+            double logMinTime = log1p( minTime > 0 ? minTime : 1 );
+            double logMaxTime = log1p( maxTime > 0 ? maxTime : 1 );
+            double logCurrentTime = log1p( pwrCurve.at(i).first > 0 ? pwrCurve.at(i).first : 1 );
+            double logNextTime = log1p( pwrCurve.at(i+1).first > 0 ? pwrCurve.at(i+1).first : 1 );
+
             int x1 = b + (int)( (logCurrentTime - logMinTime) / (logMaxTime - logMinTime) * drawWidth );
             int x2 = b + (int)( (logNextTime - logMinTime) / (logMaxTime - logMinTime) * drawWidth );
             

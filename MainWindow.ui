@@ -520,7 +520,7 @@
           <x>0</x>
           <y>-657</y>
           <width>218</width>
-          <height>1140</height>
+          <height>1164</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_10">
@@ -649,6 +649,23 @@
               </property>
               <property name="scaledContents">
                <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_33">
+              <property name="text">
+               <string>Total Work</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLabel" name="labelWork">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
+              <property name="text">
+               <string notr="true">-</string>
               </property>
              </widget>
             </item>

@@ -372,6 +372,7 @@ void MainWindow::statistics( void )
         ui->labelPowerAverage->setText( QString( "%1 W" ).arg( (int)m_pTourData->getSession().avgPower ) );
         ui->labelPowerMax->setText( QString( "%1 W" ).arg( (int)m_pTourData->getSession().maxPower ) );
         ui->labelPowerNormalized->setText( QString( "%1 W" ).arg( (int)m_pTourData->getSession().normalizedPower ) );
+        ui->labelWork->setText( QString( "%1 kJ" ).arg( (int)( m_pTourData->getSession().totalWork / 1000.0 ) ) );
         ui->labelLRBalance->setText( QString( "%1" ).arg( (int)m_pTourData->getSession().leftRightBalance ) );
 
         ui->labelTempAverage->setText( QString( "%1 °C" ).arg( m_pTourData->getSession().avgTemperature ) );
@@ -417,6 +418,7 @@ void MainWindow::statistics( void )
         ui->labelPowerAverage->setText( QString( "%1 W" ).arg( (int)m_pTourData->getSections().at(ind).avgPower ) );
         ui->labelPowerMax->setText( QString( "%1 W" ).arg( (int)m_pTourData->getSections().at(ind).maxPower ) );
         ui->labelPowerNormalized->setText( QString( "%1 W" ).arg( (int)m_pTourData->getSections().at(ind).normalizedPower ) );
+        ui->labelWork->setText( QString( "%1 kJ" ).arg( (int)( m_pTourData->getSections().at(ind).totalWork / 1000.0 ) ) );
         ui->labelLRBalance->setText( QString( "%1" ).arg( (int)m_pTourData->getSections().at(ind).leftRightBalance ) );
 
         ui->labelTempAverage->setText( QString( "%1 °C" ).arg( m_pTourData->getSections().at(ind).avgTemperature ) );

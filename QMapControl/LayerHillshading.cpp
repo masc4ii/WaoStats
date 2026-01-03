@@ -213,87 +213,107 @@ namespace qmapcontrol
 
     QPixmap LayerHillshading::render(const QPixmap &pixmap, const int& controller_zoom) const
     {
-        QImage img = pixmap.toImage().scaled(QSize(256,256));
-        int w = img.width();
-        int h = img.height();
-        QVector<double> dem(w * h);
+        // Input
+        QImage img = pixmap.toImage()
+                         .convertToFormat(QImage::Format_ARGB32)
+                         .scaled(QSize(256,256), Qt::IgnoreAspectRatio, Qt::FastTransformation);
+
+        const int w = img.width();
+        const int h = img.height();
+
+        // DEM (float is good enough)
+        std::vector<float> dem(w * h);
+
+        const uchar* src = img.constBits();
+        const int srcStride = img.bytesPerLine();
+
+#pragma omp parallel for schedule(static)
         for (int y = 0; y < h; ++y) {
+            const uchar* row = src + y * srcStride;
+            float* demRow = dem.data() + y * w;
+
             for (int x = 0; x < w; ++x) {
-                QColor c = img.pixelColor(x, y);
-                dem[y*w + x] = -10000 + ((c.red()*256*256 + c.green()*256 + c.blue())*0.1);
+                const uchar* p = row + x * 4; // BGRA
+                int r = p[2];
+                int g = p[1];
+                int b = p[0];
+
+                demRow[x] = -10000.0f + float((r << 16 | g << 8 | b)) * 0.1f;
             }
         }
 
-        // Hillshade-Parameter
-        double azimuthDeg = m_light_direction;
-        double altitudeDeg = 50;
-        double zFactor = 0.1;
+        // Hillshade parameter
+        const float azimuthDeg  = m_light_direction;
+        const float altitudeDeg = 50.0f;
+        const float zFactor     = 0.1f;
 
-        // Umrechnung in Radiant
-        double azimuthRad = qDegreesToRadians(360.0 - azimuthDeg + 90.0);
-        double altitudeRad = qDegreesToRadians(altitudeDeg);
+        const float azimuthRad  = qDegreesToRadians(360.0f - azimuthDeg + 90.0f);
+        const float altitudeRad = qDegreesToRadians(altitudeDeg);
 
-        // Lichtvektor
-        double lx = cos(altitudeRad) * cos(azimuthRad);
-        double ly = cos(altitudeRad) * sin(azimuthRad);
-        double lz = sin(altitudeRad);
+        const float lx = std::cos(altitudeRad) * std::cos(azimuthRad);
+        const float ly = std::cos(altitudeRad) * std::sin(azimuthRad);
+        const float lz = std::sin(altitudeRad);
 
-        // Ausgabe-Bild
+        // CellSize LUT (Zoom 0–22)
+        static float cellSizeLUT[23];
+        static bool lutInit = false;
+        if (!lutInit) {
+            for (int z = 0; z <= 22; ++z)
+                cellSizeLUT[z] = std::pow(10.0f, (16.0f - z) / 4.0f);
+            lutInit = true;
+        }
+
+        const float cellSize = cellSizeLUT[controller_zoom] * m_light_height * 0.1f;
+        const float inv8Cell = 1.0f / (8.0f * cellSize);
+
+        // Final image
         QImage hillshade(w, h, QImage::Format_Grayscale8);
         hillshade.fill(0);
 
-        // Pixelabstand (für WebMercator egal → relativ)
-        double cellSize = std::pow(10.0, (16.0 - controller_zoom) / 4.0) * m_light_height / 10.0;
+        uchar* dst = hillshade.bits();
+        const int dstStride = hillshade.bytesPerLine();
 
-#pragma omp parallel for collapse(2)
+    // Hillshade
+#pragma omp parallel for schedule(static)
         for (int y = 1; y < h - 1; ++y) {
+            uchar* out = dst + y * dstStride;
+
             for (int x = 1; x < w - 1; ++x) {
 
-                // Horn-Gradienten
-                double dzdx =
-                    ((dem[(y-1)*w + (x+1)] + 2*dem[y*w + (x+1)] + dem[(y+1)*w + (x+1)]) -
-                     (dem[(y-1)*w + (x-1)] + 2*dem[y*w + (x-1)] + dem[(y+1)*w + (x-1)]))
-                    / (8.0 * cellSize);
+                // Horn-Gradients
+                float dzdx =
+                    ((dem[(y-1)*w + (x+1)] + 2.0f*dem[y*w + (x+1)] + dem[(y+1)*w + (x+1)]) -
+                     (dem[(y-1)*w + (x-1)] + 2.0f*dem[y*w + (x-1)] + dem[(y+1)*w + (x-1)]))
+                    * inv8Cell;
 
-                double dzdy =
-                    ((dem[(y+1)*w + (x-1)] + 2*dem[(y+1)*w + x] + dem[(y+1)*w + (x+1)]) -
-                     (dem[(y-1)*w + (x-1)] + 2*dem[(y-1)*w + x] + dem[(y-1)*w + (x+1)]))
-                    / (8.0 * cellSize);
+                float dzdy =
+                    ((dem[(y+1)*w + (x-1)] + 2.0f*dem[(y+1)*w + x] + dem[(y+1)*w + (x+1)]) -
+                     (dem[(y-1)*w + (x-1)] + 2.0f*dem[(y-1)*w + x] + dem[(y-1)*w + (x+1)]))
+                    * inv8Cell;
 
                 dzdx *= zFactor;
                 dzdy *= zFactor;
 
-                // Normalenvektor
-                double nx = -dzdx;
-                double ny = -dzdy;
-                double nz = 1.0;
+                // Optimized Lambert-Shading (wo normalize)
+                float denom = 1.0f + dzdx*dzdx + dzdy*dzdy;
+                float shade = (lz - dzdx*lx - dzdy*ly) / std::sqrt(denom);
 
-                double len = sqrt(nx*nx + ny*ny + nz*nz);
-                nx /= len;
-                ny /= len;
-                nz /= len;
+                shade = std::clamp(shade, 0.0f, 1.0f);
 
-                // Lambert-Shading
-                double shade = nx*lx + ny*ly + nz*lz;
-                shade = qBound(0.0, shade, 1.0);
-
-                int gray = static_cast<int>(shade * 128.0 + 127);
-                hillshade.setPixelColor(x, y, QColor(gray, gray, gray, 50));
+                out[x] = static_cast<uchar>(shade * 128.0f + 127.0f);
             }
         }
+
+        // fill boarder
         for (int y = 0; y < h; ++y) {
-            hillshade.setPixelColor(0, y, hillshade.pixelColor(1, y));
-            hillshade.setPixelColor(w-1, y, hillshade.pixelColor(w-2, y));
+            dst[y * dstStride]         = dst[y * dstStride + 1];
+            dst[y * dstStride + w - 1] = dst[y * dstStride + w - 2];
         }
         for (int x = 0; x < w; ++x) {
-            hillshade.setPixelColor(x, 0, hillshade.pixelColor(x, 1));
-            hillshade.setPixelColor(x, h-1, hillshade.pixelColor(x, h-2));
+            dst[x]                     = dst[dstStride + x];
+            dst[(h-1)*dstStride + x]   = dst[(h-2)*dstStride + x];
         }
 
-        // Scaling 50%x50%
-        //hillshade = hillshade.scaled(w / 2, h / 2, Qt::KeepAspectRatio, Qt::FastTransformation);
-
-        // Ergebnis anzeigen
         return QPixmap::fromImage(hillshade);
     }
 }

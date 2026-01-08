@@ -103,7 +103,7 @@ bool GpxParser::loadGpx( QString fileName )
             distanceGpx = Rxml.readElementText().toDouble();
             distanceRead = true;
         }
-        else if( Rxml.isStartElement() && ( Rxml.name() == QString( "cadence" ) ) )
+        else if( Rxml.isStartElement() && ( Rxml.name() == QString( "cadence" ) || Rxml.name() == QString( "cad" ) ) )
         {
             cadence = Rxml.readElementText().toDouble();
             cadenceRead = true;
@@ -143,13 +143,13 @@ bool GpxParser::loadGpx( QString fileName )
             else
                 m_tourDistance.append( distance );
             m_tourTimeStamp.append( time );
-            double speedCalc = 0;
+            /*double speedCalc = 0;
             if( time-lastTime != 0 ) speedCalc = distSinceLast / (time-lastTime) * 3600;
             static double lastSpeedCalc = 0;
             m_tourSpeed.append( ( lastSpeedCalc + speedCalc ) / 2.0 );
             if( ( time - lastTime > 30 && distSinceLast < 0.05 ) //if time >30s and distance < 50m, or speed < 1km/h, it must be a break...
              || ( ( lastSpeedCalc + speedCalc ) / 2.0 ) < 1.0 ) breakSecs += time - lastTime;
-            lastSpeedCalc = speedCalc;
+            lastSpeedCalc = speedCalc;*/
             m_tourTemperature.append( 0 );
             m_tourAltitude.append( ele );
             double grade = 0;
@@ -159,11 +159,27 @@ bool GpxParser::loadGpx( QString fileName )
             lastTime = time;
             lastEle = ele;
             if(cadenceRead) m_tourCadence.append( cadence );
-            if(powerRead) m_tourPower.append( power );
             if(heartrateRead) m_tourHeartRate.append( heartrate );
+            if(powerRead) {
+                while (m_tourTimeStamp.size() - m_tourPower.size() > 0)
+                    m_tourPower.append( power );
+            }
         }
     }
     file.close();
+
+    //Windowed speed smoothing
+    double window = 3.0;
+    m_tourSpeed.resize(m_tourTimeStamp.size());
+    for (int i = 0; i < m_tourTimeStamp.size(); ++i) {
+        double t0 = m_tourTimeStamp[i] - window;
+        int j = i;
+        while (j > 0 && m_tourTimeStamp[j] > t0)
+            j--;
+        double dt = m_tourTimeStamp[i] - m_tourTimeStamp[j];
+        double ds = m_tourDistance[i] - m_tourDistance[j];
+        m_tourSpeed[i] = (dt > 0 ? ds / dt * 3600 : (i>0?m_tourSpeed[i-1]:0));
+    }
 
     //Create session statistics
     timeAnalysis(breakSecs);

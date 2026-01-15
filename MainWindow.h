@@ -75,6 +75,7 @@ private slots:
     void on_treeWidgetTours_customContextMenuRequested(const QPoint &pos);
     void on_widgetOsm_customContextMenuRequested( const QPoint &pos );
     void on_widgetPlot_customContextMenuRequested( const QPoint &pos );
+    void on_widgetPwrCurvePlot_customContextMenuRequested( const QPoint &pos );
     void on_lineEditFilter_textChanged( const QString &arg1 );
     void calcBikeTotalDistances();
     void showServiceInTree();

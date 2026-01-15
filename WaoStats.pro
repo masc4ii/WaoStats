@@ -63,6 +63,7 @@ SOURCES += \
     HillShadingSettingsDialog.cpp \
     LineEditEscDelete.cpp \
     OsmWidget.cpp \
+    PowerCurvePlot.cpp \
     ProgressDialog.cpp \
     ServiceCostPieDialog.cpp \
     TrackSearch.cpp \
@@ -95,6 +96,7 @@ HEADERS += \
     LineEditEscDelete.h \
     MainWindow.h \
     OsmWidget.h \
+    PowerCurvePlot.h \
     ProgressDialog.h \
     ServiceCostPieDialog.h \
     TrackSearch.h \

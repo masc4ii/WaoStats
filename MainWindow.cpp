@@ -297,6 +297,7 @@ void MainWindow::statistics( void )
     ui->actionHeartRate->setEnabled( (int)m_pTourData->getSession().maxHeartRate != 0 );
     ui->actionCalories->setEnabled( (int)m_pTourData->getSession().totalCalories != 0 );
     ui->actionPower->setEnabled( (int)m_pTourData->getSession().maxPower != 0 );
+    ui->actionPowerCurve->setEnabled( (int)m_pTourData->getSession().maxPower != 0 );
     ui->actionLRBalance->setEnabled( (int)m_pTourData->getSession().leftRightBalance != 0 );
     ui->actionPedalSmoothness->setEnabled( (int)m_pTourData->getSession().leftPedalSmoothness != 0 );
     ui->actionGearInfo->setEnabled( m_pTourData->containsGearInfoFront() || m_pTourData->containsGearInfoRear() );
@@ -309,6 +310,7 @@ void MainWindow::statistics( void )
      || ( ui->actionHeartRate->isChecked()       && !ui->actionHeartRate->isEnabled() )
      || ( ui->actionCalories->isChecked()        && !ui->actionCalories->isEnabled() )
      || ( ui->actionPower->isChecked()           && !ui->actionPower->isEnabled() )
+     || ( ui->actionPowerCurve->isChecked()      && !ui->actionPowerCurve->isEnabled() )
      || ( ui->actionLRBalance->isChecked()       && !ui->actionLRBalance->isEnabled() )
      || ( ui->actionPedalSmoothness->isChecked() && !ui->actionPedalSmoothness->isEnabled() )
      || ( ui->actionGearInfo->isChecked()        && !ui->actionGearInfo->isEnabled() )
@@ -562,24 +564,33 @@ void MainWindow::onCalendarClicked(const QString &bikeName, const QDateTime &dat
 
 void MainWindow::drawPlots( void )
 {
-    TourData *pTourData = m_pTourData;
+    ui->widgetPlot->setVisible( !ui->actionPowerCurve->isChecked() && ui->actionShowPlot->isChecked() );
+    ui->widgetPwrCurvePlot->setVisible( ui->actionPowerCurve->isChecked() && ui->actionShowPlot->isChecked() );
 
-    ePlotXType xType = ePlotXType::Distance;
-    ePlotYType yType = ePlotYType::Speed;
-    if( m_timePlot ) xType = ePlotXType::Time;
-    if(      ui->actionSpeed->isChecked() )           yType = ePlotYType::Speed;
-    else if( ui->actionDeviceBattery->isChecked() )   yType = ePlotYType::DeviceBattery;
-    else if( ui->actionCadence->isChecked() )         yType = ePlotYType::Cadence;
-    else if( ui->actionTemperature->isChecked() )     yType = ePlotYType::Temperature;
-    else if( ui->actionGrade->isChecked() )           yType = ePlotYType::Grade;
-    else if( ui->actionHeartRate->isChecked() )       yType = ePlotYType::HeartRate;
-    else if( ui->actionCalories->isChecked() )        yType = ePlotYType::Calories;
-    else if( ui->actionPower->isChecked() )           yType = ePlotYType::Power;
-    else if( ui->actionLRBalance->isChecked() )       yType = ePlotYType::LRBalance;
-    else if( ui->actionPedalSmoothness->isChecked() ) yType = ePlotYType::PedalSmoothness;
-    else if( ui->actionGearInfo->isChecked() )        yType = ePlotYType::GearInfo;
-    else if( ui->actionGpsAccuracy->isChecked() )     yType = ePlotYType::GpsAccuracy;
-    ui->widgetPlot->drawPlots( pTourData, xType, yType );
+    if( ui->actionPowerCurve->isChecked() )
+    {
+        ui->widgetPwrCurvePlot->setData( m_pTourData->getPowerCurve() );
+        pointInfoHide( false );
+    }
+    else
+    {
+        ePlotXType xType = ePlotXType::Distance;
+        ePlotYType yType = ePlotYType::Speed;
+        if( m_timePlot ) xType = ePlotXType::Time;
+        if(      ui->actionSpeed->isChecked() )           yType = ePlotYType::Speed;
+        else if( ui->actionDeviceBattery->isChecked() )   yType = ePlotYType::DeviceBattery;
+        else if( ui->actionCadence->isChecked() )         yType = ePlotYType::Cadence;
+        else if( ui->actionTemperature->isChecked() )     yType = ePlotYType::Temperature;
+        else if( ui->actionGrade->isChecked() )           yType = ePlotYType::Grade;
+        else if( ui->actionHeartRate->isChecked() )       yType = ePlotYType::HeartRate;
+        else if( ui->actionCalories->isChecked() )        yType = ePlotYType::Calories;
+        else if( ui->actionPower->isChecked() )           yType = ePlotYType::Power;
+        else if( ui->actionLRBalance->isChecked() )       yType = ePlotYType::LRBalance;
+        else if( ui->actionPedalSmoothness->isChecked() ) yType = ePlotYType::PedalSmoothness;
+        else if( ui->actionGearInfo->isChecked() )        yType = ePlotYType::GearInfo;
+        else if( ui->actionGpsAccuracy->isChecked() )     yType = ePlotYType::GpsAccuracy;
+        ui->widgetPlot->drawPlots( m_pTourData, xType, yType );
+    }
 }
 
 void MainWindow::drawTourToMap(TourData *pTourData, bool autoZoom)
@@ -808,6 +819,9 @@ void MainWindow::mapProviderSelected(QAction* action)
 
 void MainWindow::plotSelected( void )
 {
+    ui->actionPlotTime->setEnabled( !ui->actionPowerCurve->isChecked() );
+    ui->actionPlotDistance->setEnabled( !ui->actionPowerCurve->isChecked() );
+
     if( ui->actionPlotTime->isChecked() )
     {
         m_timePlot = true;
@@ -1138,6 +1152,11 @@ void MainWindow::on_widgetPlot_customContextMenuRequested(const QPoint &pos)
     myMenu.exec( globalPos );
 }
 
+void MainWindow::on_widgetPwrCurvePlot_customContextMenuRequested(const QPoint &pos)
+{
+    on_widgetPlot_customContextMenuRequested( pos );
+}
+
 void MainWindow::on_widgetOsm_customContextMenuRequested(const QPoint &pos)
 {
     // Handle global position
@@ -1154,7 +1173,8 @@ void MainWindow::on_widgetOsm_customContextMenuRequested(const QPoint &pos)
 void MainWindow::on_actionShowPlot_triggered(bool checked)
 {
     ui->groupBoxPicker->setVisible( checked );
-    ui->widgetPlot->setVisible( checked );
+    ui->widgetPlot->setVisible( checked && !ui->actionPowerCurve->isChecked() );
+    ui->widgetPwrCurvePlot->setVisible( checked && ui->actionPowerCurve->isChecked() );
     qApp->processEvents();
     adjustMap();
     pointInfoHide( false );
@@ -1351,6 +1371,7 @@ void MainWindow::configureActionGroups( void )
     plotValueGroup->addAction( ui->actionHeartRate );
     plotValueGroup->addAction( ui->actionCalories );
     plotValueGroup->addAction( ui->actionPower );
+    plotValueGroup->addAction( ui->actionPowerCurve );
     plotValueGroup->addAction( ui->actionLRBalance );
     plotValueGroup->addAction( ui->actionPedalSmoothness );
     plotValueGroup->addAction( ui->actionGearInfo );
@@ -1363,6 +1384,7 @@ void MainWindow::configureActionGroups( void )
     ui->actionHeartRate->setCheckable( true );
     ui->actionCalories->setCheckable( true );
     ui->actionPower->setCheckable( true );
+    ui->actionPowerCurve->setCheckable( true );
     ui->actionLRBalance->setCheckable( true );
     ui->actionPedalSmoothness->setCheckable( true );
     ui->actionGearInfo->setCheckable( true );

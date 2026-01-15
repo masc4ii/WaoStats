@@ -17,11 +17,14 @@
    <iconset resource="Resources.qrc">
     <normaloff>:/Icons/WaoStatsLogoMap.png</normaloff>:/Icons/WaoStatsLogoMap.png</iconset>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="gridLayout_18">
    <layout class="QGridLayout" name="gridLayout">
     <property name="verticalSpacing">
      <number>12</number>
     </property>
+    <item row="0" column="0">
+     <widget class="OsmWidget" name="widgetOsm" native="true"/>
+    </item>
     <item row="1" column="0">
      <widget class="QGroupBox" name="groupBoxPicker">
       <property name="sizePolicy">
@@ -252,20 +255,34 @@
      </widget>
     </item>
     <item row="2" column="0">
-     <widget class="TourDataPlot" name="widgetPlot" native="true">
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>200</height>
-       </size>
-      </property>
-      <property name="contextMenuPolicy">
-       <enum>Qt::CustomContextMenu</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="OsmWidget" name="widgetOsm" native="true"/>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="TourDataPlot" name="widgetPlot" native="true">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>200</height>
+         </size>
+        </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::CustomContextMenu</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="PowerCurvePlot" name="widgetPwrCurvePlot" native="true">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>200</height>
+         </size>
+        </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::CustomContextMenu</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -328,6 +345,7 @@
      <addaction name="actionCadence"/>
      <addaction name="actionHeartRate"/>
      <addaction name="actionPower"/>
+     <addaction name="actionPowerCurve"/>
      <addaction name="actionLRBalance"/>
      <addaction name="actionPedalSmoothness"/>
      <addaction name="actionCalories"/>
@@ -518,7 +536,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-657</y>
+          <y>-766</y>
           <width>218</width>
           <height>1164</height>
          </rect>
@@ -1692,6 +1710,11 @@
     <string>Pedal Smoothness</string>
    </property>
   </action>
+  <action name="actionPowerCurve">
+   <property name="text">
+    <string>Power Curve</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -1726,6 +1749,12 @@
    <class>CalendarWidget</class>
    <extends>QCalendarWidget</extends>
    <header>CalendarWidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PowerCurvePlot</class>
+   <extends>QWidget</extends>
+   <header>PowerCurvePlot.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

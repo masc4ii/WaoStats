@@ -113,36 +113,36 @@ bool FitParser::loadFit(QString fileName)
                     m_session.avgSpeed = session->avg_speed / 1000.0;
                     m_session.maxSpeed = session->max_speed / 1000.0;
 
-                    if( session->avg_cadence < 255 ) m_session.avgCadence = session->avg_cadence;
-                    if( session->max_cadence < 255 ) m_session.maxCadence = session->max_cadence;
+                    if( session->avg_cadence < FIT_UINT8_INVALID ) m_session.avgCadence = session->avg_cadence;
+                    if( session->max_cadence < FIT_UINT8_INVALID ) m_session.maxCadence = session->max_cadence;
 
-                    if( session->total_ascent < 65535 ) m_session.ascent = session->total_ascent;
-                    if( session->total_descent < 65535 ) m_session.descent = session->total_descent;
+                    if( session->total_ascent < FIT_UINT16_INVALID ) m_session.ascent = session->total_ascent;
+                    if( session->total_descent < FIT_UINT16_INVALID ) m_session.descent = session->total_descent;
                     m_session.altitudeMax = session->max_altitude / 5 - 500;
                     m_session.altitudeMin = session->min_altitude / 5 - 500;
                     //if( session->max_neg_grade < 32767 ) m_session.minGrade = session->max_neg_grade / 100.0; //wrong!
                     //if( session->max_pos_grade < 32767 ) m_session.maxGrade = session->max_pos_grade / 100.0; //wrong!
 
-                    if( session->avg_temperature < 127 ) m_session.avgTemperature = session->avg_temperature;
-                    if( session->min_temperature < 127 ) m_session.minTemperature = session->min_temperature;
-                    if( session->max_temperature < 127 ) m_session.maxTemperature = session->max_temperature;
+                    if( session->avg_temperature < FIT_SINT8_INVALID ) m_session.avgTemperature = session->avg_temperature;
+                    if( session->min_temperature < FIT_SINT8_INVALID ) m_session.minTemperature = session->min_temperature;
+                    if( session->max_temperature < FIT_SINT8_INVALID ) m_session.maxTemperature = session->max_temperature;
 
-                    if( session->min_heart_rate < 255 ) m_session.minHeartRate = session->min_heart_rate;
-                    if( session->avg_heart_rate < 255 ) m_session.avgHeartRate = session->avg_heart_rate;
-                    if( session->max_heart_rate < 255 ) m_session.maxHeartRate = session->max_heart_rate;
+                    if( session->min_heart_rate < FIT_UINT8_INVALID ) m_session.minHeartRate = session->min_heart_rate;
+                    if( session->avg_heart_rate < FIT_UINT8_INVALID ) m_session.avgHeartRate = session->avg_heart_rate;
+                    if( session->max_heart_rate < FIT_UINT8_INVALID ) m_session.maxHeartRate = session->max_heart_rate;
 
-                    for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_HR_ZONE_COUNT; i++)    if( session->time_in_hr_zone[i]    < 4294967295 ) m_session.hrTimeInZone[i]  = session->time_in_hr_zone[i] / 1000.0;
-                    for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_POWER_ZONE_COUNT; i++) if( session->time_in_power_zone[i] < 4294967295 ) m_session.pwrTimeInZone[i] = session->time_in_power_zone[i] / 1000.0;
+                    for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_HR_ZONE_COUNT; i++)    if( session->time_in_hr_zone[i]    < FIT_UINT32_INVALID ) m_session.hrTimeInZone[i]  = session->time_in_hr_zone[i] / 1000.0;
+                    for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_POWER_ZONE_COUNT; i++) if( session->time_in_power_zone[i] < FIT_UINT32_INVALID ) m_session.pwrTimeInZone[i] = session->time_in_power_zone[i] / 1000.0;
 
-                    if( session->avg_power             < 65535 ) m_session.avgPower = session->avg_power;
-                    if( session->max_power             < 65535 ) m_session.maxPower = session->max_power;
-                    if( session->left_right_balance    < 65535 ) {if( session->left_right_balance <= 100 ){m_session.leftRightBalance = session->left_right_balance;}else{m_session.leftRightBalance = session->left_right_balance / 100.0;}}
-                    if( session->total_work            < 65535 ) m_session.totalWork = session->total_work;
-                    if( session->total_calories        < 65535 ) m_session.totalCalories = session->total_calories;
-                    if( session->normalized_power      < 65535 ) m_session.normalizedPower = session->normalized_power;
-                    if( session->threshold_power       < 65535 ) m_session.thresholdPower = session->threshold_power;
-                    if( session->training_stress_score < 65535 ) m_session.trainingStressScore = session->training_stress_score;
-                    if( session->intensity_factor      < 65535 ) m_session.itensityFactor = session->intensity_factor;
+                    if( session->avg_power             < FIT_UINT16_INVALID ) m_session.avgPower = session->avg_power;
+                    if( session->max_power             < FIT_UINT16_INVALID ) m_session.maxPower = session->max_power;
+                    if( session->left_right_balance    < FIT_UINT16_INVALID ) {if( session->left_right_balance <= 100 ){m_session.leftRightBalance = session->left_right_balance;}else{m_session.leftRightBalance = session->left_right_balance / 100.0;}}
+                    if( session->total_work            < FIT_UINT32_INVALID ) m_session.totalWork = session->total_work;
+                    if( session->total_calories        < FIT_UINT16_INVALID ) m_session.totalCalories = session->total_calories;
+                    if( session->normalized_power      < FIT_UINT16_INVALID ) m_session.normalizedPower = session->normalized_power;
+                    if( session->threshold_power       < FIT_UINT16_INVALID ) m_session.thresholdPower = session->threshold_power;
+                    if( session->training_stress_score < FIT_UINT16_INVALID ) m_session.trainingStressScore = session->training_stress_score;
+                    if( session->intensity_factor      < FIT_UINT16_INVALID ) m_session.itensityFactor = session->intensity_factor;
                     m_session.leftPedalSmoothness = 0;
                     m_session.rightPedalSmoothness = 0;
                     break;
@@ -161,11 +161,11 @@ bool FitParser::loadFit(QString fileName)
                     lap.avgSpeed = lapMesg->avg_speed / 1000.0;
                     lap.maxSpeed = lapMesg->max_speed / 1000.0;
 
-                    if( lapMesg->avg_cadence < 255 ) lap.avgCadence = lapMesg->avg_cadence;
-                    if( lapMesg->max_cadence < 255 ) lap.maxCadence = lapMesg->max_cadence;
+                    if( lapMesg->avg_cadence < FIT_UINT8_INVALID ) lap.avgCadence = lapMesg->avg_cadence;
+                    if( lapMesg->max_cadence < FIT_UINT8_INVALID ) lap.maxCadence = lapMesg->max_cadence;
 
-                    if( lapMesg->total_ascent < 65535 ) lap.ascent = lapMesg->total_ascent;
-                    if( lapMesg->total_descent < 65535 ) lap.descent = lapMesg->total_descent;
+                    if( lapMesg->total_ascent < FIT_UINT16_INVALID ) lap.ascent = lapMesg->total_ascent;
+                    if( lapMesg->total_descent < FIT_UINT16_INVALID ) lap.descent = lapMesg->total_descent;
                     lap.altitudeMax = lapMesg->max_altitude / 5.0 - 500;
                     lap.altitudeMin = lapMesg->min_altitude / 5.0 - 500;
                     //if( lapMesg->max_neg_grade < 32767 ) lap.minGrade = lapMesg->max_neg_grade / 100.0; //wrong!
@@ -173,24 +173,24 @@ bool FitParser::loadFit(QString fileName)
                     lap.maxGrade = lapPosGrade;
                     lap.minGrade = lapNegGrade;
 
-                    if( lapMesg->avg_temperature < 127 ) lap.avgTemperature = lapMesg->avg_temperature;
-                    if( lapMesg->min_temperature < 127 ) lap.minTemperature = lapMesg->min_temperature;
+                    if( lapMesg->avg_temperature < FIT_SINT8_INVALID ) lap.avgTemperature = lapMesg->avg_temperature;
+                    if( lapMesg->min_temperature < FIT_SINT8_INVALID ) lap.minTemperature = lapMesg->min_temperature;
                     else lap.minTemperature = lapMinTemp;
-                    if( lapMesg->max_temperature < 127 ) lap.maxTemperature = lapMesg->max_temperature;
+                    if( lapMesg->max_temperature < FIT_SINT8_INVALID ) lap.maxTemperature = lapMesg->max_temperature;
 
-                    if( lapMesg->min_heart_rate < 255 ) lap.minHeartRate = lapMesg->min_heart_rate;
-                    if( lapMesg->avg_heart_rate < 255 ) lap.avgHeartRate = lapMesg->avg_heart_rate;
-                    if( lapMesg->max_heart_rate < 255 ) lap.maxHeartRate = lapMesg->max_heart_rate;
+                    if( lapMesg->min_heart_rate < FIT_UINT8_INVALID ) lap.minHeartRate = lapMesg->min_heart_rate;
+                    if( lapMesg->avg_heart_rate < FIT_UINT8_INVALID ) lap.avgHeartRate = lapMesg->avg_heart_rate;
+                    if( lapMesg->max_heart_rate < FIT_UINT8_INVALID ) lap.maxHeartRate = lapMesg->max_heart_rate;
 
                     for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_HR_ZONE_COUNT; i++)    lap.hrTimeInZone[i]  = lapMesg->time_in_hr_zone[i] / 1000.0;
                     for(int i = 0; i < FIT_SESSION_MESG_TIME_IN_POWER_ZONE_COUNT; i++) lap.pwrTimeInZone[i] = lapMesg->time_in_power_zone[i] / 1000.0;
 
-                    if( lapMesg->avg_power          < 65535 ) lap.avgPower = lapMesg->avg_power;
-                    if( lapMesg->max_power          < 65535 ) lap.maxPower = lapMesg->max_power;
-                    if( lapMesg->left_right_balance < 65535 ) {if( lapMesg->left_right_balance <= 100 ){lap.leftRightBalance = lapMesg->left_right_balance;}else{lap.leftRightBalance = lapMesg->left_right_balance / 100.0;}}
-                    if( lapMesg->total_work         < 65535 ) lap.totalWork = lapMesg->total_work;
-                    if( lapMesg->total_calories     < 65535 ) lap.totalCalories = lapMesg->total_calories;
-                    if( lapMesg->normalized_power   < 65535 ) lap.normalizedPower = lapMesg->normalized_power;
+                    if( lapMesg->avg_power          < FIT_UINT16_INVALID ) lap.avgPower = lapMesg->avg_power;
+                    if( lapMesg->max_power          < FIT_UINT16_INVALID ) lap.maxPower = lapMesg->max_power;
+                    if( lapMesg->left_right_balance < FIT_UINT16_INVALID ) {if( lapMesg->left_right_balance <= 100 ){lap.leftRightBalance = lapMesg->left_right_balance;}else{lap.leftRightBalance = lapMesg->left_right_balance / 100.0;}}
+                    if( lapMesg->total_work         < FIT_UINT32_INVALID ) lap.totalWork = lapMesg->total_work;
+                    if( lapMesg->total_calories     < FIT_UINT16_INVALID ) lap.totalCalories = lapMesg->total_calories;
+                    if( lapMesg->normalized_power   < FIT_UINT16_INVALID ) lap.normalizedPower = lapMesg->normalized_power;
                     lap.leftPedalSmoothness = 0;
                     lap.rightPedalSmoothness = 0;
 
@@ -206,7 +206,7 @@ bool FitParser::loadFit(QString fileName)
                 {
                     const FIT_RECORD_MESG *record = (FIT_RECORD_MESG *) mesg;
 
-                    if( record->battery_soc < 255 )
+                    if( record->battery_soc < FIT_UINT8_INVALID )
                     {
                         if( !batterySoc )
                         {
@@ -222,36 +222,36 @@ bool FitParser::loadFit(QString fileName)
                         m_deviceInfo.replace( 0, deviceInfo );
                     }
 
-                    if( record->distance >= 4294967295 ) break;
+                    if( record->distance >= FIT_UINT32_INVALID ) break;
 
                     m_tourTimeStamp.append( record->timestamp );
                     m_tourDistance.append( record->distance / 100000.0 );
 
-                    if( record->temperature < 127 ) m_tourTemperature.append( record->temperature );
+                    if( record->temperature < FIT_SINT8_INVALID ) m_tourTemperature.append( record->temperature );
                     else if( m_tourTemperature.count() > 0 ) m_tourTemperature.append( m_tourTemperature.last() );
                     else m_tourTemperature.append( 0 );
 
-                    if( record->position_lat < 2147483647 ) m_tourPosLat.append( record->position_lat );
+                    if( record->position_lat < FIT_SINT32_INVALID ) m_tourPosLat.append( record->position_lat );
                     else if( m_tourPosLat.count() > 0 ) m_tourPosLat.append( m_tourPosLat.last() );
                     else m_tourPosLat.append( 0 );
 
-                    if( record->position_long < 2147483647 ) m_tourPosLong.append( record->position_long );
+                    if( record->position_long < FIT_SINT32_INVALID ) m_tourPosLong.append( record->position_long );
                     else if( m_tourPosLong.count() > 0 ) m_tourPosLong.append( m_tourPosLong.last() );
                     else m_tourPosLong.append( 0 );
 
-                    if( record->speed < 65535 ) m_tourSpeed.append( record->speed * 0.0036 );
+                    if( record->speed < FIT_UINT16_INVALID ) m_tourSpeed.append( record->speed * 0.0036 );
                     else if( m_tourSpeed.count() > 0 ) m_tourSpeed.append( m_tourSpeed.last() );
                     else m_tourSpeed.append( 0 );
 
-                    if( record->altitude < 65535 ) m_tourAltitude.append( record->altitude / 5.0 - 500 );
+                    if( record->altitude < FIT_UINT16_INVALID ) m_tourAltitude.append( record->altitude / 5.0 - 500 );
                     else if( m_tourAltitude.count() > 0 ) m_tourAltitude.append( m_tourAltitude.last() );
                     else m_tourAltitude.append( 0 );
 
-                    if( record->cadence < 255 ) m_tourCadence.append( record->cadence );
+                    if( record->cadence < FIT_UINT8_INVALID ) m_tourCadence.append( record->cadence );
                     else if( m_tourCadence.count() > 0 ) m_tourCadence.append( m_tourCadence.last() );
                     else m_tourCadence.append( 0 );
 
-                    if( record->gps_accuracy < 255 ) m_tourGpsAccuracy.append( record->gps_accuracy );
+                    if( record->gps_accuracy < FIT_UINT8_INVALID ) m_tourGpsAccuracy.append( record->gps_accuracy );
                     else if( m_tourGpsAccuracy.count() > 0 ) m_tourGpsAccuracy.append( m_tourGpsAccuracy.last() );
                     else m_tourGpsAccuracy.append( 0 );
 
@@ -259,15 +259,15 @@ bool FitParser::loadFit(QString fileName)
                     else if( m_tourGrade.count() > 0 ) m_tourGrade.append( m_tourGrade.last() );
                     else m_tourGrade.append( 0 );
 
-                    if( record->heart_rate < 255 ) m_tourHeartRate.append( record->heart_rate );
+                    if( record->heart_rate < FIT_UINT8_INVALID ) m_tourHeartRate.append( record->heart_rate );
                     else if( m_tourHeartRate.count() > 0 ) m_tourHeartRate.append( m_tourHeartRate.last() );
                     else m_tourHeartRate.append( 0 );
 
-                    if( record->power < 65535 ) m_tourPower.append( record->power );
+                    if( record->power < FIT_UINT16_INVALID ) m_tourPower.append( record->power );
                     else if( m_tourPower.count() > 0 ) m_tourPower.append( m_tourPower.last() );
                     else m_tourPower.append( 0 );
 
-                    if( record->left_right_balance < 255 ) {
+                    if( record->left_right_balance < FIT_UINT8_INVALID ) {
                         uint8_t v = record->left_right_balance;
                         bool right = (v & 0x80) != 0;
                         int percent = v & 0x7F;
@@ -276,11 +276,11 @@ bool FitParser::loadFit(QString fileName)
                     else if( m_tourLRBalance.count() > 0 ) m_tourLRBalance.append( m_tourLRBalance.last() );
                     else m_tourLRBalance.append( 0 );
 
-                    if( record->left_pedal_smoothness < 255 ) m_tourLPedalSmoothness.append( record->left_pedal_smoothness );
+                    if( record->left_pedal_smoothness < FIT_UINT8_INVALID ) m_tourLPedalSmoothness.append( record->left_pedal_smoothness );
                     else if( m_tourLPedalSmoothness.count() > 0 ) m_tourLPedalSmoothness.append( m_tourLPedalSmoothness.last() );
                     else m_tourLPedalSmoothness.append( 0 );
 
-                    if( record->right_pedal_smoothness < 255 ) m_tourRPedalSmoothness.append( record->right_pedal_smoothness );
+                    if( record->right_pedal_smoothness < FIT_UINT8_INVALID ) m_tourRPedalSmoothness.append( record->right_pedal_smoothness );
                     else if( m_tourRPedalSmoothness.count() > 0 ) m_tourRPedalSmoothness.append( m_tourRPedalSmoothness.last() );
                     else m_tourRPedalSmoothness.append( 0 );
 
@@ -288,7 +288,7 @@ bool FitParser::loadFit(QString fileName)
                     m_tourBatterySoc.append( batterySoc );
 
                     //Correction for start of track
-                    if( !m_firstPosRead && record->position_lat < 2147483647 && record->position_long < 2147483647 )
+                    if( !m_firstPosRead && record->position_lat < FIT_SINT32_INVALID && record->position_long < FIT_SINT32_INVALID )
                     {
                         m_firstPosRead = true;
                         m_posRead = true;
@@ -298,7 +298,7 @@ bool FitParser::loadFit(QString fileName)
                             m_tourPosLong[i] = record->position_long;
                         }
                     }
-                    if( !m_altCorrectionDone && record->altitude < 65535 )
+                    if( !m_altCorrectionDone && record->altitude < FIT_UINT16_INVALID )
                     {
                         m_altCorrectionDone = true;
                         for( int i = 0; i < m_tourAltitude.count(); i++ )
@@ -322,7 +322,7 @@ bool FitParser::loadFit(QString fileName)
                         if( grade > lapPosGrade ) lapPosGrade = grade;
                         if( grade < lapNegGrade ) lapNegGrade = grade;
                     }
-                    if( !m_tempCorrectionDone && record->temperature < 127 )
+                    if( !m_tempCorrectionDone && record->temperature < FIT_SINT8_INVALID )
                     {
                         m_tempCorrectionDone = true;
                         for( int i = 0; i < m_tourTemperature.count(); i++ )
@@ -330,7 +330,7 @@ bool FitParser::loadFit(QString fileName)
                             m_tourTemperature[i] = record->temperature;
                         }
                     }
-                    if( !m_caloriesCorrectionDone && record->calories < 65535 )
+                    if( !m_caloriesCorrectionDone && record->calories < FIT_UINT16_INVALID )
                     {
                         m_caloriesCorrectionDone = true;
                         for( int i = 0; i < m_tourCalories.count(); i++ )
@@ -338,7 +338,7 @@ bool FitParser::loadFit(QString fileName)
                             m_tourCalories[i] = record->calories;
                         }
                     }
-                    if( !m_heartRateCorrectionDone && record->heart_rate < 255 )
+                    if( !m_heartRateCorrectionDone && record->heart_rate < FIT_UINT8_INVALID )
                     {
                         m_heartRateCorrectionDone = true;
                         for( int i = 0; i < m_tourHeartRate.count(); i++ )
@@ -346,8 +346,8 @@ bool FitParser::loadFit(QString fileName)
                             m_tourHeartRate[i] = record->heart_rate;
                         }
                     }
-                    if( minTemp > record->temperature && record->temperature < 127 ) minTemp = record->temperature;
-                    if( lapMinTemp > record->temperature && record->temperature < 127 ) lapMinTemp = record->temperature;
+                    if( minTemp > record->temperature && record->temperature < FIT_SINT8_INVALID ) minTemp = record->temperature;
+                    if( lapMinTemp > record->temperature && record->temperature < FIT_SINT8_INVALID ) lapMinTemp = record->temperature;
 
                     break;
                 }
@@ -363,7 +363,7 @@ bool FitParser::loadFit(QString fileName)
                         int gearNumRear = (event->data & 0x000000FF);
                         int gearToothRear = ((event->data & 0x0000FF00)>>8);
 
-                        if( gearToothFront > 0 && gearToothRear > 0 && gearToothFront < 255 && gearToothRear < 255 )
+                        if( gearToothFront > 0 && gearToothRear > 0 && gearToothFront < FIT_UINT8_INVALID && gearToothRear < FIT_UINT8_INVALID )
                         {
                             m_gearInfoRear = true;
                             m_gearInfoFront = true;
@@ -400,7 +400,7 @@ bool FitParser::loadFit(QString fileName)
                     const FIT_DEVICE_INFO_MESG *device_info = (FIT_DEVICE_INFO_MESG *) mesg;
 
                     deviceInfo_t info;
-                    if( device_info->device_index == 255 ) break;
+                    if( device_info->device_index == FIT_UINT8_INVALID ) break;
                     info.name = device_info->product_name;
                     info.deviceId = device_info->device_index;
                     switch( device_info->battery_status )
@@ -418,7 +418,7 @@ bool FitParser::loadFit(QString fileName)
                     default:
                         break;
                     }
-                    if( device_info->software_version < 65535 ) info.software = "Firmware v" + QString::number(device_info->software_version/100.0);
+                    if( device_info->software_version < FIT_UINT16_INVALID ) info.software = "Firmware v" + QString::number(device_info->software_version/100.0);
 
                     if( !deviceIdIsIncluded( info ) )
                     {
@@ -446,7 +446,7 @@ bool FitParser::loadFit(QString fileName)
                 {
                     const FIT_HR_ZONE_MESG *hr_zone = (FIT_HR_ZONE_MESG *) mesg;
                     if( hr_zone->message_index < 5 ) m_hrZoneHigh[hr_zone->message_index] = hr_zone->high_bpm;
-                    else if( hr_zone->message_index == 65535 ) //support for index-less format
+                    else if( hr_zone->message_index == FIT_UINT16_INVALID ) //support for index-less format
                     {
                         if( !m_hrZoneHigh[0] ) m_hrZoneHigh[0] = hr_zone->high_bpm;
                         else if( !m_hrZoneHigh[1] ) m_hrZoneHigh[1] = hr_zone->high_bpm;
@@ -461,7 +461,7 @@ bool FitParser::loadFit(QString fileName)
                 {
                     const FIT_POWER_ZONE_MESG *pwr_zone = (FIT_POWER_ZONE_MESG *) mesg;
                     if( pwr_zone->message_index < 8 ) m_pwrZoneHigh[pwr_zone->message_index] = pwr_zone->high_value;
-                    else if( pwr_zone->message_index == 65535 ) //support for index-less format
+                    else if( pwr_zone->message_index == FIT_UINT16_INVALID ) //support for index-less format
                     {
                         if( !m_pwrZoneHigh[0] ) m_pwrZoneHigh[0] = pwr_zone->high_value;
                         else if( !m_pwrZoneHigh[1] ) m_pwrZoneHigh[1] = pwr_zone->high_value;
@@ -553,7 +553,7 @@ bool FitParser::loadFit(QString fileName)
     analysePowerCurve();
     analysePedalSmoothness();
 
-    qDebug() << m_session.leftPedalSmoothness << m_session.rightPedalSmoothness;
+    //qDebug() << m_session.leftPedalSmoothness << m_session.rightPedalSmoothness;
 
     return true;
 }

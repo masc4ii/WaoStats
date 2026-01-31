@@ -96,17 +96,16 @@ void PowerCurvePlot::setData(QVector<QPair<double, double> > pwrCurve)
     graph->setBrush( QBrush( QColor( 255, 0, 0, 30 ) ) );
     
     // Add data points directly (no transformation needed)
-    QVector<double> xData, yData, index;
+    QVector<double> xData, yData;
     for( int i = 0; i < pwrCurve.size(); i++ )
     {
-        xData.append( pwrCurve.at(i).first );
+        xData.append( log1p( pwrCurve.at(i).first > 0 ? pwrCurve.at(i).first : 1 ) );
         yData.append( pwrCurve.at(i).second );
-        index.append( i );
     }
-    graph->setData( index, yData );
+    graph->setData( xData, yData );
     
     // Set axis ranges
-    xAxis->setRange( 0, pwrCurve.size() - 1 );
+    xAxis->setRange( xData.first(), xData.last() );
     yAxis->setRange( minPower, maxPower );
     
     // Set axis labels
@@ -125,7 +124,7 @@ void PowerCurvePlot::setData(QVector<QPair<double, double> > pwrCurve)
         else
             interval = QString::number( pwrCurve.at(i).first / 3600 ) + "\nh";
 
-        textTicker->addTick( index.at(i), interval );
+        textTicker->addTick( xData.at(i), interval );
     }
     
     replot();

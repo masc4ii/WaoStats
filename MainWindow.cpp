@@ -68,7 +68,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
 
-    Splash splash( QPixmap( ":/Icons/Splash.png" ).scaled( 300, 300, Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
+    auto pix = QPixmap( ":/Icons/Splash.png" );
+    pix.setDevicePixelRatio( devicePixelRatio() );
+    Splash splash( pix.scaled( 300 * devicePixelRatio(), 300 * devicePixelRatio(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation ) );
     splash.show();
 
     qRegisterMetaType<QVector<int> >("QVector<int>");

@@ -1039,8 +1039,8 @@ void MainWindow::on_treeWidgetTours_customContextMenuRequested(const QPoint &pos
     m_pActionShowInFinder->setToolTip( tr( "Reveal selected file in Explorer" ) );
 #endif
 #ifdef Q_OS_LINUX
-    m_pActionShowInFinder->setText( tr( "Reveal in Nautilus" ) );
-    m_pActionShowInFinder->setToolTip( tr( "Reveal selected file in Nautilus" ) );
+    m_pActionShowInFinder->setText( tr( "Reveal in file explorer" ) );
+    m_pActionShowInFinder->setToolTip( tr( "Reveal selected file in file explorer" ) );
 #endif
 
     QTreeWidgetItem* item = ui->treeWidgetTours->itemAt( pos );
@@ -1905,7 +1905,7 @@ void MainWindow::showInFinder()
     QProcess::execute("/usr/bin/osascript", {"-e", "tell application \"Finder\" to reveal POSIX file \"" + path + "\""});
     QProcess::execute("/usr/bin/osascript", {"-e", "tell application \"Finder\" to activate"});
 #elif defined( Q_OS_LINUX )
-    QProcess::startDetached(QString( "/usr/bin/nautilus \"%1\"" ).arg( QDir::toNativeSeparators(path) ) );
+    QProcess::startDetached("xdg-open", {QFileInfo(path).absolutePath()});
 #endif
 }
 

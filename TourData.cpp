@@ -184,16 +184,28 @@ void TourData::analysePedalSmoothness()
 {
     double sumL = 0.0;
     double sumR = 0.0;
+    uint64_t cntL = 0;
+    uint64_t cntR = 0;
 
     if (m_tourTimeStamp.size() != m_tourLPedalSmoothness.size()) return;
     if (m_tourTimeStamp.size() != m_tourRPedalSmoothness.size()) return;
 
     for (int i = 0; i < m_tourTimeStamp.size(); i++)
     {
-        sumL += m_tourLPedalSmoothness.at(i);
-        sumR += m_tourRPedalSmoothness.at(i);
+        if (!std::isnan(m_tourLPedalSmoothness.at(i)))
+        {
+            sumL += m_tourLPedalSmoothness.at(i);
+            cntL++;
+        }
+        if (!std::isnan(m_tourRPedalSmoothness.at(i)))
+        {
+            sumR += m_tourRPedalSmoothness.at(i);
+            cntR++;
+        }
     }
 
-    m_session.leftPedalSmoothness = sumL / double(m_tourLPedalSmoothness.size());
-    m_session.rightPedalSmoothness = sumR / double(m_tourRPedalSmoothness.size());
+    if (cntL)
+        m_session.leftPedalSmoothness = sumL / cntL;
+    if (cntR)
+        m_session.rightPedalSmoothness = sumR / cntR;
 }

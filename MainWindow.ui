@@ -536,9 +536,9 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-766</y>
+          <y>-716</y>
           <width>218</width>
-          <height>1164</height>
+          <height>1188</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_10">
@@ -570,92 +570,8 @@
             <property name="bottomMargin">
              <number>8</number>
             </property>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_28">
-              <property name="text">
-               <string>Max Power:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="labelLRBalanceName">
-              <property name="text">
-               <string>L/R Balance:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_27">
-              <property name="text">
-               <string>ø Power:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLabel" name="labelPowerNormalized">
-              <property name="toolTip">
-               <string notr="true"/>
-              </property>
-              <property name="text">
-               <string notr="true">-</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0" colspan="2">
+            <item row="7" column="0" colspan="2">
              <widget class="QLabel" name="labelPwrZone">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>50</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="scaledContents">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_31">
-              <property name="text">
-               <string>Normalized Power:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QLabel" name="labelLRBalance">
-              <property name="toolTip">
-               <string notr="true"/>
-              </property>
-              <property name="text">
-               <string notr="true">-</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLabel" name="labelPowerMax">
-              <property name="toolTip">
-               <string notr="true"/>
-              </property>
-              <property name="text">
-               <string notr="true">-</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLabel" name="labelPowerAverage">
-              <property name="toolTip">
-               <string notr="true"/>
-              </property>
-              <property name="text">
-               <string notr="true">-</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="0" colspan="2">
-             <widget class="QLabel" name="labelPwrCurve">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -679,6 +595,107 @@
             </item>
             <item row="3" column="1">
              <widget class="QLabel" name="labelWork">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
+              <property name="text">
+               <string notr="true">-</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLabel" name="labelPowerNormalized">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
+              <property name="text">
+               <string notr="true">-</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLabel" name="labelLRBalance">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
+              <property name="text">
+               <string notr="true">-</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="labelLRBalanceName">
+              <property name="text">
+               <string>L/R Balance:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_31">
+              <property name="text">
+               <string>Normalized Power:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_28">
+              <property name="text">
+               <string>Max Power:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="labelPowerAverage">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
+              <property name="text">
+               <string notr="true">-</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="labelPowerMax">
+              <property name="toolTip">
+               <string notr="true"/>
+              </property>
+              <property name="text">
+               <string notr="true">-</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="0" colspan="2">
+             <widget class="QLabel" name="labelPwrCurve">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>50</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="scaledContents">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_27">
+              <property name="text">
+               <string>ø Power:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="labelLRSmoothnessName">
+              <property name="text">
+               <string>L/R Smoothness:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QLabel" name="labelLRSmoothness">
               <property name="toolTip">
                <string notr="true"/>
               </property>
@@ -1707,7 +1724,10 @@
   </action>
   <action name="actionPedalSmoothness">
    <property name="text">
-    <string>Pedal Smoothness</string>
+    <string>L/R Smoothness</string>
+   </property>
+   <property name="toolTip">
+    <string>L/R Smoothness</string>
    </property>
   </action>
   <action name="actionPowerCurve">

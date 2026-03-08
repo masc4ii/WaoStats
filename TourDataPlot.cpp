@@ -156,7 +156,7 @@ void TourDataPlot::init()
         graph( Free2ndCurve )->setName( tr( "L/R Balance" ) );
         break;
     case PedalSmoothness:
-        yAxis2->setLabel( tr( "Pedal Smoothness [%]" ) );
+        yAxis2->setLabel( tr( "L/R Smoothness [%]" ) );
         graph( Free2ndCurve )->setName( tr( "Left" ) );
         graph( Free3rdCurve )->setName( tr( "Right" ) );
         break;

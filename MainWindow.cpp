@@ -293,6 +293,8 @@ void MainWindow::statistics( void )
     ui->groupBoxTemperature->setVisible( (int)m_pTourData->getSession().minTemperature != 9999 );
     ui->labelLRBalance->setVisible( (int)m_pTourData->getSession().leftRightBalance != 0 );
     ui->labelLRBalanceName->setVisible( (int)m_pTourData->getSession().leftRightBalance != 0 );
+    ui->labelLRSmoothness->setVisible( (int)m_pTourData->getSession().leftPedalSmoothness != 0 && (int)m_pTourData->getSession().rightPedalSmoothness != 0 );
+    ui->labelLRSmoothnessName->setVisible( (int)m_pTourData->getSession().leftPedalSmoothness != 0 && (int)m_pTourData->getSession().rightPedalSmoothness != 0 );
 
     ui->actionCadence->setEnabled( (int)m_pTourData->getSession().maxCadence != 0 );
     ui->actionGrade->setEnabled( ( (int)m_pTourData->getSession().ascent != 0 ) && ( (int)m_pTourData->getSession().descent != 0 ) );
@@ -378,6 +380,7 @@ void MainWindow::statistics( void )
         ui->labelPowerNormalized->setText( QString( "%1 W" ).arg( (int)m_pTourData->getSession().normalizedPower ) );
         ui->labelWork->setText( QString( "%1 kJ" ).arg( (int)( m_pTourData->getSession().totalWork / 1000.0 ) ) );
         ui->labelLRBalance->setText( QString( "%1/%2" ).arg( 100 - (int)m_pTourData->getSession().leftRightBalance ).arg( (int)m_pTourData->getSession().leftRightBalance ) );
+        ui->labelLRSmoothness->setText( QString( "%1/%2 \%" ).arg( std::round( m_pTourData->getSession().leftPedalSmoothness ) ).arg( std::round( m_pTourData->getSession().rightPedalSmoothness ) ) );
 
         ui->labelTempAverage->setText( QString( "%1 °C" ).arg( m_pTourData->getSession().avgTemperature ) );
         ui->labelTempMax->setText( QString( "%1 °C" ).arg( m_pTourData->getSession().maxTemperature ) );

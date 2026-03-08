@@ -276,11 +276,11 @@ bool FitParser::loadFit(QString fileName)
                     else if( m_tourLRBalance.count() > 0 ) m_tourLRBalance.append( m_tourLRBalance.last() );
                     else m_tourLRBalance.append( 0 );
 
-                    if( record->left_pedal_smoothness < FIT_UINT8_INVALID ) m_tourLPedalSmoothness.append( record->left_pedal_smoothness );
+                    if( record->left_pedal_smoothness < FIT_UINT8_INVALID ) m_tourLPedalSmoothness.append( record->left_pedal_smoothness / 2.0 ); // RAW/2 -> [%]
                     else if( m_tourLPedalSmoothness.count() > 0 ) m_tourLPedalSmoothness.append( m_tourLPedalSmoothness.last() );
                     else m_tourLPedalSmoothness.append( 0 );
 
-                    if( record->right_pedal_smoothness < FIT_UINT8_INVALID ) m_tourRPedalSmoothness.append( record->right_pedal_smoothness );
+                    if( record->right_pedal_smoothness < FIT_UINT8_INVALID ) m_tourRPedalSmoothness.append( record->right_pedal_smoothness / 2.0 ); // RAW/2 -> [%]
                     else if( m_tourRPedalSmoothness.count() > 0 ) m_tourRPedalSmoothness.append( m_tourRPedalSmoothness.last() );
                     else m_tourRPedalSmoothness.append( 0 );
 

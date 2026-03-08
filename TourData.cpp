@@ -1,5 +1,7 @@
 #include "TourData.h"
 
+#include <cmath>
+
 TourData::TourData()
 {
     reset();

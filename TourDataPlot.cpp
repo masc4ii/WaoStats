@@ -160,6 +160,11 @@ void TourDataPlot::init()
         graph( Free2ndCurve )->setName( tr( "Left" ) );
         graph( Free3rdCurve )->setName( tr( "Right" ) );
         break;
+    case TorqueEffectiveness:
+        yAxis2->setLabel( tr( "L/R Torque Effectiveness [%]" ) );
+        graph( Free2ndCurve )->setName( tr( "Left" ) );
+        graph( Free3rdCurve )->setName( tr( "Right" ) );
+        break;
     case GearInfo:
         yAxis2->setLabel( tr( "Gear Ratio / Gear Number" ) );
         graph( Free2ndCurve )->setName( tr( "Gear Ratio" ) );
@@ -321,6 +326,20 @@ void TourDataPlot::drawPlots( TourData *pTourData, ePlotXType xType, ePlotYType 
         {
             graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourLPedalSmoothness() );
             graph( Free3rdCurve )->setData( m_tourTimeStamp, pTourData->getTourRPedalSmoothness() );
+        }
+        graph(Free2ndCurve)->rescaleAxes();
+        yAxis2->setRange( (int)((yAxis2->range().lower - 10)/20) * 20, (int)((yAxis2->range().upper + 10)/20) * 20 );
+        break;
+    case TorqueEffectiveness:
+        if( xType == Distance )
+        {
+            graph( Free2ndCurve )->setData( pTourData->getTourDistance(), pTourData->getTourLTorqueEffectiveness() );
+            graph( Free3rdCurve )->setData( pTourData->getTourDistance(), pTourData->getTourRTorqueEffectiveness() );
+        }
+        else
+        {
+            graph( Free2ndCurve )->setData( m_tourTimeStamp, pTourData->getTourLTorqueEffectiveness() );
+            graph( Free3rdCurve )->setData( m_tourTimeStamp, pTourData->getTourRTorqueEffectiveness() );
         }
         graph(Free2ndCurve)->rescaleAxes();
         yAxis2->setRange( (int)((yAxis2->range().lower - 10)/20) * 20, (int)((yAxis2->range().upper + 10)/20) * 20 );

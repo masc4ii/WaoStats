@@ -145,6 +145,8 @@ bool FitParser::loadFit(QString fileName)
                     if( session->intensity_factor      < FIT_UINT16_INVALID ) m_session.itensityFactor = session->intensity_factor;
                     m_session.leftPedalSmoothness = 0;
                     m_session.rightPedalSmoothness = 0;
+                    m_session.leftTorqueEffectiveness = 0;
+                    m_session.rightTorqueEffectiveness = 0;
                     break;
                 }
 
@@ -193,6 +195,8 @@ bool FitParser::loadFit(QString fileName)
                     if( lapMesg->normalized_power   < FIT_UINT16_INVALID ) lap.normalizedPower = lapMesg->normalized_power;
                     lap.leftPedalSmoothness = 0;
                     lap.rightPedalSmoothness = 0;
+                    lap.leftTorqueEffectiveness = 0;
+                    lap.rightTorqueEffectiveness = 0;
 
                     m_sections.append( lap );
                     if( !m_tourDistance.empty() ) lastLapStartDistance = m_tourDistance.last();
@@ -283,6 +287,14 @@ bool FitParser::loadFit(QString fileName)
                     if( record->right_pedal_smoothness < FIT_UINT8_INVALID ) m_tourRPedalSmoothness.append( record->right_pedal_smoothness / 2.0 ); // RAW/2 -> [%]
                     else if( m_tourRPedalSmoothness.count() > 0 ) m_tourRPedalSmoothness.append( std::numeric_limits<double>::quiet_NaN() );
                     else m_tourRPedalSmoothness.append( std::numeric_limits<double>::quiet_NaN() );
+
+                    if( record->left_torque_effectiveness < FIT_UINT8_INVALID ) m_tourLTorqueEffectiveness.append( record->left_torque_effectiveness / 2.0 ); // RAW/2 -> [%]
+                    else if( m_tourLTorqueEffectiveness.count() > 0 ) m_tourLTorqueEffectiveness.append( std::numeric_limits<double>::quiet_NaN() );
+                    else m_tourLTorqueEffectiveness.append( std::numeric_limits<double>::quiet_NaN() );
+
+                    if( record->right_torque_effectiveness < FIT_UINT8_INVALID ) m_tourRTorqueEffectiveness.append( record->right_torque_effectiveness / 2.0 ); // RAW/2 -> [%]
+                    else if( m_tourRTorqueEffectiveness.count() > 0 ) m_tourRTorqueEffectiveness.append( std::numeric_limits<double>::quiet_NaN() );
+                    else m_tourRTorqueEffectiveness.append( std::numeric_limits<double>::quiet_NaN() );
 
                     m_tourCalories.append( record->calories );
                     m_tourBatterySoc.append( batterySoc );
@@ -552,6 +564,7 @@ bool FitParser::loadFit(QString fileName)
     if( minTemp < m_session.minTemperature ) m_session.minTemperature = minTemp;
     analysePowerCurve();
     analysePedalSmoothness();
+    analyseTorqueEffectiveness();
 
     //qDebug() << m_session.leftPedalSmoothness << m_session.rightPedalSmoothness;
 

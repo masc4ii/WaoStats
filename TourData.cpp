@@ -26,6 +26,8 @@ void TourData::reset()
     m_tourLRBalance.clear();
     m_tourLPedalSmoothness.clear();
     m_tourRPedalSmoothness.clear();
+    m_tourLTorqueEffectiveness.clear();
+    m_tourRTorqueEffectiveness.clear();
     m_tourWindSpeed.clear();
     m_tourAirSpeed.clear();
     m_altCorrectionDone = false;
@@ -78,6 +80,8 @@ void TourData::reset()
     m_session.leftRightBalance = 0;
     m_session.leftPedalSmoothness = 0;
     m_session.rightPedalSmoothness = 0;
+    m_session.leftTorqueEffectiveness = 0;
+    m_session.rightTorqueEffectiveness = 0;
     m_session.totalWork = 0;
     m_session.totalCalories = 0;
     m_session.normalizedPower = 0;
@@ -208,6 +212,44 @@ void TourData::analysePedalSmoothness()
 
     if (cntL)
         m_session.leftPedalSmoothness = sumL / cntL;
+    else
+        m_session.leftPedalSmoothness = std::numeric_limits<double>::quiet_NaN();
     if (cntR)
         m_session.rightPedalSmoothness = sumR / cntR;
+    else
+        m_session.rightPedalSmoothness = std::numeric_limits<double>::quiet_NaN();
+}
+
+void TourData::analyseTorqueEffectiveness()
+{
+    double sumL = 0.0;
+    double sumR = 0.0;
+    uint64_t cntL = 0;
+    uint64_t cntR = 0;
+
+    if (m_tourTimeStamp.size() != m_tourLTorqueEffectiveness.size()) return;
+    if (m_tourTimeStamp.size() != m_tourRTorqueEffectiveness.size()) return;
+
+    for (int i = 0; i < m_tourTimeStamp.size(); i++)
+    {
+        if (!std::isnan(m_tourLTorqueEffectiveness.at(i)))
+        {
+            sumL += m_tourLTorqueEffectiveness.at(i);
+            cntL++;
+        }
+        if (!std::isnan(m_tourRTorqueEffectiveness.at(i)))
+        {
+            sumR += m_tourRTorqueEffectiveness.at(i);
+            cntR++;
+        }
+    }
+
+    if (cntL)
+        m_session.leftTorqueEffectiveness = sumL / cntL;
+    else
+        m_session.leftTorqueEffectiveness = std::numeric_limits<double>::quiet_NaN();
+    if (cntR)
+        m_session.rightTorqueEffectiveness = sumR / cntR;
+    else
+        m_session.rightTorqueEffectiveness = std::numeric_limits<double>::quiet_NaN();
 }

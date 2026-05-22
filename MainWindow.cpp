@@ -293,8 +293,10 @@ void MainWindow::statistics( void )
     ui->groupBoxTemperature->setVisible( (int)m_pTourData->getSession().minTemperature != 9999 );
     ui->labelLRBalance->setVisible( (int)m_pTourData->getSession().leftRightBalance != 0 );
     ui->labelLRBalanceName->setVisible( (int)m_pTourData->getSession().leftRightBalance != 0 );
-    ui->labelLRSmoothness->setVisible( (int)m_pTourData->getSession().leftPedalSmoothness != 0 && (int)m_pTourData->getSession().rightPedalSmoothness != 0 );
-    ui->labelLRSmoothnessName->setVisible( (int)m_pTourData->getSession().leftPedalSmoothness != 0 && (int)m_pTourData->getSession().rightPedalSmoothness != 0 );
+    ui->labelLRSmoothness->setVisible( !std::isnan(m_pTourData->getSession().leftPedalSmoothness) || !std::isnan(m_pTourData->getSession().rightPedalSmoothness) );
+    ui->labelLRSmoothnessName->setVisible( !std::isnan(m_pTourData->getSession().leftPedalSmoothness) || !std::isnan(m_pTourData->getSession().rightPedalSmoothness) );
+    ui->labelLRTorqueEffect->setVisible( !std::isnan(m_pTourData->getSession().leftTorqueEffectiveness) || !std::isnan(m_pTourData->getSession().rightTorqueEffectiveness) );
+    ui->labelLRTorqueEffectName->setVisible( !std::isnan(m_pTourData->getSession().leftTorqueEffectiveness) || !std::isnan(m_pTourData->getSession().rightTorqueEffectiveness) );
 
     ui->actionCadence->setEnabled( (int)m_pTourData->getSession().maxCadence != 0 );
     ui->actionGrade->setEnabled( ( (int)m_pTourData->getSession().ascent != 0 ) && ( (int)m_pTourData->getSession().descent != 0 ) );
@@ -304,6 +306,7 @@ void MainWindow::statistics( void )
     ui->actionPowerCurve->setEnabled( (int)m_pTourData->getSession().maxPower != 0 );
     ui->actionLRBalance->setEnabled( (int)m_pTourData->getSession().leftRightBalance != 0 );
     ui->actionPedalSmoothness->setEnabled( (int)m_pTourData->getSession().leftPedalSmoothness != 0 );
+    ui->actionTorqueEffect->setEnabled( (int)m_pTourData->getSession().leftTorqueEffectiveness != 0 );
     ui->actionGearInfo->setEnabled( m_pTourData->containsGearInfoFront() || m_pTourData->containsGearInfoRear() );
     ui->actionTemperature->setEnabled( (int)m_pTourData->getSession().minTemperature != 9999 );
     ui->actionDeviceBattery->setEnabled( (int)m_pTourData->getTourBatterySoc().first() > 0 );
@@ -317,6 +320,7 @@ void MainWindow::statistics( void )
      || ( ui->actionPowerCurve->isChecked()      && !ui->actionPowerCurve->isEnabled() )
      || ( ui->actionLRBalance->isChecked()       && !ui->actionLRBalance->isEnabled() )
      || ( ui->actionPedalSmoothness->isChecked() && !ui->actionPedalSmoothness->isEnabled() )
+     || ( ui->actionTorqueEffect->isChecked()    && !ui->actionTorqueEffect->isEnabled() )
      || ( ui->actionGearInfo->isChecked()        && !ui->actionGearInfo->isEnabled() )
      || ( ui->actionDeviceBattery->isChecked()   && !ui->actionDeviceBattery->isEnabled() )
      || ( ui->actionGpsAccuracy->isChecked()     && !ui->actionGpsAccuracy->isEnabled() )
@@ -380,7 +384,8 @@ void MainWindow::statistics( void )
         ui->labelPowerNormalized->setText( QString( "%1 W" ).arg( (int)m_pTourData->getSession().normalizedPower ) );
         ui->labelWork->setText( QString( "%1 kJ" ).arg( (int)( m_pTourData->getSession().totalWork / 1000.0 ) ) );
         ui->labelLRBalance->setText( QString( "%1/%2" ).arg( 100 - (int)m_pTourData->getSession().leftRightBalance ).arg( (int)m_pTourData->getSession().leftRightBalance ) );
-        ui->labelLRSmoothness->setText( QString( "%1/%2 \%" ).arg( std::round( m_pTourData->getSession().leftPedalSmoothness ) ).arg( std::round( m_pTourData->getSession().rightPedalSmoothness ) ) );
+        ui->labelLRSmoothness->setText( QString( "%1/%2 \%" ).arg( std::round( m_pTourData->getSession().leftPedalSmoothness ) ).arg( std::round( m_pTourData->getSession().rightPedalSmoothness ) ).replace("nan", "-") );
+        ui->labelLRTorqueEffect->setText( QString( "%1/%2 \%" ).arg( std::round( m_pTourData->getSession().leftTorqueEffectiveness ) ).arg( std::round( m_pTourData->getSession().rightTorqueEffectiveness ) ).replace("nan", "-") );
 
         ui->labelTempAverage->setText( QString( "%1 °C" ).arg( m_pTourData->getSession().avgTemperature ) );
         ui->labelTempMax->setText( QString( "%1 °C" ).arg( m_pTourData->getSession().maxTemperature ) );
@@ -592,6 +597,7 @@ void MainWindow::drawPlots( void )
         else if( ui->actionPower->isChecked() )           yType = ePlotYType::Power;
         else if( ui->actionLRBalance->isChecked() )       yType = ePlotYType::LRBalance;
         else if( ui->actionPedalSmoothness->isChecked() ) yType = ePlotYType::PedalSmoothness;
+        else if( ui->actionTorqueEffect->isChecked() )    yType = ePlotYType::TorqueEffectiveness;
         else if( ui->actionGearInfo->isChecked() )        yType = ePlotYType::GearInfo;
         else if( ui->actionGpsAccuracy->isChecked() )     yType = ePlotYType::GpsAccuracy;
         ui->widgetPlot->drawPlots( m_pTourData, xType, yType );
@@ -1379,6 +1385,7 @@ void MainWindow::configureActionGroups( void )
     plotValueGroup->addAction( ui->actionPowerCurve );
     plotValueGroup->addAction( ui->actionLRBalance );
     plotValueGroup->addAction( ui->actionPedalSmoothness );
+    plotValueGroup->addAction( ui->actionTorqueEffect );
     plotValueGroup->addAction( ui->actionGearInfo );
     plotValueGroup->addAction( ui->actionGpsAccuracy );
     ui->actionSpeed->setCheckable( true );
@@ -1392,6 +1399,7 @@ void MainWindow::configureActionGroups( void )
     ui->actionPowerCurve->setCheckable( true );
     ui->actionLRBalance->setCheckable( true );
     ui->actionPedalSmoothness->setCheckable( true );
+    ui->actionTorqueEffect->setCheckable( true );
     ui->actionGearInfo->setCheckable( true );
     ui->actionGpsAccuracy->setCheckable( true );
     ui->actionSpeed->setChecked( true );

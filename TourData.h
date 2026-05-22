@@ -48,6 +48,8 @@ public:
         double leftRightBalance;
         double leftPedalSmoothness;
         double rightPedalSmoothness;
+        double leftTorqueEffectiveness;
+        double rightTorqueEffectiveness;
         double totalWork;
         double totalCalories;
         double normalizedPower;
@@ -75,6 +77,8 @@ public:
     QVector<double>getTourLRBalance(){return m_tourLRBalance;}
     QVector<double>getTourLPedalSmoothness(){return m_tourLPedalSmoothness;}
     QVector<double>getTourRPedalSmoothness(){return m_tourRPedalSmoothness;}
+    QVector<double>getTourLTorqueEffectiveness(){return m_tourLTorqueEffectiveness;}
+    QVector<double>getTourRTorqueEffectiveness(){return m_tourRTorqueEffectiveness;}
     QVector<double>getTourWindSpeed(){return m_tourWindSpeed;}
     QVector<double>getTourAirSpeed(){return m_tourAirSpeed;}
     QVector<deviceInfo_t>getDeviceInfo(){return m_deviceInfo;}
@@ -103,6 +107,7 @@ public:
 protected:
     void analysePowerCurve( void );
     void analysePedalSmoothness( void );
+    void analyseTorqueEffectiveness( void );
 
     fitSection_t m_session;
     QVector<fitSection_t> m_sections;
@@ -145,6 +150,8 @@ protected:
     QVector<double>m_tourLRBalance;
     QVector<double>m_tourLPedalSmoothness;
     QVector<double>m_tourRPedalSmoothness;
+    QVector<double>m_tourLTorqueEffectiveness;
+    QVector<double>m_tourRTorqueEffectiveness;
     QVector<double>m_tourWindSpeed;
     QVector<double>m_tourAirSpeed;
 

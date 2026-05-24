@@ -124,7 +124,7 @@ int TourData::deviceIdInVectorAt(deviceInfo_t a)
 
 void TourData::analysePowerCurve()
 {
-    const QVector<double> timeIntervals = {0, 5, 15, 30, 60, 120, 180, 300, 480, 600, 900, 1200, 1800, 2700, 3600, 7200, 10800, 18000, 36000}; // in seconds
+    const QVector<double> timeIntervals = {0, 2, 3, 5, 8, 10, 15, 30, 45, 60, 120, 180, 300, 480, 600, 900, 1200, 1800, 2700, 3600, 7200, 10800, 18000, 36000}; // in seconds
 
     if (m_tourTimeStamp.isEmpty() || m_tourPower.isEmpty() ||
         m_tourTimeStamp.size() != m_tourPower.size()) {

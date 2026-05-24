@@ -118,7 +118,7 @@ void PowerCurvePlot::setData(QVector<QPair<double, double> > pwrCurve)
     {
         QString interval;
         if( pwrCurve.at(i).first < 60 )
-            interval = QString::number( pwrCurve.at(i).first ) + "\nsec";
+            interval = QString::number( pwrCurve.at(i).first ) + "\ns";
         else if( pwrCurve.at(i).first < 3600 )
             interval = QString::number( pwrCurve.at(i).first / 60 ) + "\nmin";
         else

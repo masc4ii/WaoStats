@@ -72,6 +72,9 @@ namespace qmapcontrol
 
     void LayerMapAdapter::draw(QPainter& painter, const RectWorldPx& backbuffer_rect_px, const int& controller_zoom) const
     {
+        // Default painter mode
+        painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+
         // Gain a read lock to protect the map adapter.
         QReadLocker locker(&m_mapadapter_mutex);
 

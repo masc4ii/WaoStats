@@ -40,8 +40,10 @@
 #include "ImageManager.h"
 #include "LayerGeometry.h"
 #include "LayerHillshading.h"
+#include "LayerMapAdapter.h"
 #include "Projection.h"
 #include "MapCopyrightString.h"
+#include "MapAdapterWaymarkedtrails.h"
 
 #include <QDebug>
 #include <QElapsedTimer>
@@ -1327,13 +1329,22 @@ namespace qmapcontrol
         }
 
         // Show map copyright
-        QString mapterhornCopyright;
+        QString layerCopyright = MapCopyrightString::instance()->copyright();
         for (auto layer : getLayers())
         {
             auto hillshading = dynamic_cast<LayerHillshading*>(layer.get());
             if (hillshading && hillshading->isEnabled())
             {
-                mapterhornCopyright = QString(", Mapterhorn");
+                layerCopyright += QString(", © Mapterhorn");
+            }
+
+            auto overlay = dynamic_cast<LayerMapAdapter*>(layer.get());
+            if (overlay && dynamic_cast<MapAdapterWaymarkedtrails*>(overlay->getMapAdapter().get()))
+            {
+                if (layerCopyright.contains("OpenStreetMap contributors"))
+                    layerCopyright += QString(", © waymarkedtrails.org");
+                else
+                    layerCopyright += QString(", © waymarkedtrails.org, Data © OpenStreetMap contributors");
             }
         }
         QBrush brush = painter.background();
@@ -1345,7 +1356,7 @@ namespace qmapcontrol
                           m_viewport_size_px.width()-6,
                           m_viewport_size_px.height()-6,
                           Qt::AlignLeft|Qt::AlignBottom,
-                          MapCopyrightString::instance()->copyright() + mapterhornCopyright );
+                          layerCopyright );
         painter.setBackgroundMode( Qt::TransparentMode );
 
         // Should we draw the crosshairs?

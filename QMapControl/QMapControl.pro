@@ -71,6 +71,7 @@ HEADERS +=                                      \
     QMapControl/MapAdapterKomoot.h                          \
     QMapControl/MapAdapterMichelin.h                        \
     QMapControl/MapAdapterMapterhorn.h                      \
+    QMapControl/MapAdapterWaymarkedtrails.h                 \
     QMapControl/NetworkManager.h                            \
     QMapControl/Point.h                                     \
     QMapControl/Projection.h                                \
@@ -118,6 +119,7 @@ SOURCES +=                                      \
     QMapControl/MapAdapterKomoot.cpp                        \
     QMapControl/MapAdapterMichelin.cpp                      \
     QMapControl/MapAdapterMapterhorn.cpp                    \
+    QMapControl/MapAdapterWaymarkedtrails.cpp               \
     QMapControl/NetworkManager.cpp                          \
     QMapControl/Projection.cpp                              \
     QMapControl/ProjectionEquirectangular.cpp               \

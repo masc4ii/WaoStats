@@ -53,6 +53,7 @@
 #include <QMapControl/MapAdapterSigma.h>
 #include <QMapControl/MapAdapterKomoot.h>
 #include <QMapControl/MapAdapterMichelin.h>
+#include <QMapControl/MapAdapterWaymarkedtrails.h>
 
 const QString cDateFormat = "yyyy-MM-dd - hh:mm:ss";
 
@@ -468,12 +469,13 @@ void MainWindow::configureMap()
     layout->setContentsMargins(0, 0, 0, 0);
 
     // Create/add a layer with the default OSM map adapter.
-    m_map_control->addLayer(std::make_shared<LayerMapAdapter>("Map", std::make_shared<MapAdapterOTM>()));
-    m_map_control->addLayer(std::make_shared<LayerHillshading>("Hillshading"));
+    m_map_control->addLayer(std::make_shared<LayerMapAdapter>("Map", std::make_shared<MapAdapterOTM>()), MapProvider);
+    m_map_control->addLayer(std::make_shared<LayerHillshading>("Hillshading"), MapHillShading);
+    m_map_control->addLayer(std::make_shared<LayerMapAdapter>("Overlay", std::make_shared<MapAdapterWaymarkedtrails>()), MapOverlay);
 
     // Create the tours layer.
     m_layer_tours = std::make_shared<LayerGeometry>("Tours");
-    m_map_control->addLayer(m_layer_tours);
+    m_map_control->addLayer(m_layer_tours, MapTrack);
 
     //m_map_control->enableScalebar( true );
     //m_map_control->enableCrosshairs( true );
@@ -523,13 +525,26 @@ void MainWindow::configureMap()
     // Connect signal/slot to set the map provider.
     QObject::connect( map_provider_group, &QActionGroup::triggered, this, &MainWindow::mapProviderSelected );
 
+    // Create the map provider overlay actions.
+    QActionGroup* map_overlay_group = new QActionGroup(this);
+    map_overlay_group->addAction( ui->actionNoOverlay );
+    map_overlay_group->addAction( ui->actionWaymarkedtrailsCycling );
+    map_overlay_group->addAction( ui->actionWaymarkedtrailsMTB );
+    map_overlay_group->addAction( ui->actionWaymarkedtrailsHiking );
+    ui->actionNoOverlay->setCheckable( true );
+    ui->actionWaymarkedtrailsCycling->setCheckable( true );
+    ui->actionWaymarkedtrailsMTB->setCheckable( true );
+    ui->actionWaymarkedtrailsHiking->setCheckable( true );
+    // Connect signal/slot to set the map overlay provider.
+    QObject::connect( map_overlay_group, &QActionGroup::triggered, this, &MainWindow::mapOverlaySelected );
+
     //Default map picture
     m_map_control->setMapFocusPoint( PointWorldCoord( 10.9281, 50.6861 ) );
     m_map_control->setZoom( 5 );
 
     // Create the symbole layer.
     m_layer_symb = std::make_shared<LayerGeometry>("Symbols");
-    m_map_control->addLayer( m_layer_symb );
+    m_map_control->addLayer( m_layer_symb, MapSymbols );
 
     m_iconCrossHairs = QPixmap( ":/Icons/Icons/crossed_circle.svg" ).scaled( 20, 20 );
 }
@@ -825,7 +840,32 @@ void MainWindow::mapProviderSelected(QAction* action)
     }
 
     // Add the replacement map layer.
-    m_map_control->addLayer(map_layer, 0);
+    m_map_control->addLayer(map_layer, MapProvider);
+}
+
+void MainWindow::mapOverlaySelected(QAction *action)
+{
+    // Create a replacement map layer.
+    std::shared_ptr<LayerMapAdapter> map_layer(std::make_shared<LayerMapAdapter>("Overlay"));
+
+    // Set the map to Waymarkedtrails Cycle.
+    if(action == ui->actionWaymarkedtrailsCycling)
+    {
+        map_layer->setMapAdapter(std::make_shared<MapAdapterWaymarkedtrails>(qmapcontrol::MapAdapterWaymarkedtrails::WaymarkedtrailsLayerType::CYCLING));
+    }
+    // Set the map to Waymarkedtrails Hiking.
+    else if(action == ui->actionWaymarkedtrailsHiking)
+    {
+        map_layer->setMapAdapter(std::make_shared<MapAdapterWaymarkedtrails>(qmapcontrol::MapAdapterWaymarkedtrails::WaymarkedtrailsLayerType::HIKING));
+    }
+    // Set the map to Waymarkedtrails MTB.
+    else if(action == ui->actionWaymarkedtrailsMTB)
+    {
+        map_layer->setMapAdapter(std::make_shared<MapAdapterWaymarkedtrails>(qmapcontrol::MapAdapterWaymarkedtrails::WaymarkedtrailsLayerType::MTB));
+    }
+
+    // Add the replacement map layer.
+    m_map_control->addLayer(map_layer, MapOverlay);
 }
 
 void MainWindow::plotSelected( void )
@@ -1266,6 +1306,11 @@ void MainWindow::writeSettings()
     else if( ui->action_komoot->isChecked() ) mapType = 15;
     else if( ui->action_michelin->isChecked() ) mapType = 16;
     set.setValue( "maptype", mapType );
+    int overlayType = 0;
+    if( ui->actionWaymarkedtrailsCycling->isChecked() ) overlayType = 1;
+    else if( ui->actionWaymarkedtrailsMTB->isChecked() ) overlayType = 2;
+    else if( ui->actionWaymarkedtrailsHiking->isChecked() ) overlayType = 3;
+    set.setValue( "overlayType", overlayType );
     set.setValue( "darkMaps", ui->actionDarkMaps->isChecked() );
     set.setValue( "hillShading", ui->actionHillshading->isChecked() );
     auto layerHillShading = std::dynamic_pointer_cast<LayerHillshading>(m_map_control->getLayer("Hillshading"));
@@ -1356,6 +1401,24 @@ void MainWindow::readSettings()
     default:
             ui->action_google_map->setChecked( true );
             mapProviderSelected( ui->action_google_map );
+            break;
+    }
+
+    switch( set.value( "overlaytype", 0 ).toInt() )
+    {
+    case 1: ui->actionWaymarkedtrailsCycling->setChecked( true );
+            mapOverlaySelected( ui->actionWaymarkedtrailsCycling );
+            break;
+    case 2: ui->actionWaymarkedtrailsMTB->setChecked( true );
+            mapOverlaySelected( ui->actionWaymarkedtrailsMTB );
+            break;
+    case 3: ui->actionWaymarkedtrailsHiking->setChecked( true );
+            mapOverlaySelected( ui->actionWaymarkedtrailsHiking );
+            break;
+    case 0:
+    default:
+            ui->actionNoOverlay->setChecked( true );
+            mapOverlaySelected( ui->actionNoOverlay );
             break;
     }
 

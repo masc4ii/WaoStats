@@ -48,6 +48,7 @@ private slots:
     void pointInfo( double x );
     void pointInfoHide( bool on );
     void mapProviderSelected( QAction* action );
+    void mapOverlaySelected( QAction* action );
     void plotSelected( void );
     void languageSelected( QAction* action );
     void setLanguageAction( QString language );
@@ -85,6 +86,14 @@ private slots:
     void onCalendarClicked( const QString &bikeName, const QDateTime &dateTime );
 
 private:
+    enum MapLayers {
+        MapProvider = 0,
+        MapHillShading = 1,
+        MapOverlay = 2,
+        MapTrack = 3,
+        MapSymbols = 4
+    };
+
     Ui::MainWindow *ui;
     void scanTours( void );
     void scanFit( QString fileName );

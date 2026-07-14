@@ -321,6 +321,11 @@
      <addaction name="action_komoot"/>
      <addaction name="action_michelin"/>
      <addaction name="separator"/>
+     <addaction name="actionNoOverlay"/>
+     <addaction name="actionWaymarkedtrailsCycling"/>
+     <addaction name="actionWaymarkedtrailsMTB"/>
+     <addaction name="actionWaymarkedtrailsHiking"/>
+     <addaction name="separator"/>
      <addaction name="actionDarkMaps"/>
      <addaction name="actionHillshading"/>
      <addaction name="actionHillshadingSettings"/>
@@ -537,7 +542,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-756</y>
+          <y>0</y>
           <width>221</width>
           <height>1212</height>
          </rect>
@@ -1756,6 +1761,35 @@
   <action name="actionTorqueEffect">
    <property name="text">
     <string>L/R Torque Effectiveness</string>
+   </property>
+  </action>
+  <action name="actionNoOverlay">
+   <property name="text">
+    <string>No Overlay</string>
+   </property>
+  </action>
+  <action name="actionWaymarkedtrailsCycling">
+   <property name="text">
+    <string>Waymarkedtrails Cycling</string>
+   </property>
+   <property name="toolTip">
+    <string>Waymarkedtrails Cycling</string>
+   </property>
+  </action>
+  <action name="actionWaymarkedtrailsMTB">
+   <property name="text">
+    <string>Waymarkedtrails MTB</string>
+   </property>
+   <property name="toolTip">
+    <string>Waymarkedtrails MTB</string>
+   </property>
+  </action>
+  <action name="actionWaymarkedtrailsHiking">
+   <property name="text">
+    <string>Waymarkedtrails Hiking</string>
+   </property>
+   <property name="toolTip">
+    <string>Waymarkedtrails Hiking</string>
    </property>
   </action>
  </widget>
